@@ -1,4 +1,4 @@
-﻿import type { Img, Link } from "./types";
+import type { Img, Link } from "./types";
 import { site } from "../site.config";
 
 /** The "ready? / GET STARTED" band reused on Home, About and Services. */

@@ -64,6 +64,7 @@ image: { src: "/images/headshot.jpg", alt: "Holly smiling in her kitchen" }
 | `astro.config.mjs` | `output: "server"`, Node adapter, React (admin UI), `emdash()` with SQLite + local media |
 | `src/live.config.ts` | Registers the EmDash live collection loader |
 | `src/lib/cms.ts` | **All CMS reads.** `getPosts()`, `getPost()`, `getTestimonials()`. Components never call EmDash directly |
+| `src/components/BlogSidebar.astro` | Blog post sidebar: freebie box (Kit form, `sidebarFreebie` in `src/data/shared.ts`) + the EmDash widget area |
 | `.emdash/seed.json` | Content model (Posts, Testimonials) + sample content applied by the setup wizard |
 
 **Making more sections editable** (offers, FAQ, page copy): add a collection in the admin, snapshot it with
@@ -72,6 +73,13 @@ and swap the import in the component. Seeds only apply to a fresh database.
 
 **Importing a WordPress site:** export from WordPress (Tools → Export → All content), then upload the XML at
 `/_emdash/admin/import/wordpress`. Set up media storage first and keep the old site online until media finishes.
+
+## Blog sidebar widgets
+
+Manage boxes in the admin under **Widgets → Blog Sidebar** (bio = a Content widget; plus Recent Posts, Categories,
+Tags, Search, Archives, menus). The sidebar uses the area named `blog-sidebar`, then `sidebar`, then the first area
+that exists. EmDash's admin only offers its built-in widget types, so the freebie box with a real form is rendered by
+the template instead (edit or hide it via `sidebarFreebie` in `src/data/shared.ts`).
 
 ## Deploying
 
