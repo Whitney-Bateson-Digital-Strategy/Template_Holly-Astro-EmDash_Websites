@@ -1,0 +1,487 @@
+{
+	"schemaVersion": 1,
+	"emdashVersion": "1.3.0",
+	"migrationSet": {
+		"names": [
+			"001_initial",
+			"002_media_status",
+			"003_schema_registry",
+			"004_plugins",
+			"005_menus",
+			"006_taxonomy_defs",
+			"007_widgets",
+			"008_auth",
+			"009_user_disabled",
+			"011_sections",
+			"012_search",
+			"013_scheduled_publishing",
+			"014_draft_revisions",
+			"015_indexes",
+			"016_api_tokens",
+			"017_authorization_codes",
+			"018_seo",
+			"019_i18n",
+			"020_collection_url_pattern",
+			"021_remove_section_categories",
+			"022_marketplace_plugin_state",
+			"023_plugin_metadata",
+			"024_media_placeholders",
+			"025_oauth_clients",
+			"026_cron_tasks",
+			"027_comments",
+			"028_drop_author_url",
+			"029_redirects",
+			"030_widen_scheduled_index",
+			"031_bylines",
+			"032_rate_limits",
+			"033_optimize_content_indexes",
+			"034_published_at_index",
+			"035_bounded_404_log",
+			"036_i18n_menus_and_taxonomies",
+			"037_credential_algorithm",
+			"038_registry_plugin_state",
+			"039_fix_fts5_triggers",
+			"040_byline_i18n",
+			"041_content_locale_list_index",
+			"042_byline_fields",
+			"043_content_references",
+			"044_comment_reactions",
+			"045_taxonomy_parent_group",
+			"046_media_usage_index",
+			"047_restore_taxonomy_parent_index",
+			"048_restore_content_taxonomies_term_index",
+			"049_taxonomies_name_locale_index",
+			"050_media_usage_index_status",
+			"051_content_taxonomies_denorm",
+			"052_media_usage_read_index",
+			"053_plugin_mcp_tools",
+			"054_media_upload_attempts",
+			"055_content_translation_group_locale_index",
+			"056_taxonomy_term_sort_order",
+			"057_collection_hidden",
+			"058_collection_sort_order",
+			"059_revision_prune_queue",
+			"060_collection_admin_config",
+			"061_media_usage_cleanup",
+			"062_media_usage_cleanup_fence",
+			"063_media_usage_incremental_work",
+			"064_fts_plain_text",
+			"065_media_usage_collection_deletion",
+			"066_media_usage_reconciliation",
+			"067_indexed_content_fields",
+			"068_content_taxonomy_entry_groups",
+			"069_collection_title_date_fields",
+			"070_collection_routable",
+			"071_restore_content_bylines_table",
+			"072_media_folders",
+			"073_media_focal_point",
+			"074_content_deleted_scheduled_index",
+			"075_entry_edit_locks",
+			"076_collection_nav_group",
+			"077_plugin_storage_revisions",
+			"078_menu_item_translation_groups",
+			"079_datetime_normalization",
+			"080_content_translation_locale_unique",
+			"081_redirect_write_guards",
+			"082_taxonomy_translation_locale_unique",
+			"083_block_types",
+			"084_site_transfer",
+			"085_taxonomy_def_groups",
+			"086_relations_structural",
+			"087_reference_field_relations",
+			"088_cron_oneshot_utc",
+			"089_auto_seed_completion",
+			"090_redirect_enable_loop_guard",
+			"091_redirect_artifacts"
+		],
+		"fingerprint": "88b366448fc5cdd19bb5cc825e0174f710cda2f20e76681455343484d64d1ee8"
+	},
+	"i18n": null,
+	"database": {
+		"type": "sqlite",
+		"executorEntrypoint": "emdash/internal/db/sqlite-migrations",
+		"executorConfig": {
+			"url": "file:./data.db"
+		}
+	}
+}
+
+{
+  "$schema": "https://emdashcms.com/seed.schema.json",
+  "version": "1",
+  "meta": {
+    "name": "Astro T1 Template",
+    "description": "WBDS T1 website template: blog posts + testimonials editable in EmDash"
+  },
+  "settings": {
+    "title": "Brand Name",
+    "tagline": "Personalized nutrition that fits your life"
+  },
+  "collections": [
+    {
+      "slug": "posts",
+      "label": "Posts",
+      "labelSingular": "Post",
+      "supports": [
+        "drafts",
+        "revisions",
+        "preview",
+        "scheduling",
+        "search",
+        "seo"
+      ],
+      "urlPattern": "/blog/{slug}",
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "featured_image",
+          "label": "Featured Image",
+          "type": "image"
+        },
+        {
+          "slug": "content",
+          "label": "Content",
+          "type": "portableText",
+          "searchable": true
+        },
+        {
+          "slug": "excerpt",
+          "label": "Excerpt",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "slug": "testimonials",
+      "label": "Testimonials",
+      "labelSingular": "Testimonial",
+      "supports": [
+        "drafts"
+      ],
+      "routable": false,
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Headline",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "label",
+          "label": "Small label above headline",
+          "type": "string",
+          "defaultValue": "Client Successes"
+        },
+        {
+          "slug": "quote",
+          "label": "Quote",
+          "type": "text",
+          "required": true
+        },
+        {
+          "slug": "name",
+          "label": "Client name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "order",
+          "label": "Sort order",
+          "type": "integer",
+          "defaultValue": 0
+        }
+      ]
+    }
+  ],
+  "content": {
+    "posts": [
+      {
+        "id": "sample-post-1",
+        "slug": "sample-post-1",
+        "status": "published",
+        "data": {
+          "title": "Sample post title 1: a helpful, searchable headline",
+          "excerpt": "A one- or two-sentence summary of the post that appears on cards and in search results.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "b0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "Open with the problem your reader has, in their words. Keep paragraphs short and scannable.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b1",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "A clear subheading",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b2",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "Explain the first idea. Add an example or a quick story so it feels real.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b3",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "Another subheading",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b4",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "Wrap up with the key takeaway, then invite them to take the next step, like booking a free call.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "sample-post-2",
+        "slug": "sample-post-2",
+        "status": "published",
+        "data": {
+          "title": "Sample post title 2: a helpful, searchable headline",
+          "excerpt": "A one- or two-sentence summary of the post that appears on cards and in search results.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "b0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "Open with the problem your reader has, in their words. Keep paragraphs short and scannable.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b1",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "A clear subheading",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b2",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "Explain the first idea. Add an example or a quick story so it feels real.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b3",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "Another subheading",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b4",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "Wrap up with the key takeaway, then invite them to take the next step, like booking a free call.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "sample-post-3",
+        "slug": "sample-post-3",
+        "status": "published",
+        "data": {
+          "title": "Sample post title 3: a helpful, searchable headline",
+          "excerpt": "A one- or two-sentence summary of the post that appears on cards and in search results.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "b0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s0",
+                  "text": "Open with the problem your reader has, in their words. Keep paragraphs short and scannable.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b1",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s1",
+                  "text": "A clear subheading",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b2",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s2",
+                  "text": "Explain the first idea. Add an example or a quick story so it feels real.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b3",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s3",
+                  "text": "Another subheading",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b4",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s4",
+                  "text": "Wrap up with the key takeaway, then invite them to take the next step, like booking a free call.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "testimonials": [
+      {
+        "id": "testimonial-1",
+        "slug": "testimonial-1",
+        "status": "published",
+        "data": {
+          "title": "Headline naming the transformation",
+          "label": "Client Successes",
+          "quote": "A short, specific quote from a client about the result they got and how it felt. One to three sentences works best.",
+          "name": "Client Name",
+          "order": 1
+        }
+      },
+      {
+        "id": "testimonial-2",
+        "slug": "testimonial-2",
+        "status": "published",
+        "data": {
+          "title": "Changes that fit real life",
+          "label": "Client Successes",
+          "quote": "A second quote highlighting a different benefit, such as ease, support, or how the plan fit their schedule.",
+          "name": "Client Name",
+          "order": 2
+        }
+      },
+      {
+        "id": "testimonial-3",
+        "slug": "testimonial-3",
+        "status": "published",
+        "data": {
+          "title": "Knowledge you can actually use",
+          "label": "Client Successes",
+          "quote": "A third quote about what they learned and how it changed their day-to-day.",
+          "name": "Client Name",
+          "order": 3
+        }
+      }
+    ]
+  }
+}
