@@ -1,0 +1,28 @@
+---
+import Media from "./Media.astro";
+import SectionHeading from "./SectionHeading.astro";
+import { offers } from "../data/offers";
+interface Props { eyebrow?: string; title: string }
+const { eyebrow, title } = Astro.props;
+---
+
+<!-- Teal band on top fading to white, matching the T1 gradient section -->
+<section class="bg-[linear-gradient(to_bottom,var(--color-primary)_0_55%,var(--color-paper)_55%_100%)] pt-12 pb-16 md:pb-20">
+  <div class="container-site">
+    <SectionHeading eyebrow={eyebrow} title={title} tone="light" />
+    <div class="grid gap-8 md:grid-cols-3">
+      {
+        offers.map((o) => (
+          <article class="flex flex-col bg-paper shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+            <div class="h-[200px]"><Media {...(o.cardImage ?? { label: o.title })} /></div>
+            <h3 class="bg-accent px-6 py-4 text-center !font-body !text-lg !not-italic font-medium text-paper">{o.title}</h3>
+            <div class="flex flex-1 flex-col items-center px-6 pt-6 pb-8 text-center">
+              <p class="flex-1">{o.summary}</p>
+              <a href={`/services#${o.id}`} class="btn mt-6">Learn More</a>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

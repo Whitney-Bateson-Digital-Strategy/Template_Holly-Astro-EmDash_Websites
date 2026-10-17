@@ -1,0 +1,17 @@
+---
+/** EmDash featured image, or the template placeholder when none is set. */
+import { Image } from "emdash/ui";
+import Media from "./Media.astro";
+interface Props { image?: unknown; label?: string; eager?: boolean }
+const { image, label = "Post image", eager = false } = Astro.props;
+---
+
+{
+  image ? (
+    <div class="h-full w-full [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
+      <Image image={image as any} />
+    </div>
+  ) : (
+    <Media label={label} eager={eager} />
+  )
+}

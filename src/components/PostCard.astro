@@ -1,0 +1,20 @@
+---
+import PostImage from "./PostImage.astro";
+import type { Post } from "../lib/cms";
+interface Props { post: Post }
+const { post } = Astro.props;
+const date = post.date?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+---
+
+<article class="group flex flex-col">
+  <a href={`/blog/${post.slug}`} class="block h-[220px] overflow-hidden no-underline" tabindex="-1" aria-hidden="true">
+    <div class="h-full transition-transform duration-500 group-hover:scale-105">
+      <PostImage image={post.image} />
+    </div>
+  </a>
+  {date && <p class="mt-4 text-sm uppercase tracking-[0.7px] text-primary/80"><time datetime={post.date!.toISOString()}>{date}</time></p>}
+  <h3 class="mt-2 !font-body !text-xl !not-italic font-medium">
+    <a href={`/blog/${post.slug}`} class="no-underline hover:text-secondary">{post.title}</a>
+  </h3>
+  {post.excerpt && <p class="mt-2 text-ink/80">{post.excerpt}</p>}
+</article>

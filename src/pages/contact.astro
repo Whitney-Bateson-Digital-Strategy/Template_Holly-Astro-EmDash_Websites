@@ -1,0 +1,71 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageBanner from "../components/PageBanner.astro";
+import Media from "../components/Media.astro";
+import { contact as c } from "../data/contact";
+import { offers } from "../data/offers";
+import { site } from "../site.config";
+---
+
+<BaseLayout title={c.seo.title} description={c.seo.description || undefined}>
+  <PageBanner {...c.banner} />
+
+  <section class="section">
+    <div class="container-site grid gap-12 md:grid-cols-3">
+      <div class="md:col-span-2">
+        <p class="font-display text-lg uppercase italic tracking-[1px] text-accent">{c.intro.eyebrow}</p>
+        <h2 class="mt-2">{c.intro.title}</h2>
+        <p class="mt-4 leading-relaxed">{c.intro.body}</p>
+        <p class="mt-4">
+          {c.intro.bookingNote.text} <a href={c.intro.bookingNote.link.href} class="underline decoration-accent underline-offset-4">{c.intro.bookingNote.link.label}</a>
+        </p>
+
+        <form action={site.contactForm.action || "#"} method={site.contactForm.method} class="mt-10 grid gap-4 md:grid-cols-2">
+          {
+            c.form.fields.map((f) => {
+              const id = `cf-${f.name}`;
+              const wide = f.type === "textarea" || f.type === "select";
+              return (
+                <div class:list={[wide && "md:col-span-2"]}>
+                  <label for={id} class="mb-1 block text-sm uppercase tracking-[0.7px]">
+                    {f.label}{f.required && <span class="text-secondary"> *</span>}
+                  </label>
+                  {f.type === "textarea" ? (
+                    <textarea id={id} name={f.name} rows="6" class="field" required={f.required} />
+                  ) : f.type === "select" ? (
+                    <select id={id} name={f.name} class="field" required={f.required}>
+                      <option value="">{f.placeholder}</option>
+                      {offers.map((o) => <option value={o.title}>{o.title}</option>)}
+                    </select>
+                  ) : (
+                    <input id={id} name={f.name} type={f.type} class="field" required={f.required} />
+                  )}
+                </div>
+              );
+            })
+          }
+          <div class="md:col-span-2"><button type="submit" class="btn">{c.form.button}</button></div>
+        </form>
+      </div>
+
+      <aside class="space-y-8">
+        <div class="h-[320px]"><Media {...c.intro.image} /></div>
+        <div>
+          <p class="font-display text-lg uppercase italic tracking-[1px] text-accent">{c.socialTitle}</p>
+          <ul class="mt-4 space-y-4">
+            {
+              site.socials.map((s) => (
+                <li>
+                  <a href={s.href} target="_blank" rel="noopener" class="group flex flex-col no-underline">
+                    <span class="text-sm uppercase tracking-[0.7px] text-ink/70">{s.label}</span>
+                    <span class="font-medium group-hover:text-secondary">{s.handle}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

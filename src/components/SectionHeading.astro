@@ -1,0 +1,22 @@
+---
+/** Small eyebrow + large heading, centered by default. */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  eyebrowStyle?: "label" | "script" | "italic";
+  align?: "center" | "left";
+  tone?: "light" | "dark";
+  as?: "h1" | "h2";
+}
+const { eyebrow, title, eyebrowStyle = "italic", align = "center", tone = "dark", as: Tag = "h2" } = Astro.props;
+const eyebrowClass = {
+  label: "eyebrow-label text-accent",
+  script: "eyebrow-script text-accent",
+  italic: "font-display italic text-lg uppercase tracking-[1px] text-accent",
+}[eyebrowStyle];
+---
+
+<div class:list={[align === "center" ? "text-center" : "text-left", "mb-10"]}>
+  {eyebrow && <p class={eyebrowClass}>{eyebrow}</p>}
+  <Tag class:list={["mt-2", tone === "light" ? "text-paper" : "text-ink"]}>{title}</Tag>
+</div>

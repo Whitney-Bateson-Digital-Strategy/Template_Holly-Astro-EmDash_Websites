@@ -1,0 +1,36 @@
+---
+/**
+ * The workhorse of the T1 layout: text on one side, full-height image on the other.
+ * Used for Problem, Solution, About teaser, Process rows, About-page blocks.
+ */
+import Media from "./Media.astro";
+import type { Img } from "../data/types";
+
+interface Props {
+  image: Img;
+  imageSide?: "left" | "right";
+  class?: string;       // section classes (background, padding)
+  textClass?: string;   // extra classes for the text column (e.g. a colored panel)
+  id?: string;
+}
+const { image, imageSide = "right", class: className = "section", textClass = "", id } = Astro.props;
+---
+
+<section id={id} class={className}>
+  <div class="container-site">
+    <div class="grid items-stretch md:grid-cols-2">
+      <div
+        class:list={[
+          "flex flex-col justify-center py-8 md:py-[8%]",
+          imageSide === "right" ? "md:order-1 md:pr-[13%]" : "md:order-2 md:pl-[13%]",
+          textClass,
+        ]}
+      >
+        <slot />
+      </div>
+      <div class:list={["order-first min-h-[320px] md:min-h-[460px]", imageSide === "right" ? "md:order-2" : "md:order-1"]}>
+        <Media {...image} />
+      </div>
+    </div>
+  </div>
+</section>

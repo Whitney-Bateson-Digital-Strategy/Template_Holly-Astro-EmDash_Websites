@@ -1,0 +1,24 @@
+---
+import { site } from "../site.config";
+interface Props { eyebrow: string; title: string; body: string; fineprint?: string; button: string }
+const { eyebrow, title, body, fineprint, button } = Astro.props;
+const nl = site.newsletter;
+---
+
+<section class="section">
+  <div class="container-site">
+    <div class="bg-primary px-6 py-14 text-center text-paper md:p-20">
+      <p class="eyebrow-script text-accent">{eyebrow}</p>
+      <h2 class="mt-2 text-paper">{title}</h2>
+      <p class="mx-auto mt-4 max-w-xl text-[15px]">{body}</p>
+      {fineprint && <p class="mt-1 text-[13px] text-paper/80">{fineprint}</p>}
+      <form action={nl.action || "#"} method={nl.method} class="mx-auto mt-8 grid max-w-2xl gap-3 md:grid-cols-[1fr_1fr_auto]">
+        <label class="sr-only" for="nl-name">Name</label>
+        <input id="nl-name" class="field" type="text" name={nl.nameField} placeholder="Name" autocomplete="given-name" />
+        <label class="sr-only" for="nl-email">Email</label>
+        <input id="nl-email" class="field" type="email" name={nl.emailField} placeholder="Email" autocomplete="email" required />
+        <button class="btn" type="submit">{button}</button>
+      </form>
+    </div>
+  </div>
+</section>

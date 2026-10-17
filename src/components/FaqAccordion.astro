@@ -1,0 +1,41 @@
+---
+import type { Faq } from "../data/types";
+interface Props { title: string; items: Faq[]; footnote?: { text: string; link: { label: string; href: string } } }
+const { title, items, footnote } = Astro.props;
+const half = Math.ceil(items.length / 2);
+const cols = [items.slice(0, half), items.slice(half)];
+---
+
+<section class="section">
+  <div class="container-site">
+    <h2 class="mb-10 text-center uppercase">{title}</h2>
+    <div class="grid gap-4 md:grid-cols-2 md:gap-6">
+      {
+        cols.map((col) => (
+          <div class="space-y-4">
+            {col.map((f) => (
+              <details class="faq group bg-primary text-paper">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5">
+                  <span class="font-medium">{f.q}</span>
+                  <span class="text-2xl leading-none text-accent transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                </summary>
+                <div class="px-6 pb-6 text-paper/85">{f.a}</div>
+              </details>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+    {
+      footnote && (
+        <p class="mt-10 text-center">
+          {footnote.text} <a href={footnote.link.href} class="underline decoration-accent underline-offset-4">{footnote.link.label}</a>
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .faq summary::-webkit-details-marker { display: none; }
+</style>

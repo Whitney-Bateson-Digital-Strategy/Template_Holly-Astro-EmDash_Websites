@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+/*
+  DESIGN TOKENS
+  ------------------------------------------------------------
+  Rebrand the whole site by editing this block.
+  Values below are extracted from the Elementor "T1" kit (Site Settings → Global Colors / Fonts).
+*/
+@theme {
+  --color-primary: #012f33;   /* deep teal: dark sections, footer, FAQ */
+  --color-secondary: #4d6d8f; /* slate blue: icons, small accents */
+  --color-ink: #262d32;       /* body text */
+  --color-accent: #bcc482;    /* sage: buttons, links, eyebrows, CTA band */
+  --color-gold: #b99b69;      /* secondary button */
+  --color-sand: #e7ded9;      /* warm neutral section background */
+  --color-mist: #f4f4f4;      /* light gray */
+  --color-paper: #ffffff;
+
+  --font-display: "Old Standard TT", Georgia, serif;
+  --font-body: "Questrial", system-ui, sans-serif;
+  --font-script: "Oooh Baby", cursive;
+
+  --container-site: 1160px;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-paper text-ink font-body antialiased;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+  h1 { font-family: var(--font-display); font-weight: 400; font-size: 2.5rem; line-height: 1.25; letter-spacing: -0.2px; }
+  h2 { font-family: var(--font-display); font-weight: 400; font-size: 1.875rem; line-height: 1.33; letter-spacing: -0.15px; }
+  h3 { font-family: var(--font-display); font-weight: 400; font-style: italic; font-size: 1.125rem; line-height: 1.45; }
+  h4 { font-family: var(--font-body); font-weight: 500; font-size: 1.25rem; line-height: 1.3; }
+  h5 { font-family: var(--font-body); font-weight: 500; font-size: 1.1875rem; line-height: 1.2; letter-spacing: 0.72px; }
+  h6 { font-family: var(--font-body); font-weight: 500; font-size: 1.125rem; line-height: 1.22; }
+  @media (min-width: 768px) {
+    h1 { font-size: 3rem; line-height: 1.2; }
+    h2 { font-size: 2.5rem; line-height: 1.15; }
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--color-secondary); outline-offset: 3px; }
+}
+
+@layer components {
+  .container-site { @apply mx-auto w-full px-5; max-width: calc(var(--container-site) + 2.5rem); }
+  .section { @apply py-16 md:py-20; }
+
+  /* Eyebrow styles used throughout the template */
+  .eyebrow-script { font-family: var(--font-script); font-size: 2.5rem; line-height: 1; font-weight: 500; }
+  .eyebrow-label { @apply uppercase; font-size: 1.1875rem; font-weight: 500; letter-spacing: 0.72px; }
+
+  .btn {
+    @apply inline-flex items-center justify-center text-center uppercase no-underline transition-colors;
+    font-family: var(--font-body);
+    font-size: 15px; font-weight: 700; letter-spacing: 0.7px; line-height: 21px;
+    padding: 18px 30px;
+    background-color: var(--color-accent); color: var(--color-ink);
+  }
+  .btn:hover, .btn:focus-visible { background-color: color-mix(in srgb, var(--color-accent) 62%, transparent); }
+  .btn-gold { background-color: var(--color-gold); color: var(--color-paper); }
+  .btn-gold:hover, .btn-gold:focus-visible { background-color: color-mix(in srgb, var(--color-gold) 48%, transparent); }
+
+  .prose-site p { @apply mb-4; }
+  .prose-site ul { @apply mb-4 list-disc space-y-2 pl-5; }
+  .prose-site a { @apply underline decoration-accent underline-offset-4; }
+  .prose-site h2 { @apply mt-10 mb-4; }
+  .prose-site h3 { @apply mt-8 mb-3; }
+
+  .field {
+    @apply w-full border-0 px-4 py-3 text-ink placeholder:text-ink/60;
+    background-color: var(--color-sand);
+    font-family: var(--font-body);
+  }
+  .field:focus { outline: 2px solid var(--color-secondary); outline-offset: 0; }
+}

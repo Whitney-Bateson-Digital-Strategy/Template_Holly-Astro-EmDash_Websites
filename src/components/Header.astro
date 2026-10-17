@@ -1,0 +1,75 @@
+---
+import { site } from "../site.config";
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+---
+
+{
+  site.announcement.text && (
+    <div class="bg-primary px-5 py-2.5 text-center text-[15px] font-semibold text-paper">
+      {site.announcement.href ? <a href={site.announcement.href} class="no-underline hover:text-accent">{site.announcement.text}</a> : site.announcement.text}
+    </div>
+  )
+}
+<header class="sticky top-0 z-40 bg-paper shadow-[0_3px_40px_rgba(0,0,0,0.15)]">
+  <div class="container-site flex items-center justify-between gap-6 py-4">
+    <a href="/" class="shrink-0 no-underline" aria-label={`${site.name} home`}>
+      {
+        site.logo ? (
+          <img src={site.logo} alt={site.logoAlt} class="h-12 w-auto" />
+        ) : (
+          <span class="font-display text-2xl tracking-tight text-primary">{site.name}</span>
+        )
+      }
+    </a>
+
+    <nav aria-label="Main" class="hidden items-center gap-8 lg:flex">
+      <ul class="flex items-center gap-7">
+        {
+          site.nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={[
+                  "text-[15px] font-bold uppercase tracking-[0.7px] no-underline transition-colors hover:text-accent",
+                  isActive(item.href) ? "text-accent" : "text-[#434343]",
+                ]}
+                aria-current={isActive(item.href) ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a href={site.cta.href} class="btn !py-3">{site.cta.label}</a>
+    </nav>
+
+    <details class="mobile-nav relative lg:hidden">
+      <summary class="flex cursor-pointer list-none items-center gap-2 p-2 text-sm uppercase tracking-[0.7px]" aria-label="Open menu">
+        <span aria-hidden="true" class="flex w-6 flex-col gap-1.5">
+          <span class="h-0.5 w-full bg-ink"></span><span class="h-0.5 w-full bg-ink"></span><span class="h-0.5 w-full bg-ink"></span>
+        </span>
+        Menu
+      </summary>
+      <nav aria-label="Mobile" class="absolute right-0 mt-3 w-64 bg-paper p-6 shadow-lg">
+        <ul class="space-y-4">
+          {
+            site.nav.map((item) => (
+              <li>
+                <a href={item.href} class="block uppercase tracking-[0.7px] no-underline" aria-current={isActive(item.href) ? "page" : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <a href={site.cta.href} class="btn mt-6 w-full">{site.cta.label}</a>
+      </nav>
+    </details>
+  </div>
+</header>
+
+<style>
+  .mobile-nav summary::-webkit-details-marker { display: none; }
+</style>

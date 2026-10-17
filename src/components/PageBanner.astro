@@ -1,0 +1,14 @@
+---
+import Media from "./Media.astro";
+import type { Img } from "../data/types";
+interface Props { title: string; image: Img }
+const { title, image } = Astro.props;
+---
+
+<section class="relative flex min-h-[260px] items-center md:min-h-[340px]">
+  <div class="absolute inset-0"><Media {...image} eager hideLabel /></div>
+  <div class="absolute inset-0 bg-primary/55"></div>
+  <div class="relative container-site py-20 text-center">
+    <h1 class="text-paper">{title}</h1>
+  </div>
+</section>

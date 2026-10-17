@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SplitSection from "../components/SplitSection.astro";
+import CheckList from "../components/CheckList.astro";
+import Testimonials from "../components/Testimonials.astro";
+import LinkCards from "../components/LinkCards.astro";
+import CTABand from "../components/CTABand.astro";
+import { about as a } from "../data/about";
+---
+
+<BaseLayout title={a.seo.title} description={a.seo.description || undefined}>
+  <SplitSection image={a.intro.image} imageSide="left">
+    <p class="eyebrow-script text-primary">{a.intro.eyebrow}</p>
+    <h1 class="mt-2">{a.intro.title}</h1>
+    <p class="mt-5 text-[1.1875rem] leading-relaxed">{a.intro.body}</p>
+    <a href={a.intro.cta.href} class="btn mt-8 self-start">{a.intro.cta.label}</a>
+  </SplitSection>
+
+  <section class="section bg-sand">
+    <div class="container-site grid gap-12 md:grid-cols-2 md:gap-20">
+      <div>
+        <h2 class="!font-body !text-[1.75rem] font-medium">{a.story.title}</h2>
+        <p class="mt-4 leading-relaxed">{a.story.body}</p>
+      </div>
+      <div>
+        <h2 class="!font-body !text-[1.75rem] font-medium">{a.philosophy.title}</h2>
+        <p class="mt-4 leading-relaxed">{a.philosophy.body}</p>
+      </div>
+    </div>
+  </section>
+
+  <Testimonials />
+
+  <SplitSection image={a.funFacts.image} imageSide="right" textClass="bg-accent px-6 md:!px-12 md:!py-14 !py-10">
+    <h2>{a.funFacts.title}</h2>
+    <p class="mt-2 text-lg font-medium">{a.funFacts.subtitle}</p>
+    <CheckList items={a.funFacts.items} class="mt-6" markClass="text-paper" />
+  </SplitSection>
+
+  <SplitSection image={a.education.image} imageSide="left" class="pb-16 md:pb-20">
+    <h2>{a.education.title}</h2>
+    <p class="mt-3 text-lg font-medium">{a.education.subtitle}</p>
+    <p class="mt-4 leading-relaxed">{a.education.body}</p>
+  </SplitSection>
+
+  <LinkCards {...a.explore} />
+
+  <div class="pt-16 md:pt-20"><CTABand /></div>
+</BaseLayout>

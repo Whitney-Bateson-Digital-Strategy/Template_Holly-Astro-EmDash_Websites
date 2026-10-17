@@ -1,0 +1,22 @@
+---
+import Media from "./Media.astro";
+import type { Img } from "../data/types";
+interface Props { title: string; cards: { label: string; href: string; image: Img }[] }
+const { title, cards } = Astro.props;
+---
+
+<section class="section bg-sand">
+  <div class="container-site">
+    <h2 class="mb-10 text-center">{title}</h2>
+    <div class="grid gap-8 md:grid-cols-3">
+      {
+        cards.map((c) => (
+          <a href={c.href} class="group block bg-paper no-underline shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
+            <div class="h-[200px] overflow-hidden"><div class="h-full transition-transform duration-500 group-hover:scale-105"><Media {...c.image} /></div></div>
+            <p class="px-6 py-5 text-center text-xl font-medium group-hover:text-secondary">{c.label}</p>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>

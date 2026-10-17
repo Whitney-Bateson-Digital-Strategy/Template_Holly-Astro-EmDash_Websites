@@ -1,0 +1,41 @@
+---
+/**
+ * Image with a built-in placeholder.
+ * Pass `src` once real photos exist; until then a labeled placeholder renders
+ * so layouts can be reviewed without stock images.
+ */
+interface Props {
+  src?: string;
+  alt?: string;
+  label?: string;
+  class?: string;
+  eager?: boolean;
+  /** Hide the placeholder label (for backgrounds sitting behind other content) */
+  hideLabel?: boolean;
+}
+const { src, alt = "", label = "Image", class: className = "", eager = false, hideLabel = false } = Astro.props;
+---
+
+{
+  src ? (
+    <img src={src} alt={alt} class:list={["h-full w-full object-cover", className]} loading={eager ? "eager" : "lazy"} decoding="async" />
+  ) : (
+    <div
+      role="img"
+      aria-label={alt || label}
+      class:list={["placeholder relative flex h-full w-full items-center justify-center overflow-hidden", className]}
+    >
+      {!hideLabel && <span class="relative z-10 bg-paper/80 px-3 py-1 text-xs tracking-widest text-ink/70 uppercase">{label}</span>}
+    </div>
+  )
+}
+
+<style>
+  .placeholder {
+    background-color: var(--color-sand);
+    background-image:
+      radial-gradient(circle at 25% 30%, color-mix(in srgb, var(--color-accent) 45%, transparent) 0 18%, transparent 19%),
+      radial-gradient(circle at 78% 72%, color-mix(in srgb, var(--color-gold) 35%, transparent) 0 22%, transparent 23%),
+      repeating-linear-gradient(135deg, transparent 0 14px, color-mix(in srgb, var(--color-paper) 35%, transparent) 14px 15px);
+  }
+</style>

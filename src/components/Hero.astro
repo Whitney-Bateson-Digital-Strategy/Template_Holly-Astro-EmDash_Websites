@@ -1,0 +1,17 @@
+---
+import Media from "./Media.astro";
+import type { Img, Link } from "../data/types";
+interface Props { image: Img; kicker: string; headline: string; cta: Link }
+const { image, kicker, headline, cta } = Astro.props;
+---
+
+<section class="relative">
+  <div class="absolute inset-0"><Media {...image} eager hideLabel /></div>
+  <div class="relative container-site pt-36 md:pt-[150px]">
+    <div class="mx-auto max-w-3xl bg-paper px-5 pt-12 pb-14 text-center md:px-12">
+      <h1 class="!font-body text-lg !leading-snug !tracking-normal text-ink md:!text-xl">{kicker}</h1>
+      <p class="mt-4 font-display text-[1.625rem] leading-snug text-ink md:text-[2rem]">{headline}</p>
+      <a href={cta.href} class="btn mt-8">{cta.label}</a>
+    </div>
+  </div>
+</section>
