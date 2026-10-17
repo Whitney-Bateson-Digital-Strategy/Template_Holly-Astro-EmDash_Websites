@@ -83,10 +83,31 @@ the template instead (edit or hide it via `sidebarFreebie` in `src/data/shared.t
 
 ## Deploying
 
-This version is a **Node server**, not static files, so the old "FTP `dist/` to SiteGround" workflow does not apply
-(SiteGround shared hosting doesn't run persistent Node apps).
+This is a **server** app, not static files, so the SiteGround FTP workflow does not apply.
 
-- **Cloudflare Workers** (EmDash's reference host): swap SQLite → D1 and local storage → R2. See the EmDash Cloudflare guide.
-- **Node host / container** (Railway, Fly, a VPS, Docker): `npm run build` then `npm start`.
-  Needs a persistent disk for `data.db` + `uploads/`, and `EMDASH_ENCRYPTION_KEY` + `EMDASH_SITE_URL` set.
-- Not suitable: Vercel/Netlify (no persistent disk for SQLite).
+### Cloudflare (recommended)
+
+Local dev stays on SQLite + `uploads/`. Cloudflare builds use **D1** (database) + **R2** (media), switched by
+`DEPLOY_TARGET=cloudflare` (the `build:cf` script sets it).
+
+**Plan:** the Worker is ~5 MB compressed, over the 3 MB Free-plan limit, so you need **Workers Paid ($5/mo per account)**.
+R2 must be enabled on the account (Dashboard → R2) before the first deploy.
+
+**Option A: connect GitHub (deploys on every push to `main`)**
+1. Cloudflare dashboard → **Workers & Pages → Create → Import a repository** → pick this repo.
+2. Build command: `npm run build:cf` · Deploy command: `npx wrangler deploy`
+3. After the first deploy: **Settings → Variables and Secrets** → add secret `EMDASH_ENCRYPTION_KEY`
+   (generate one with `npx emdash secrets generate`) and variable `EMDASH_SITE_URL` = the site's URL. Redeploy.
+4. Open `<your-url>/_emdash/admin` and run the setup wizard. Passkeys only work on the URL they were created on,
+   so run setup on the final domain when possible.
+
+**Option B: from your computer:** `npx wrangler login`, then `npm run deploy:cf`.
+
+The first deploy creates the D1 database, R2 bucket and KV namespace automatically, using the names in
+`wrangler.jsonc`. **Rename `name`, `database_name` and `bucket_name` for each client site.**
+Custom domain: the domain must be active in the same Cloudflare account; then uncomment the `routes` block.
+
+### Node host (Railway, Fly, VPS, Docker)
+
+`npm run build` then `npm start`. Needs a persistent disk for `data.db` + `uploads/`, and
+`EMDASH_ENCRYPTION_KEY` + `EMDASH_SITE_URL` set. Not suitable: Vercel/Netlify (no persistent disk).
