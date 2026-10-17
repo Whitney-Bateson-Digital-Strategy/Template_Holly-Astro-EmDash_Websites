@@ -18,18 +18,20 @@ export const site = {
   logoAlt: "Brand Name logo",
 
   /** Primary call to action, used in the header, hero and CTA band. */
-  cta: { label: "Book a free call", href: "/booking" },
+  cta: { label: "Book a call", href: "/booking" },
 
   /** Booking embed URL (Calendly, Acuity, TidyCal…). Leave empty to show a placeholder. */
   bookingEmbedUrl: "",
 
   nav: [
-    { label: "Home", href: "/" },
     { label: "About", href: "/about" },
     { label: "Services", href: "/services" },
     { label: "Blog", href: "/blog" },
     { label: "Contact", href: "/contact" },
   ],
+
+  /** Footer credit, shown as "© 2026 Brand Name | Design By WBDS" */
+  credit: { label: "WBDS", href: "https://whitneybateson.com" },
 
   footerLinks: [
     { label: "Privacy Policy", href: "/privacy-policy" },

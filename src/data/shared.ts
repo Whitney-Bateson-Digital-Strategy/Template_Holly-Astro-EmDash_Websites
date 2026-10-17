@@ -1,4 +1,4 @@
-﻿import type { Img, Link } from "./types";
+import type { Img, Link } from "./types";
 import { site } from "../site.config";
 
 /** The "ready? / GET STARTED" band reused on Home, About and Services. */
@@ -9,23 +9,31 @@ export const ctaBand = {
   cta: { label: "Schedule your call", href: site.cta.href } as Link,
 };
 
-/** Lead magnet opt-in band above the footer (every page). Set `show: false` to hide. */
+/**
+ * Lead magnet band above the footer (every page). Set `show: false` to hide.
+ * T1 uses a button that links to the freebie's opt-in page. Set `mode: "form"` to show
+ * name + email fields instead (they post to site.optin in site.config.ts).
+ */
 export const optin = {
   show: true,
-  eyebrow: "free guide",
-  title: "Lead Magnet Title Goes Here",
-  subtitle: "A one-line promise of what they'll get",
-  body: "Describe the freebie in a sentence or two: what's inside and why it helps. Enter your name and email to get instant access.",
-  button: "Send it to me",
-  fineprint: "(No spam. Unsubscribe at any time.)",
-  image: { label: "Lead magnet mockup" } as Img,
+  mode: "link" as "link" | "form",
+  eyebrow: "free guide!",
+  title: "Lead magnet title goes here",
+  body: "One or two sentences on what's inside the freebie and why it helps.",
+  button: { label: "Download Guide", href: "/free-guide" } as Link,
+  fineprint: "",
+  image: { label: "Lead magnet photo" } as Img,
 };
 
-/** Main footer text. Nav + socials come from site.config.ts */
+/** Main footer text. Socials come from site.config.ts */
 export const footer = {
-  blurb: "One or two sentences about who you help and how. This sits under the logo in the footer.",
-  linksTitle: "Quick Links",
-  socialTitle: "Connect",
+  tagline: "Personalized nutrition and lifestyle coaching that fits your life.",
+  linksTitle: "Highlight Links",
+  links: [
+    { label: "View my coaching services", href: "/services" },
+    { label: "Ready to get started? Book a call!", href: "/booking" },
+  ] as Link[],
+  socialTitle: "Follow Me On Social",
 };
 
 /** Freebie box at the top of the blog sidebar. Uses the same Kit form as the opt-in (site.optin). */

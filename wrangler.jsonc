@@ -1,0 +1,27 @@
+// Cloudflare deploy settings. Rename "name", database_name and bucket_name per client site.
+// The first deploy creates the D1 database and R2 bucket if they don't exist yet.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "t1-emdash-template",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Content database
+  "d1_databases": [
+    { "binding": "DB", "database_name": "t1-emdash-template-db" }
+  ],
+
+  // Uploaded images and files
+  "r2_buckets": [
+    { "binding": "MEDIA", "bucket_name": "t1-emdash-template-media" }
+  ],
+
+  // Runs scheduled publishing + maintenance every minute
+  "triggers": { "crons": ["* * * * *"] },
+
+  "observability": { "enabled": true }
+
+  // Custom domain (add once the domain is active in this Cloudflare account):
+  // "routes": [{ "pattern": "clientdomain.com", "custom_domain": true }]
+}

@@ -12,16 +12,19 @@ interface Props {
   class?: string;       // section classes (background, padding)
   textClass?: string;   // extra classes for the text column (e.g. a colored panel)
   id?: string;
+  /** Image runs to the edge of the screen instead of sitting inside the content width */
+  fullBleed?: boolean;
 }
-const { image, imageSide = "right", class: className = "section", textClass = "", id } = Astro.props;
+const { image, imageSide = "right", class: className = "section", textClass = "", id, fullBleed = false } = Astro.props;
 ---
 
 <section id={id} class={className}>
-  <div class="container-site">
+  <div class:list={[!fullBleed && "container-site"]}>
     <div class="grid items-stretch md:grid-cols-2">
       <div
         class:list={[
           "flex flex-col justify-center py-8 md:py-[8%]",
+          fullBleed && "px-5 md:px-[5%]",
           imageSide === "right" ? "md:order-1 md:pr-[13%]" : "md:order-2 md:pl-[13%]",
           textClass,
         ]}

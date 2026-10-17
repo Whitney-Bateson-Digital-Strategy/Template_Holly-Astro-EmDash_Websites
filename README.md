@@ -64,6 +64,7 @@ image: { src: "/images/headshot.jpg", alt: "Holly smiling in her kitchen" }
 | `astro.config.mjs` | `output: "server"`, Node adapter, React (admin UI), `emdash()` with SQLite + local media |
 | `src/live.config.ts` | Registers the EmDash live collection loader |
 | `src/lib/cms.ts` | **All CMS reads.** `getPosts()`, `getPost()`, `getTestimonials()`. Components never call EmDash directly |
+| `src/components/BlogSidebar.astro` | Blog post sidebar: freebie box (Kit form, `sidebarFreebie` in `src/data/shared.ts`) + the EmDash widget area |
 | `.emdash/seed.json` | Content model (Posts, Testimonials) + sample content applied by the setup wizard |
 
 **Making more sections editable** (offers, FAQ, page copy): add a collection in the admin, snapshot it with
@@ -73,12 +74,40 @@ and swap the import in the component. Seeds only apply to a fresh database.
 **Importing a WordPress site:** export from WordPress (Tools → Export → All content), then upload the XML at
 `/_emdash/admin/import/wordpress`. Set up media storage first and keep the old site online until media finishes.
 
+## Blog sidebar widgets
+
+Manage boxes in the admin under **Widgets → Blog Sidebar** (bio = a Content widget; plus Recent Posts, Categories,
+Tags, Search, Archives, menus). The sidebar uses the area named `blog-sidebar`, then `sidebar`, then the first area
+that exists. EmDash's admin only offers its built-in widget types, so the freebie box with a real form is rendered by
+the template instead (edit or hide it via `sidebarFreebie` in `src/data/shared.ts`).
+
 ## Deploying
 
-This version is a **Node server**, not static files, so the old "FTP `dist/` to SiteGround" workflow does not apply
-(SiteGround shared hosting doesn't run persistent Node apps).
+This is a **server** app, not static files, so the SiteGround FTP workflow does not apply.
 
-- **Cloudflare Workers** (EmDash's reference host): swap SQLite → D1 and local storage → R2. See the EmDash Cloudflare guide.
-- **Node host / container** (Railway, Fly, a VPS, Docker): `npm run build` then `npm start`.
-  Needs a persistent disk for `data.db` + `uploads/`, and `EMDASH_ENCRYPTION_KEY` + `EMDASH_SITE_URL` set.
-- Not suitable: Vercel/Netlify (no persistent disk for SQLite).
+### Cloudflare (recommended)
+
+Local dev stays on SQLite + `uploads/`. Cloudflare builds use **D1** (database) + **R2** (media), switched by
+`DEPLOY_TARGET=cloudflare` (the `build:cf` script sets it).
+
+**Plan:** the Worker is ~5 MB compressed, over the 3 MB Free-plan limit, so you need **Workers Paid ($5/mo per account)**.
+R2 must be enabled on the account (Dashboard → R2) before the first deploy.
+
+**Option A: connect GitHub (deploys on every push to `main`)**
+1. Cloudflare dashboard → **Workers & Pages → Create → Import a repository** → pick this repo.
+2. Build command: `npm run build:cf` · Deploy command: `npx wrangler deploy`
+3. After the first deploy: **Settings → Variables and Secrets** → add secret `EMDASH_ENCRYPTION_KEY`
+   (generate one with `npx emdash secrets generate`) and variable `EMDASH_SITE_URL` = the site's URL. Redeploy.
+4. Open `<your-url>/_emdash/admin` and run the setup wizard. Passkeys only work on the URL they were created on,
+   so run setup on the final domain when possible.
+
+**Option B: from your computer:** `npx wrangler login`, then `npm run deploy:cf`.
+
+The first deploy creates the D1 database, R2 bucket and KV namespace automatically, using the names in
+`wrangler.jsonc`. **Rename `name`, `database_name` and `bucket_name` for each client site.**
+Custom domain: the domain must be active in the same Cloudflare account; then uncomment the `routes` block.
+
+### Node host (Railway, Fly, VPS, Docker)
+
+`npm run build` then `npm start`. Needs a persistent disk for `data.db` + `uploads/`, and
+`EMDASH_ENCRYPTION_KEY` + `EMDASH_SITE_URL` set. Not suitable: Vercel/Netlify (no persistent disk).
