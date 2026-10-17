@@ -9,9 +9,9 @@ import { about as a } from "../data/about";
 ---
 
 <BaseLayout title={a.seo.title} description={a.seo.description || undefined}>
-  <SplitSection image={a.intro.image} imageSide="left">
-    <p class="eyebrow-script text-primary">{a.intro.eyebrow}</p>
-    <h1 class="mt-2">{a.intro.title}</h1>
+  <SplitSection image={a.intro.image} imageSide="left" class="" fullBleed textClass="md:max-w-[680px]">
+    <p class="eyebrow-italic">{a.intro.eyebrow}</p>
+    <h1 class="mt-4">{a.intro.title}</h1>
     <p class="mt-5 text-[1.1875rem] leading-relaxed">{a.intro.body}</p>
     <a href={a.intro.cta.href} class="btn mt-8 self-start">{a.intro.cta.label}</a>
   </SplitSection>
@@ -19,11 +19,11 @@ import { about as a } from "../data/about";
   <section class="section bg-sand">
     <div class="container-site grid gap-12 md:grid-cols-2 md:gap-20">
       <div>
-        <h2 class="!font-body !text-[1.75rem] font-medium">{a.story.title}</h2>
+        <h2 class="!font-body !text-xl !leading-normal font-normal">{a.story.title}</h2>
         <p class="mt-4 leading-relaxed">{a.story.body}</p>
       </div>
       <div>
-        <h2 class="!font-body !text-[1.75rem] font-medium">{a.philosophy.title}</h2>
+        <h2 class="!font-body !text-xl !leading-normal font-normal">{a.philosophy.title}</h2>
         <p class="mt-4 leading-relaxed">{a.philosophy.body}</p>
       </div>
     </div>

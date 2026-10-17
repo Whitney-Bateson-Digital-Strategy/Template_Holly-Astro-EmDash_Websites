@@ -1,38 +1,38 @@
 ---
 import OptIn from "./OptIn.astro";
+import SocialIcon from "./SocialIcon.astro";
 import { site } from "../site.config";
 import { footer } from "../data/shared";
 const year = new Date().getFullYear();
-const initials: Record<string, string> = { Instagram: "IG", Facebook: "FB", LinkedIn: "in", YouTube: "YT", TikTok: "TT", Pinterest: "P" };
 ---
 
 <OptIn />
 
 <footer>
   <!-- Main footer: sand -->
-  <div class="bg-sand py-[30px]">
-    <div class="container-site grid gap-10 py-8 md:grid-cols-[52%_1fr_1fr]">
+  <div class="bg-sand">
+    <div class="container-site grid gap-10 py-14 md:grid-cols-[52%_1fr_auto] md:items-start">
       <div class="md:pr-[14%]">
         {
           site.logo ? (
-            <img src={site.logo} alt={site.logoAlt} class="w-1/2 min-w-[160px]" />
+            <img src={site.logo} alt={site.logoAlt} class="w-1/2 min-w-[180px]" />
           ) : (
-            <p class="font-display text-2xl text-primary">{site.name}</p>
+            <p class="font-display text-2xl tracking-[2px] text-ink uppercase">{site.name}</p>
           )
         }
-        <p class="mt-4 text-ink">{footer.blurb}</p>
+        <p class="mt-6 text-ink">{footer.tagline}</p>
       </div>
 
       <nav aria-label="Footer">
-        <h2 class="!font-body !text-xl font-medium text-primary">{footer.linksTitle}</h2>
-        <ul class="mt-4 space-y-1">
-          {site.nav.map((item) => <li><a href={item.href} class="text-ink no-underline transition-colors hover:text-secondary">{item.label}</a></li>)}
+        <h2 class="!font-body !text-lg !leading-normal font-normal text-ink">{footer.linksTitle}</h2>
+        <ul class="mt-5 space-y-2">
+          {footer.links.map((l) => <li><a href={l.href} class="text-ink no-underline transition-colors hover:text-secondary">{l.label}</a></li>)}
         </ul>
       </nav>
 
-      <div>
-        <h2 class="!font-body !text-xl font-medium text-primary">{footer.socialTitle}</h2>
-        <ul class="mt-4 flex flex-wrap gap-2">
+      <div class="md:text-right">
+        <h2 class="!font-body !text-lg !leading-normal font-normal text-ink">{footer.socialTitle}</h2>
+        <ul class="mt-5 flex flex-wrap gap-2 md:justify-end">
           {
             site.socials.map((s) => (
               <li>
@@ -41,9 +41,9 @@ const initials: Record<string, string> = { Instagram: "IG", Facebook: "FB", Link
                   target="_blank"
                   rel="noopener"
                   aria-label={s.label}
-                  class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-xs font-bold text-paper no-underline transition-colors hover:bg-secondary"
+                  class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-paper no-underline transition-colors hover:bg-secondary"
                 >
-                  {initials[s.label] ?? s.label.slice(0, 2)}
+                  <SocialIcon name={s.label} />
                 </a>
               </li>
             ))
@@ -56,16 +56,20 @@ const initials: Record<string, string> = { Instagram: "IG", Facebook: "FB", Link
   <!-- Bottom bar: gold -->
   <div class="bg-gold py-5 text-paper">
     <div class="container-site text-center">
-      <ul class="flex flex-wrap justify-center gap-y-1 text-xs font-semibold uppercase tracking-wide">
-        {
-          site.footerLinks.map((l, i) => (
-            <li class:list={["px-2.5", i > 0 && "border-l border-[#ddd]"]}>
-              <a href={l.href} class="no-underline hover:text-secondary">{l.label}</a>
-            </li>
-          ))
-        }
-      </ul>
-      <p class="mt-2 text-[13px] font-medium leading-[22px]">© {year} {site.name}. All rights reserved.</p>
+      {
+        site.footerLinks.length > 0 && (
+          <ul class="mb-2 flex flex-wrap justify-center gap-y-1 text-xs font-semibold uppercase tracking-wide">
+            {site.footerLinks.map((l, i) => (
+              <li class:list={["px-2.5", i > 0 && "border-l border-[#ddd]"]}>
+                <a href={l.href} class="no-underline hover:text-secondary">{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <p class="text-[13px] font-medium leading-[22px]">
+        © {year} {site.name} | Design By <a href={site.credit.href} target="_blank" rel="noopener" class="no-underline hover:text-secondary">{site.credit.label}</a>
+      </p>
     </div>
   </div>
 </footer>

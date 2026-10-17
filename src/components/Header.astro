@@ -32,7 +32,7 @@ const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWit
                 href={item.href}
                 class:list={[
                   "text-[15px] font-bold uppercase tracking-[0.7px] no-underline transition-colors hover:text-accent",
-                  isActive(item.href) ? "text-accent" : "text-[#434343]",
+                  isActive(item.href) ? "text-primary" : "text-[#434343]",
                 ]}
                 aria-current={isActive(item.href) ? "page" : undefined}
               >
