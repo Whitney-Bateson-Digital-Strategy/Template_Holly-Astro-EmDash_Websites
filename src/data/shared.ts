@@ -36,15 +36,6 @@ export const footer = {
   socialTitle: "Follow Me On Social",
 };
 
-/** Blog post sidebar boxes (T1 layout). The author bio and any extra boxes come from EmDash (Widgets -> Blog Sidebar). */
-export const sidebarFreebie = {
-  show: true,
-  title: "Download my free guide",
-  body: "One or two sentences on what's inside the freebie and why it helps.",
-  link: { label: "download the free guide", href: "/free-guide" } as Link,
-  image: { src: "/images/t1/freebie.webp", alt: "Basket of fresh vegetables", label: "Freebie mockup" } as Img,
-};
-
 /** Box inside each blog post, after the article. */
 export const postCta = {
   eyebrow: "let's work together!",

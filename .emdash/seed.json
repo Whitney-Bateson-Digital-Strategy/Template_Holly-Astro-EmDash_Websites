@@ -395,8 +395,15 @@
     {
       "name": "blog-sidebar",
       "label": "Blog Sidebar",
-      "description": "Boxes shown beside every blog post",
+      "description": "Boxes beside every blog post. Add, remove or drag to reorder.",
       "widgets": [
+        {
+          "type": "component",
+          "componentId": "core:search",
+          "props": {
+            "placeholder": "SEARCH"
+          }
+        },
         {
           "type": "content",
           "title": "Meet the Author",
@@ -430,7 +437,7 @@
                 {
                   "_type": "span",
                   "_key": "ws1",
-                  "text": "Learn more about me \u2192",
+                  "text": "Learn more about me →",
                   "marks": [
                     "l1"
                   ]
@@ -438,6 +445,66 @@
               ]
             }
           ]
+        },
+        {
+          "type": "component",
+          "title": "View categories",
+          "componentId": "core:categories",
+          "props": {
+            "showCount": false
+          }
+        },
+        {
+          "type": "content",
+          "title": "Download my free guide",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "f0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "f0s",
+                  "text": "One or two sentences on what's inside the freebie and why it helps. Tip: add an image at the top of this box for the freebie mockup.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "f1",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "f1l",
+                  "href": "/free-guide"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "f1s",
+                  "text": "download the free guide",
+                  "marks": [
+                    "f1l"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "component",
+          "title": "View recent posts",
+          "componentId": "core:recent-posts",
+          "props": {
+            "count": 3,
+            "showThumbnails": true,
+            "showDate": false
+          }
         }
       ]
     }
@@ -469,6 +536,16 @@
           "label": "Lifestyle"
         }
       ]
+    },
+    {
+      "name": "tag",
+      "label": "Tags",
+      "labelSingular": "Tag",
+      "hierarchical": false,
+      "collections": [
+        "posts"
+      ],
+      "terms": []
     }
   ]
 }
