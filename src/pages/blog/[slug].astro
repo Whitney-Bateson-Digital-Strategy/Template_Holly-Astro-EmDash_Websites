@@ -23,7 +23,7 @@ const showCats = post.showCategories && categories.length > 0;
 
 <BaseLayout title={post.title} description={post.excerpt || undefined}>
   <!-- Title panel + featured photo -->
-  <section class="grid md:grid-cols-[45%_55%]">
+  <section class="grid md:grid-cols-[40%_60%]">
     <div class="order-2 flex flex-col justify-center bg-primary px-5 py-12 text-paper md:order-1 md:py-20 md:pr-12 md:pl-[max(1.25rem,calc((100vw-var(--container-site))/2))]">
       <p class="eyebrow-script !text-[2rem] text-accent">the blog</p>
       <h1 class="mt-2 text-paper md:!text-[2.75rem] md:!leading-[1.2]">{post.title}</h1>
@@ -39,7 +39,8 @@ const showCats = post.showCategories && categories.length > 0;
         )
       }
     </div>
-    <div class="order-1 h-[260px] md:order-2 md:h-[520px] [&_figure]:h-full [&_picture]:h-full"><PostImage image={post.image} label="Featured image" eager /></div>
+    <!-- Featured image: 1143 x 754 px -->
+    <div class="order-1 aspect-[1143/754] md:order-2 [&_figure]:h-full [&_picture]:h-full"><PostImage image={post.image} label="Featured image" eager /></div>
   </section>
 
   <div class="section">

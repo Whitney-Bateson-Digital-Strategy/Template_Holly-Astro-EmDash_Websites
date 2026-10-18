@@ -18,6 +18,8 @@ export interface Offer {
   cardImage?: Img;
   image?: Img;
   cta?: Link;
+  /** Optional bullet list shown instead of the description on the home page row */
+  homeBullets?: string[];
 }
 
 export interface Testimonial {

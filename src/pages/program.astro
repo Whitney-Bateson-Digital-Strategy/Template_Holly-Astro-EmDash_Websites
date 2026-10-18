@@ -20,7 +20,7 @@ import { program as p } from "../data/program";
 
 <BaseLayout title={p.seo.title} description={p.seo.description || undefined}>
   <!-- Intro -->
-  <SplitSection image={p.intro.image} imageSide="left" class="bg-sand" fullBleed textClass="md:max-w-[680px]">
+  <SplitSection image={p.intro.image} imageSide="left" class="bg-sand" fullBleed ratio="1943/1284" textClass="md:max-w-[680px]">
     <p class="eyebrow-italic">{p.intro.eyebrow}</p>
     <h1 class="mt-3">{p.intro.title}</h1>
     <p class="mt-4 text-lg leading-relaxed">{p.intro.body}</p>
@@ -44,7 +44,7 @@ import { program as p } from "../data/program";
   <CenterBand {...p.band} />
 
   <!-- Who it's for -->
-  <SplitSection image={p.whoFor.image} imageSide="left" class="section bg-sand">
+  <SplitSection image={p.whoFor.image} imageSide="left" ratio="1160/950" class="section bg-sand">
     <h2 class="uppercase">{p.whoFor.title}</h2>
     <p class="mt-2 text-lg font-medium">{p.whoFor.subtitle}</p>
     <CheckList items={p.whoFor.bullets} class="mt-5" variant="dot" />
@@ -66,9 +66,9 @@ import { program as p } from "../data/program";
   <PhotoPanel {...p.expect} panelSide="right" />
 
   <!-- Meet your coach -->
-  <SplitSection image={p.coach.image} imageSide="right">
+  <SplitSection image={p.coach.image} imageSide="right" ratio="1563/1126">
     <p class="eyebrow-italic">{p.coach.eyebrow}</p>
-    <h2 class="mt-2">{p.coach.title}</h2>
+    <h2 class="mt-2 uppercase">{p.coach.title}</h2>
     <p class="mt-3 text-lg font-medium">{p.coach.subtitle}</p>
     <p class="mt-4 leading-relaxed">{p.coach.body}</p>
     <a href={p.coach.cta.href} class="btn mt-8 self-start">{p.coach.cta.label}</a>

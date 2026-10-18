@@ -1,5 +1,5 @@
 ---
-/** Full-width photo with a translucent teal panel of bullets on one side ("What's included", "What to expect"). */
+/** Photo design size: 1680 x 1132 px. Full-width photo with a translucent teal panel of bullets on one side ("What's included", "What to expect"). */
 import Media from "./Media.astro";
 import CheckList from "./CheckList.astro";
 import type { Img, Link } from "../data/types";
@@ -7,7 +7,7 @@ interface Props { title: string; subtitle?: string; bullets: string[]; cta?: Lin
 const { title, subtitle, bullets, cta, image, panelSide = "left" } = Astro.props;
 ---
 
-<section class="relative flex min-h-[560px] items-center overflow-hidden py-16 md:min-h-[640px] md:py-24">
+<section class="relative flex min-h-[560px] items-center overflow-hidden py-16 md:min-h-[680px] md:py-24">
   <div class="absolute inset-0"><Media {...image} hideLabel /></div>
   <div class="relative w-full">
     <div

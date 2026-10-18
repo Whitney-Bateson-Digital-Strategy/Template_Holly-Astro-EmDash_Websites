@@ -35,8 +35,9 @@ export const site = {
   credit: { label: "WBDS", href: "https://whitneybateson.com" },
 
   footerLinks: [
+    { label: "Terms & Conditions", href: "/terms" },
+    { label: "Disclaimer", href: "/disclaimer" },
     { label: "Privacy Policy", href: "/privacy-policy" },
-    { label: "Terms", href: "/terms" },
   ],
 
   socials: [

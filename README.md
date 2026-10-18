@@ -106,6 +106,28 @@ Every widget type gets the T1 look (teal title bar, white card):
 New sites start with: Search, Meet the Author, View Categories, Download My Free Guide, View Recent Posts
 (from `.emdash/seed.json`). No widgets = no sidebar boxes.
 
+## Image sizes (from the T1 V1 designs)
+
+Upload photos at these sizes (or the same shape). Every slot crops to this shape, so other sizes still work.
+
+| Where | Size (px) |
+|---|---|
+| Home hero | 2250 × 944 |
+| Home offer rows | 1565 × 1282 |
+| Home "hi there" photo | 1563 × 1126 |
+| Blog featured images (cards, post header, Keep Exploring cards) | 1143 × 754 |
+| Free guide band (every page) | 1155 × 595 |
+| About intro / Program intro | 1943 × 1284 |
+| About Fun Facts + Education | 1563 × 1409 |
+| Services banner | 2157 × 713 |
+| Services offer photos | 1943 × 1943 (square) |
+| Program "Who is it for" | 1160 × 950 |
+| Program "How it works" cards | 820 × 462 |
+| Program "What's included" / "What to expect" backgrounds | 1680 × 1132 |
+| Program "Meet your coach" | 1563 × 1126 |
+| Contact photo | 820 × 835 |
+| Blog sidebar widget images (author, freebie) | 1160 × 596 |
+
 ## Deploying
 
 This is a **server** app, not static files, so the SiteGround FTP workflow does not apply.

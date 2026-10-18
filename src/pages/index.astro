@@ -1,47 +1,46 @@
 ---
+/** Home (T1 V1). Copy lives in src/data/home.ts; offer rows come from src/data/offers.ts. */
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Hero from "../components/Hero.astro";
+import HeroBanner from "../components/HeroBanner.astro";
+import ServiceRows from "../components/ServiceRows.astro";
 import SplitSection from "../components/SplitSection.astro";
-import ServiceCards from "../components/ServiceCards.astro";
 import Testimonials from "../components/Testimonials.astro";
 import Newsletter from "../components/Newsletter.astro";
-import ProcessSteps from "../components/ProcessSteps.astro";
-import CTABand from "../components/CTABand.astro";
+import StepsBand from "../components/StepsBand.astro";
 import LatestPosts from "../components/LatestPosts.astro";
 import { home } from "../data/home";
 const h = home;
 ---
 
 <BaseLayout title={h.seo.title || undefined} description={h.seo.description || undefined}>
-  <Hero {...h.hero} />
+  <HeroBanner {...h.hero} />
 
-  <SplitSection image={h.problem.image} imageSide="right">
-    <h2 class="!font-body !text-xl !leading-snug font-medium md:!text-2xl">{h.problem.title}</h2>
-    {h.problem.paragraphs.map((t) => <p class="mt-4 leading-relaxed">{t}</p>)}
-  </SplitSection>
+  <!-- Intro -->
+  <section class="section text-center">
+    <div class="container-site max-w-[900px]">
+      <h2 class="uppercase">{h.intro.title}</h2>
+      <p class="mt-4 text-lg font-medium md:text-xl">
+        {h.intro.subtitle.before}<span class="text-secondary">{h.intro.subtitle.highlight}</span>{h.intro.subtitle.after}
+      </p>
+      {h.intro.paragraphs.map((t) => <p class="mt-4 leading-relaxed">{t}</p>)}
+    </div>
+  </section>
 
-  <SplitSection image={h.solution.image} imageSide="left" class="pb-16 md:pb-20">
-    <h2 class="!font-body !text-xl !leading-snug font-medium md:!text-2xl">{h.solution.title}</h2>
-    {h.solution.paragraphs.map((t) => <p class="mt-4 leading-relaxed">{t}</p>)}
-  </SplitSection>
-
-  <ServiceCards {...h.services} />
+  <ServiceRows {...h.services} />
 
   <Testimonials {...h.testimonials} />
 
-  <SplitSection image={h.about.image} imageSide="right" class="pt-16 md:pt-20">
-    <p class="eyebrow-script text-accent">{h.about.eyebrow}</p>
-    <h2 class="mt-2">{h.about.title}</h2>
-    <p class="mt-3 font-display text-lg italic">{h.about.subtitle}</p>
-    <p class="mt-5">{h.about.body}</p>
+  <Newsletter {...h.newsletter} />
+
+  <SplitSection image={h.about.image} imageSide="right" ratio="1563/1126" class="pb-16 md:pb-20">
+    <p class="eyebrow-script text-primary">{h.about.eyebrow}</p>
+    <h2 class="mt-2 uppercase">{h.about.title}</h2>
+    <p class="mt-3 text-lg font-medium">{h.about.subtitle}</p>
+    <p class="mt-4 leading-relaxed">{h.about.body}</p>
     <a href={h.about.cta.href} class="btn mt-8 self-start">{h.about.cta.label}</a>
   </SplitSection>
 
-  <Newsletter {...h.newsletter} />
+  <StepsBand {...h.process} />
 
-  <ProcessSteps {...h.process} />
-
-  <CTABand />
-
-  <LatestPosts {...h.blog} />
+  <div class="pt-16 md:pt-20"><LatestPosts {...h.blog} /></div>
 </BaseLayout>
