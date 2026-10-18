@@ -12,7 +12,7 @@ const posts = await getPosts(count);
     <section class="pb-16 md:pb-20">
       <div class="container-site">
         <div class="mb-8 flex items-end justify-between border-b-2 border-ink pb-2">
-          <h2>{eyebrow}</h2>
+          <h2 class="uppercase">{eyebrow}</h2>
           <a href={viewAll.href} class="eyebrow-italic !text-xl no-underline hover:text-secondary">{viewAll.label}</a>
         </div>
         <div class="grid gap-8 md:grid-cols-3">{posts.map((post) => <PostCard post={post} />)}</div>

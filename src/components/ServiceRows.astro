@@ -1,0 +1,58 @@
+---
+/**
+ * T1 V1 home "Let's work together": heading, a tab bar that jumps to each offer, then one
+ * row per offer (image 1565 x 1282 design size), alternating sides. Every second row is teal.
+ * Offers come from src/data/offers.ts.
+ */
+import Media from "./Media.astro";
+import { offers } from "../data/offers";
+interface Props { eyebrow: string; title: string; ctaPrefix?: string }
+const { eyebrow, title, ctaPrefix = "Learn more about" } = Astro.props;
+---
+
+<section id="services">
+  <div class="bg-mist pt-14 text-center md:pt-16">
+    <p class="eyebrow-script text-primary">{eyebrow}</p>
+    <h2 class="mt-1 uppercase">{title}</h2>
+    <nav aria-label="Services" class="mt-10 grid bg-primary sm:grid-cols-3">
+      {
+        offers.map((o, i) => (
+          <a href={`#home-${o.id}`} class:list={["block px-4 py-4 text-sm font-bold uppercase tracking-[1px] text-paper no-underline hover:bg-paper/10 hover:text-accent", i > 0 && "border-t border-paper/40 sm:border-t-0 sm:border-l"]}>
+            {o.title}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+
+  {
+    offers.map((o, i) => {
+      const dark = i % 2 === 1;
+      const imageLeft = i % 2 === 1;
+      return (
+        <div id={`home-${o.id}`} class:list={["scroll-mt-28 py-14 md:py-16", dark ? "bg-primary text-paper" : "bg-paper"]}>
+          <div class="container-site grid items-center gap-8 md:grid-cols-2 md:gap-[7%]">
+            <div class:list={[imageLeft ? "md:order-2" : "md:order-1"]}>
+              <p class:list={["inline-block border-b-2 pb-1 text-sm font-bold uppercase tracking-[1px]", dark ? "border-accent text-accent" : "border-primary text-primary"]}>{o.eyebrow}</p>
+              <h2 class:list={["mt-4 uppercase", dark && "text-paper"]}>{o.title}</h2>
+              <p class="mt-2 text-lg font-medium">{o.summary}</p>
+              {o.homeBullets?.length ? (
+                <ul class="mt-4 space-y-2">
+                  {o.homeBullets.map((b) => (
+                    <li class="flex gap-3"><span aria-hidden="true" class="text-accent">•</span><span>{b}</span></li>
+                  ))}
+                </ul>
+              ) : (
+                <p class="mt-4 leading-relaxed">{o.description}</p>
+              )}
+              <a href={`/services#${o.id}`} class="btn mt-8">{ctaPrefix} {o.title}</a>
+            </div>
+            <div class:list={["order-first", imageLeft ? "md:order-1" : "md:order-2"]} style="aspect-ratio: 1565/1282">
+              <Media {...(o.image ?? { label: `${o.title} photo` })} />
+            </div>
+          </div>
+        </div>
+      );
+    })
+  }
+</section>

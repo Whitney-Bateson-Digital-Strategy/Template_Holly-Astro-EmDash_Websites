@@ -25,15 +25,37 @@ export const optin = {
   image: { src: "/images/t1/freebie.webp", alt: "Basket of fresh vegetables", label: "Lead magnet photo" } as Img,
 };
 
-/** Main footer text. Socials come from site.config.ts */
+/**
+ * Footer (T1 V1): three link columns + a "Keep in touch" newsletter form, then a dark bar with the
+ * legal links (site.footerLinks) and "© year Brand | Created by WBDS".
+ * The newsletter form posts to site.newsletter in site.config.ts.
+ * A column with `socials: true` lists the social profiles from site.config.ts.
+ */
 export const footer = {
-  tagline: "Personalized nutrition and lifestyle coaching that fits your life.",
-  linksTitle: "Highlight Links",
-  links: [
-    { label: "View my coaching services", href: "/services" },
-    { label: "Ready to get started? Book a call!", href: "/booking" },
-  ] as Link[],
-  socialTitle: "Follow Me On Social",
+  columns: [
+    {
+      title: "Work With Me",
+      links: [
+        { label: "Services", href: "/services" },
+        { label: "Program", href: "/program" },
+        { label: "Book a call", href: site.cta.href },
+      ] as Link[],
+    },
+    { title: "Connect", socials: true, links: [] as Link[] },
+    {
+      title: "Resources",
+      links: [
+        { label: "Blog", href: "/blog" },
+        { label: "Free guide", href: "/free-guide" },
+        { label: "Contact", href: "/contact" },
+      ] as Link[],
+    },
+  ],
+  newsletter: {
+    title: "Keep In Touch",
+    body: "Sign up for my newsletter for updates on offerings, courses, free stuff + more!",
+    button: "Join",
+  },
 };
 
 /** Box inside each blog post, after the article. */

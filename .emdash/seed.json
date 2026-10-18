@@ -46,6 +46,18 @@
           "slug": "excerpt",
           "label": "Excerpt",
           "type": "text"
+        },
+        {
+          "slug": "show_date",
+          "label": "Show published date",
+          "type": "boolean",
+          "defaultValue": true
+        },
+        {
+          "slug": "show_categories",
+          "label": "Show categories",
+          "type": "boolean",
+          "defaultValue": true
         }
       ]
     },

@@ -14,13 +14,15 @@ interface Props {
   id?: string;
   /** Image runs to the edge of the screen instead of sitting inside the content width */
   fullBleed?: boolean;
+  /** Fixed image shape from the design, e.g. "1565/1282" (width/height). Default: image stretches to the text height */
+  ratio?: string;
 }
-const { image, imageSide = "right", class: className = "section", textClass = "", id, fullBleed = false } = Astro.props;
+const { image, imageSide = "right", class: className = "section", textClass = "", id, fullBleed = false, ratio } = Astro.props;
 ---
 
 <section id={id} class={className}>
   <div class:list={[!fullBleed && "container-site"]}>
-    <div class="grid items-stretch md:grid-cols-2">
+    <div class:list={["grid md:grid-cols-2", ratio ? ["items-center", !fullBleed && "gap-y-8 md:gap-x-[7%]"] : "items-stretch"]}>
       <div
         class:list={[
           "flex flex-col justify-center py-8 md:py-[8%]",
@@ -32,15 +34,20 @@ const { image, imageSide = "right", class: className = "section", textClass = ""
                   ? "md:order-1 md:pr-[6%] md:pl-[max(1.25rem,calc((100vw-var(--container-site))/2))]"
                   : "md:order-2 md:pl-[6%] md:pr-[max(1.25rem,calc((100vw-var(--container-site))/2))]",
               ]
-            : imageSide === "right"
-              ? "md:order-1 md:pr-[13%]"
-              : "md:order-2 md:pl-[13%]",
+            : ratio
+              ? imageSide === "right" ? "md:order-1 md:!py-0" : "md:order-2 md:!py-0"
+              : imageSide === "right"
+                ? "md:order-1 md:pr-[13%]"
+                : "md:order-2 md:pl-[13%]",
           textClass,
         ]}
       >
         <slot />
       </div>
-      <div class:list={["order-first min-h-[320px] md:min-h-[460px]", imageSide === "right" ? "md:order-2" : "md:order-1"]}>
+      <div
+        class:list={["order-first", !ratio && "min-h-[320px] md:min-h-[460px]", imageSide === "right" ? "md:order-2" : "md:order-1"]}
+        style={ratio ? `aspect-ratio: ${ratio}` : undefined}
+      >
         <Media {...image} />
       </div>
     </div>

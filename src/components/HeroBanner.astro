@@ -1,0 +1,23 @@
+---
+/**
+ * T1 V1 home hero: full-width photo (2250 x 944 design size) with a dark overlay and centered text.
+ * `highlight` is the second line of the headline, shown in the accent color.
+ */
+import Media from "./Media.astro";
+import type { Img, Link } from "../data/types";
+interface Props { image: Img; headline: string; highlight?: string; subheadline?: string; cta: Link }
+const { image, headline, highlight, subheadline, cta } = Astro.props;
+---
+
+<section class="relative isolate flex min-h-[440px] items-center md:aspect-[2250/944] md:min-h-0 md:max-h-[720px] md:w-full">
+  <div class="absolute inset-0 -z-10"><Media {...image} eager hideLabel /></div>
+  <div class="absolute inset-0 -z-10 bg-primary/55"></div>
+  <div class="container-site py-20 text-center text-paper">
+    <h1 class="mx-auto max-w-3xl text-paper">
+      {headline}
+      {highlight && <span class="block text-accent">{highlight}</span>}
+    </h1>
+    {subheadline && <p class="mx-auto mt-5 max-w-xl text-lg md:text-xl">{subheadline}</p>}
+    <a href={cta.href} class="btn mt-8">{cta.label}</a>
+  </div>
+</section>

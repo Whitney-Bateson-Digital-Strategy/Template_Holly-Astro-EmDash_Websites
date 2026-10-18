@@ -178,7 +178,8 @@ const fmt = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", ye
   .blog-sidebar .sb-rich p:last-child { margin-bottom: 0; }
   /* An image at the top of a Content widget (e.g. a freebie mockup) runs edge to edge under the title bar */
   .blog-sidebar .sb-rich > :first-child:is(figure, img, .emdash-image) { margin: -1.25rem -1.5rem 1rem; }
-  .blog-sidebar .sb-rich img { width: 100%; height: auto; display: block; }
+  /* Widget images (author photo, freebie mockup): 1160 x 596 px */
+  .blog-sidebar .sb-rich img { width: 100%; height: auto; aspect-ratio: 1160 / 596; object-fit: cover; display: block; }
   .blog-sidebar .sb-rich figure { margin-bottom: 1rem; }
   .blog-sidebar .sb-rich a { color: var(--color-primary); font-weight: 500; text-decoration: underline; text-underline-offset: 4px; }
   .blog-sidebar .sb-rich a:hover { color: var(--color-secondary); }

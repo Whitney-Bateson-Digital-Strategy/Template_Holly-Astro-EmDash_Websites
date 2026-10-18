@@ -15,22 +15,32 @@ const [all, categories] = await Promise.all([getPosts(), getPostCategories(post.
 const i = all.findIndex((p) => p.slug === post.slug);
 const newer = i > 0 ? all[i - 1] : undefined;
 const older = i >= 0 && i < all.length - 1 ? all[i + 1] : undefined;
-const date = post.date?.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" });
+const date = post.date?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+// Per-post checkboxes in the EmDash editor: "Show published date" / "Show categories"
+const showDate = post.showDate && !!date;
+const showCats = post.showCategories && categories.length > 0;
 ---
 
 <BaseLayout title={post.title} description={post.excerpt || undefined}>
   <!-- Title panel + featured photo -->
   <section class="grid md:grid-cols-[40%_60%]">
-    <div class="order-2 flex flex-col justify-between gap-10 bg-primary px-5 py-12 text-paper md:order-1 md:py-16 md:pr-10 md:pl-[max(1.25rem,calc((100vw-var(--container-site))/2))]">
-      <h1 class="!font-body !text-2xl !leading-snug !tracking-normal font-medium text-paper md:!text-[1.75rem]">{post.title}</h1>
-      <div class="space-y-2 text-sm font-medium">
-        {date && <p>Published on: <time datetime={post.date!.toISOString()}>{date}</time></p>}
-        {categories.length > 0 && (
-          <p>{categories.map((c, n) => <>{n > 0 && ", "}<a href={`/blog?category=${c.slug}`} class="no-underline hover:text-accent">{c.name}</a></>)}</p>
-        )}
-      </div>
+    <div class="order-2 flex flex-col justify-center bg-primary px-5 py-12 text-paper md:order-1 md:py-20 md:pr-12 md:pl-[max(1.25rem,calc((100vw-var(--container-site))/2))]">
+      <p class="eyebrow-script !text-[2rem] text-accent">the blog</p>
+      <h1 class="mt-2 text-paper md:!text-[2.75rem] md:!leading-[1.2]">{post.title}</h1>
+      {
+        (showDate || showCats) && (
+          <div class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-paper/25 pt-6 text-sm font-bold uppercase tracking-[1px]">
+            {showDate && <p>Published <time datetime={post.date!.toISOString()}>{date}</time></p>}
+            {showDate && showCats && <span aria-hidden="true" class="text-accent">•</span>}
+            {showCats && (
+              <p>{categories.map((c, n) => <>{n > 0 && ", "}<a href={`/blog?category=${c.slug}`} class="text-accent no-underline hover:text-paper">{c.name}</a></>)}</p>
+            )}
+          </div>
+        )
+      }
     </div>
-    <div class="order-1 h-[260px] md:order-2 md:h-auto md:min-h-[420px]"><PostImage image={post.image} label="Featured image" eager /></div>
+    <!-- Featured image: 1143 x 754 px -->
+    <div class="order-1 aspect-[1143/754] md:order-2 [&_figure]:h-full [&_picture]:h-full"><PostImage image={post.image} label="Featured image" eager /></div>
   </section>
 
   <div class="section">
