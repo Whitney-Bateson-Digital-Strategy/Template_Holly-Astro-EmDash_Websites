@@ -20,7 +20,26 @@
   // Runs scheduled publishing + maintenance every minute
   "triggers": { "crons": ["* * * * *"] },
 
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+  
+"env": {
+  "preview": {
+    "workers_dev": true,
+    "d1_databases": [
+      {
+        "binding": "DB",
+        "database_name": "t1-emdash-preview-db"
+      }
+    ],
+    "r2_buckets": [
+      {
+        "binding": "MEDIA",
+        "bucket_name": "t1-emdash-preview-media"
+      }
+    ]
+  }
+}
+
 
   // Custom domain (add once the domain is active in this Cloudflare account):
   // "routes": [{ "pattern": "clientdomain.com", "custom_domain": true }]
