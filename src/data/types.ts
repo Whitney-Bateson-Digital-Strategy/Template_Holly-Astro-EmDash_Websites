@@ -1,5 +1,11 @@
 export interface Link { label: string; href: string }
-export interface Img { src?: string; alt?: string; label?: string }
+export interface Img {
+  src?: string;
+  alt?: string;
+  label?: string;
+  /** Which part of the photo stays visible when it's cropped, e.g. "right", "top", "70% 30%" */
+  position?: string;
+}
 
 export interface Offer {
   id: string;            // used for #anchors on /services
