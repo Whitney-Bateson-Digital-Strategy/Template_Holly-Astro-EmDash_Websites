@@ -46,6 +46,11 @@ without stock photos. To add a photo, put the file in `public/images/` and set i
 image: { src: "/images/headshot.jpg", alt: "Holly smiling in her kitchen" }
 ```
 
+`position` controls which part of a photo stays visible when it's cropped, e.g. `position: "right"` or `"70% 30%"`.
+
+Default photos live in `public/images/t1/` (the WBDS T1 stock set, resized to WebP). Replace them per client,
+keeping the same file names, or point the data files at new ones.
+
 ### Forms
 - **Newsletter:** set `site.newsletter.action` to the Kit form URL (`https://app.kit.com/forms/FORM_ID/subscriptions`).
   Field names already match Kit.

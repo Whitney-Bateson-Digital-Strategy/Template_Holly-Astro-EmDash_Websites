@@ -2,7 +2,7 @@ import type { Faq, Img } from "./types";
 
 export const services = {
   seo: { title: "Services", description: "" },
-  banner: { title: "Services", image: { label: "Services banner" } as Img },
+  banner: { title: "Services", image: { src: "/images/t1/banner.webp", alt: "Laptop on a bright desk", label: "Services banner" } as Img },
   intro: {
     title: "Introduction to your Services",
     body: "A short paragraph that frames your offers: who they're for, what they have in common, and how to choose between them.",

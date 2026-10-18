@@ -2,13 +2,13 @@ import type { Img } from "./types";
 
 export const contact = {
   seo: { title: "Contact", description: "" },
-  banner: { title: "Contact", image: { label: "Contact banner" } as Img },
+  banner: { title: "Contact", image: { src: "/images/t1/banner.webp", alt: "Laptop on a bright desk", label: "Contact banner" } as Img },
   intro: {
     eyebrow: "questions",
     title: "Get in Touch!",
     body: "Let visitors know what to reach out about and how quickly you typically reply.",
     bookingNote: { text: "Ready to go?", link: { label: "Book a free strategy call here.", href: "/booking" } },
-    image: { label: "Contact photo" } as Img,
+    image: { src: "/images/t1/portrait-smile.webp", alt: "Smiling woman in sunglasses", label: "Contact photo" } as Img,
   },
   form: {
     // "Services" options come from src/data/offers.ts automatically
@@ -27,7 +27,7 @@ export const contact = {
 
 export const booking = {
   seo: { title: "Book a Call", description: "" },
-  banner: { title: "Book a Call", image: { label: "Booking banner" } as Img },
+  banner: { title: "Book a Call", image: { src: "/images/t1/banner.webp", alt: "Laptop on a bright desk", label: "Booking banner" } as Img },
   intro: {
     eyebrow: "let's talk",
     title: "Schedule your free strategy call",
