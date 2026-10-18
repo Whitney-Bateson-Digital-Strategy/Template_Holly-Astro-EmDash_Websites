@@ -36,7 +36,8 @@ Choose **Sample content** to load 3 sample posts + 3 testimonials from `.emdash/
 | "ready? / GET STARTED" band (shared) | `src/data/shared.ts` |
 | Contact + booking copy, contact form fields | `src/data/contact.ts` |
 | Program sales page (`/program`) | `src/data/program.ts` (duplicate it + `src/pages/program.astro` for more programs) |
-| Blog sidebar freebie box + in-post CTA | `sidebarFreebie` / `postCta` in `src/data/shared.ts` |
+| Blog sidebar boxes | EmDash admin → **Widgets → Blog Sidebar** |
+| In-post CTA box | `postCta` in `src/data/shared.ts` |
 | Blog posts | EmDash admin → Posts |
 | Production URL | `site.url` in `site.config.ts` **and** `site` in `astro.config.mjs` |
 
@@ -71,7 +72,7 @@ keeping the same file names, or point the data files at new ones.
 | `astro.config.mjs` | `output: "server"`, Node adapter, React (admin UI), `emdash()` with SQLite + local media |
 | `src/live.config.ts` | Registers the EmDash live collection loader |
 | `src/lib/cms.ts` | **All CMS reads.** `getPosts()`, `getPost()`, `getTestimonials()`. Components never call EmDash directly |
-| `src/components/BlogSidebar.astro` | Blog post sidebar: freebie box (Kit form, `sidebarFreebie` in `src/data/shared.ts`) + the EmDash widget area |
+| `src/components/BlogSidebar.astro` | Blog post sidebar: renders the EmDash **Blog Sidebar** widgets in the T1 style |
 | `.emdash/seed.json` | Content model (Posts, Testimonials) + sample content applied by the setup wizard |
 
 **Making more sections editable** (offers, FAQ, page copy): add a collection in the admin, snapshot it with
@@ -83,17 +84,27 @@ and swap the import in the component. Seeds only apply to a fresh database.
 
 ## Blog
 
-- `/blog`: 9 posts per page with page numbers; `?q=` searches, `?category=` filters (EmDash **category** taxonomy).
+- `/blog`: 9 posts per page with page numbers; `?q=` searches; `?category=`, `?tag=` and `?date=` filter.
 - Post pages: teal title panel + featured photo, article, "let's work together" CTA box, previous/next links.
-- Sidebar order: Search, boxes from **Widgets → Blog Sidebar** in the admin (e.g. *Meet the Author* as a Content widget),
-  View Categories, Download My Free Guide, View Recent Posts. Categories are managed in the admin under Categories.
+- Sidebar: whatever is in **Widgets → Blog Sidebar** (see below). Categories and tags are managed in the admin.
 
 ## Blog sidebar widgets
 
-Manage boxes in the admin under **Widgets → Blog Sidebar** (bio = a Content widget; plus Recent Posts, Categories,
-Tags, Search, Archives, menus). The sidebar uses the area named `blog-sidebar`, then `sidebar`, then the first area
-that exists. EmDash's admin only offers its built-in widget types, so the freebie box with a real form is rendered by
-the template instead (edit or hide it via `sidebarFreebie` in `src/data/shared.ts`).
+The sidebar is 100% controlled in the admin under **Widgets → Blog Sidebar**: add, remove and drag boxes to reorder.
+Every widget type gets the T1 look (teal title bar, white card):
+
+| Widget | Shows | Links to |
+|---|---|---|
+| Content (rich text) | Any box: Meet the Author, a freebie (put an image at the top + a link), an ad... | whatever you link |
+| Menu | A titled link list from an EmDash menu | menu items |
+| Search | T1 search bar | `/blog?q=` |
+| Categories | Category list | `/blog?category=` |
+| Tags | Tag list (tag posts in the editor) | `/blog?tag=` |
+| Recent Posts | Image + title cards (thumbnails off = plain list) | the post |
+| Archives | Months or years with post counts | `/blog?date=2026-10` |
+
+New sites start with: Search, Meet the Author, View Categories, Download My Free Guide, View Recent Posts
+(from `.emdash/seed.json`). No widgets = no sidebar boxes.
 
 ## Deploying
 

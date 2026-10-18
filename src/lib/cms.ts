@@ -84,6 +84,37 @@ export async function getCategories(): Promise<Category[]> {
   }
 }
 
+/** Blog tags (EmDash "tag" taxonomy). */
+export async function getTags(): Promise<Category[]> {
+  try {
+    const terms = await getTaxonomyTerms("tag");
+    return terms.map((t) => ({ name: t.label || t.name, slug: t.slug, count: t.count }));
+  } catch {
+    return [];
+  }
+}
+
+export interface Archive { key: string; label: string; count: number }
+
+/** Post counts grouped by month ("2026-10") or year ("2026"), newest first. */
+export async function getArchives(type: "monthly" | "yearly" = "monthly", limit = 12): Promise<Archive[]> {
+  const fmt = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+  const groups = new Map<string, Archive>();
+  for (const p of await getPosts()) {
+    if (!p.date || isNaN(p.date.getTime())) continue;
+    const key = archiveKey(p.date, type);
+    const g = groups.get(key) ?? { key, label: type === "yearly" ? key : fmt.format(p.date), count: 0 };
+    g.count++;
+    groups.set(key, g);
+  }
+  return [...groups.values()].sort((a, b) => b.key.localeCompare(a.key)).slice(0, limit);
+}
+
+function archiveKey(d: Date, type: "monthly" | "yearly") {
+  const y = String(d.getUTCFullYear());
+  return type === "yearly" ? y : `${y}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
 /** Categories assigned to one post. */
 export async function getPostCategories(postId: string): Promise<Category[]> {
   try {
@@ -94,19 +125,24 @@ export async function getPostCategories(postId: string): Promise<Category[]> {
   }
 }
 
-/** Posts filtered by category slug and/or search text. No filter = all published posts, newest first. */
-export async function findPosts({ category, q }: { category?: string; q?: string } = {}): Promise<Post[]> {
+/** Posts filtered by category slug, tag slug, date ("2026" or "2026-10") and/or search text. No filter = all published posts, newest first. */
+export async function findPosts({ category, tag, date, q }: { category?: string; tag?: string; date?: string; q?: string } = {}): Promise<Post[]> {
   let posts = await getPosts();
-  if (category) {
+  for (const [taxonomy, term] of [["category", category], ["tag", tag]] as const) {
+    if (!term) continue;
     try {
       // entries may be keyed by slug or content ID depending on the EmDash API, so match either
       const keys = new Set(
-        (await getEntriesByTerm("posts", "category", category)).flatMap((e) => [e.id, String(e.data?.id ?? ""), String(e.data?.slug ?? "")]),
+        (await getEntriesByTerm("posts", taxonomy, term)).flatMap((e) => [e.id, String(e.data?.id ?? ""), String(e.data?.slug ?? "")]),
       );
       posts = posts.filter((p) => keys.has(p.id) || keys.has(p.slug));
     } catch (e) {
-      console.error("[cms] category filter:", e);
+      console.error(`[cms] ${taxonomy} filter:`, e);
     }
+  }
+  if (date && /^\d{4}(-\d{2})?$/.test(date)) {
+    const type = date.length === 4 ? "yearly" : "monthly";
+    posts = posts.filter((p) => p.date && archiveKey(p.date, type) === date);
   }
   if (q && q.trim()) {
     try {
