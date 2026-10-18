@@ -1,0 +1,25 @@
+---
+/** Teal band with three numbered steps and a button ("How to get started"). */
+import type { Link } from "../data/types";
+interface Props { eyebrow?: string; title: string; items: { label: string; title: string; body: string }[]; cta?: Link }
+const { eyebrow, title, items, cta } = Astro.props;
+---
+
+<section class="bg-primary py-16 text-center text-paper md:py-20">
+  <div class="container-site">
+    {eyebrow && <p class="text-sm font-bold uppercase tracking-[1px]">{eyebrow}</p>}
+    <h2 class="mt-2 text-paper uppercase">{title}</h2>
+    <div class="mt-10 grid gap-10 md:grid-cols-3">
+      {
+        items.map((s) => (
+          <div>
+            <p class="eyebrow-script !text-[2rem] text-accent">{s.label}</p>
+            <h3 class="mt-1 !font-body !text-lg !not-italic font-medium">{s.title}</h3>
+            <p class="mx-auto mt-2 max-w-xs text-sm text-paper/85">{s.body}</p>
+          </div>
+        ))
+      }
+    </div>
+    {cta && <a href={cta.href} class="btn mt-10">{cta.label}</a>}
+  </div>
+</section>

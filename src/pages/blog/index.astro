@@ -1,20 +1,61 @@
 ---
+/** Blog index (T1 layout): solid teal banner, 3-column grid, page numbers. Supports ?q= search and ?category= filter. */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageBanner from "../../components/PageBanner.astro";
 import PostCard from "../../components/PostCard.astro";
-import { getPosts } from "../../lib/cms";
-const posts = await getPosts();
+import { findPosts, getCategories } from "../../lib/cms";
+
+const PER_PAGE = 9;
+const url = Astro.url;
+const q = url.searchParams.get("q") ?? "";
+const category = url.searchParams.get("category") ?? "";
+const page = Math.max(1, Number(url.searchParams.get("page")) || 1);
+
+const posts = await findPosts({ q, category });
+const pages = Math.max(1, Math.ceil(posts.length / PER_PAGE));
+const shown = posts.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+const categoryName = category ? (await getCategories()).find((c) => c.slug === category)?.name ?? category : "";
+
+const href = (n: number) => {
+  const p = new URLSearchParams();
+  if (q) p.set("q", q);
+  if (category) p.set("category", category);
+  if (n > 1) p.set("page", String(n));
+  const s = p.toString();
+  return s ? `/blog?${s}` : "/blog";
+};
 ---
 
 <BaseLayout title="Blog">
-  <PageBanner title="The Blog" image={{ src: "/images/t1/banner.webp", alt: "Laptop on a bright desk", label: "Blog banner" }} />
+  <PageBanner title="The Blog" />
   <section class="section">
     <div class="container-site">
       {
-        posts.length ? (
-          <div class="grid gap-12 md:grid-cols-3">{posts.map((post) => <PostCard post={post} />)}</div>
+        (q || category) && (
+          <p class="mb-8 text-center">
+            {q ? <>Results for “{q}”</> : <>Category: {categoryName}</>} · <a href="/blog" class="text-primary underline underline-offset-4">View all posts</a>
+          </p>
+        )
+      }
+      {
+        shown.length ? (
+          <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2 md:grid-cols-3">{shown.map((post) => <PostCard post={post} />)}</div>
         ) : (
-          <p class="text-center">No posts yet. Add one at <a href="/_emdash/admin" class="underline">/_emdash/admin</a>.</p>
+          <p class="text-center">No posts found. Add one at <a href="/_emdash/admin" class="underline">/_emdash/admin</a>.</p>
+        )
+      }
+      {
+        pages > 1 && (
+          <nav aria-label="Pages" class="mt-14 flex items-center justify-center gap-3 text-sm font-medium">
+            {Array.from({ length: pages }, (_, n) => n + 1).map((n) => (
+              <a
+                href={href(n)}
+                aria-current={n === page ? "page" : undefined}
+                class:list={["flex h-8 w-8 items-center justify-center rounded-full no-underline", n === page ? "bg-accent text-ink" : "hover:text-secondary"]}
+              >{n}</a>
+            ))}
+            {page < pages && <a href={href(page + 1)} class="px-2 no-underline hover:text-secondary" aria-label="Next page">›</a>}
+          </nav>
         )
       }
     </div>

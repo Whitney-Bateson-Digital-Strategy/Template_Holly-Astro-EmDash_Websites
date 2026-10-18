@@ -1,0 +1,82 @@
+---
+/**
+ * PROGRAM SALES PAGE: T1 layout. Copy lives in src/data/program.ts.
+ * Remove any section you don't need by deleting its line below.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SplitSection from "../components/SplitSection.astro";
+import CheckList from "../components/CheckList.astro";
+import CenterBand from "../components/CenterBand.astro";
+import InfoCards from "../components/InfoCards.astro";
+import IconFeatures from "../components/IconFeatures.astro";
+import PhotoPanel from "../components/PhotoPanel.astro";
+import FaqAccordion from "../components/FaqAccordion.astro";
+import Testimonials from "../components/Testimonials.astro";
+import StepsBand from "../components/StepsBand.astro";
+import PricingCards from "../components/PricingCards.astro";
+import CTABand from "../components/CTABand.astro";
+import { program as p } from "../data/program";
+---
+
+<BaseLayout title={p.seo.title} description={p.seo.description || undefined}>
+  <!-- Intro -->
+  <SplitSection image={p.intro.image} imageSide="left" class="bg-sand" fullBleed textClass="md:max-w-[680px]">
+    <p class="eyebrow-italic">{p.intro.eyebrow}</p>
+    <h1 class="mt-3">{p.intro.title}</h1>
+    <p class="mt-4 text-lg leading-relaxed">{p.intro.body}</p>
+  </SplitSection>
+
+  <!-- Are you feeling / Would you like to -->
+  <section class="section">
+    <div class="container-site grid gap-12 md:grid-cols-2 md:gap-16">
+      <div>
+        <h2 class="!font-body !text-xl !leading-normal font-medium">{p.feeling.title}</h2>
+        <p class="mt-4 leading-relaxed">{p.feeling.body}</p>
+        <CheckList items={p.feeling.bullets} class="mt-4" variant="dot" />
+      </div>
+      <div>
+        <h2 class="!font-body !text-xl !leading-normal font-medium">{p.wouldYou.title}</h2>
+        {p.wouldYou.paragraphs.map((t) => <p class="mt-4 leading-relaxed">{t}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <CenterBand {...p.band} />
+
+  <!-- Who it's for -->
+  <SplitSection image={p.whoFor.image} imageSide="left" class="section bg-sand">
+    <h2 class="uppercase">{p.whoFor.title}</h2>
+    <p class="mt-2 text-lg font-medium">{p.whoFor.subtitle}</p>
+    <CheckList items={p.whoFor.bullets} class="mt-5" variant="dot" />
+    <a href={p.whoFor.cta.href} class="btn mt-8 self-start">{p.whoFor.cta.label}</a>
+  </SplitSection>
+
+  <InfoCards {...p.howItWorks} />
+
+  <IconFeatures {...p.bonuses} />
+
+  <PhotoPanel {...p.included} panelSide="left" />
+
+  <FaqAccordion id="format" title={p.format.title} items={p.format.items} closing={p.format.closing} cta={p.format.cta} />
+
+  <Testimonials />
+
+  <StepsBand {...p.steps} />
+
+  <PhotoPanel {...p.expect} panelSide="right" />
+
+  <!-- Meet your coach -->
+  <SplitSection image={p.coach.image} imageSide="right">
+    <p class="eyebrow-italic">{p.coach.eyebrow}</p>
+    <h2 class="mt-2">{p.coach.title}</h2>
+    <p class="mt-3 text-lg font-medium">{p.coach.subtitle}</p>
+    <p class="mt-4 leading-relaxed">{p.coach.body}</p>
+    <a href={p.coach.cta.href} class="btn mt-8 self-start">{p.coach.cta.label}</a>
+  </SplitSection>
+
+  <PricingCards {...p.pricing} />
+
+  <FaqAccordion title={p.faq.title} items={p.faq.items} footnote={p.faq.footnote} />
+
+  <CTABand />
+</BaseLayout>

@@ -1,12 +1,20 @@
 ---
-import type { Faq } from "../data/types";
-interface Props { title: string; items: Faq[]; footnote?: { text: string; link: { label: string; href: string } } }
-const { title, items, footnote } = Astro.props;
+/** Two-column accordion (FAQ, course modules). Items can carry a highlighted `tag` like "Module 01:". */
+import type { Faq, Link } from "../data/types";
+interface Props {
+  title: string;
+  items: Faq[];
+  id?: string;
+  footnote?: { text: string; link: { label: string; href: string } };
+  closing?: string;
+  cta?: Link;
+}
+const { title, items, id = "faq", footnote, closing, cta } = Astro.props;
 const half = Math.ceil(items.length / 2);
 const cols = [items.slice(0, half), items.slice(half)];
 ---
 
-<section class="section">
+<section id={id} class="section scroll-mt-24">
   <div class="container-site">
     <h2 class="mb-10 text-center uppercase">{title}</h2>
     <div class="grid gap-4 md:grid-cols-2 md:gap-6">
@@ -14,10 +22,13 @@ const cols = [items.slice(0, half), items.slice(half)];
         cols.map((col) => (
           <div class="space-y-4">
             {col.map((f) => (
-              <details class="faq group bg-primary text-paper">
+              <details class="faq group bg-primary text-paper shadow-[0_6px_20px_rgba(0,0,0,0.08)]">
                 <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5">
-                  <span class="font-medium">{f.q}</span>
-                  <span class="text-2xl leading-none text-accent transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                  <span>
+                    {f.tag && <span class="mr-1 font-bold text-accent">{f.tag}</span>}
+                    <span class="font-medium">{f.q}</span>
+                  </span>
+                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-lg leading-none font-bold text-primary transition-transform group-open:rotate-45" aria-hidden="true">+</span>
                 </summary>
                 <div class="px-6 pb-6 text-paper/85">{f.a}</div>
               </details>
@@ -29,8 +40,16 @@ const cols = [items.slice(0, half), items.slice(half)];
     {
       footnote && (
         <p class="mt-10 text-center">
-          {footnote.text} <a href={footnote.link.href} class="underline decoration-accent underline-offset-4">{footnote.link.label}</a>
+          {footnote.text} <a href={footnote.link.href} class="font-medium text-secondary underline underline-offset-4">{footnote.link.label}</a>
         </p>
+      )
+    }
+    {
+      (closing || cta) && (
+        <div class="mt-10 text-center">
+          {closing && <p class="text-lg font-medium">{closing}</p>}
+          {cta && <a href={cta.href} class="btn mt-5">{cta.label}</a>}
+        </div>
       )
     }
   </div>

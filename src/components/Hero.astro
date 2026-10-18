@@ -1,16 +1,17 @@
 ---
+/** T1 hero: photo band with a white card that overlaps its bottom edge. */
 import Media from "./Media.astro";
 import type { Img, Link } from "../data/types";
-interface Props { image: Img; kicker: string; headline: string; cta: Link }
-const { image, kicker, headline, cta } = Astro.props;
+interface Props { image: Img; headline: string; subheadline?: string; cta: Link }
+const { image, headline, subheadline, cta } = Astro.props;
 ---
 
-<section class="relative">
-  <div class="absolute inset-0"><Media {...image} eager hideLabel /></div>
-  <div class="relative container-site pt-36 md:pt-[150px]">
-    <div class="mx-auto max-w-3xl bg-paper px-5 pt-12 pb-14 text-center md:px-12">
-      <h1 class="!font-body text-lg !leading-snug !tracking-normal text-ink md:!text-xl">{kicker}</h1>
-      <p class="mt-4 font-display text-[1.625rem] leading-snug text-ink md:text-[2rem]">{headline}</p>
+<section class="relative pb-4">
+  <div class="absolute inset-x-0 top-0 h-[260px] md:h-[340px]"><Media {...image} eager hideLabel /></div>
+  <div class="relative container-site pt-28 md:pt-[130px]">
+    <div class="mx-auto max-w-[920px] bg-paper px-6 py-12 text-center shadow-[0_10px_40px_rgba(0,0,0,0.10)] md:px-16 md:py-14">
+      <h1 class="mx-auto max-w-2xl text-ink">{headline}</h1>
+      {subheadline && <p class="mx-auto mt-4 max-w-xl text-lg md:text-xl">{subheadline}</p>}
       <a href={cta.href} class="btn mt-8">{cta.label}</a>
     </div>
   </div>

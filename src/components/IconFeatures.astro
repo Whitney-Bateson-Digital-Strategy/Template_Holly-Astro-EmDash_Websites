@@ -1,0 +1,28 @@
+---
+/** Row of check-badge features with a button (Program "special bonuses"). */
+import type { Link } from "../data/types";
+interface Props { eyebrow?: string; subtitle?: string; items: { title: string; body: string }[]; cta?: Link }
+const { eyebrow, subtitle, items, cta } = Astro.props;
+---
+
+<section class="pb-16 md:pb-20">
+  <div class="container-site text-center">
+    {eyebrow && <p class="eyebrow-script text-primary">{eyebrow}</p>}
+    {subtitle && <p class="mt-2 text-lg font-medium">{subtitle}</p>}
+    <div class="mt-10 grid gap-10 md:grid-cols-3">
+      {
+        items.map((it) => (
+          <div>
+            <svg class="mx-auto h-14 w-14" viewBox="0 0 56 56" aria-hidden="true">
+              <circle cx="26" cy="30" r="22" fill="var(--color-primary)" />
+              <path d="M15 29l9 9 24-26" fill="none" stroke="var(--color-accent)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <h3 class="mt-4 !font-body !text-base !not-italic font-bold">{it.title}</h3>
+            <p class="mx-auto mt-2 max-w-xs text-sm">{it.body}</p>
+          </div>
+        ))
+      }
+    </div>
+    {cta && <a href={cta.href} class="btn mt-10">{cta.label}</a>}
+  </div>
+</section>

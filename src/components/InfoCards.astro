@@ -1,0 +1,25 @@
+---
+/** Three cards: image, colored title strip, short text (Program "How it works"). */
+import Media from "./Media.astro";
+import SectionHeading from "./SectionHeading.astro";
+import type { Img } from "../data/types";
+interface Props { eyebrow?: string; title: string; cards: { title: string; body: string; image: Img }[] }
+const { eyebrow, title, cards } = Astro.props;
+---
+
+<section class="section">
+  <div class="container-site">
+    <SectionHeading eyebrow={eyebrow} title={title} eyebrowStyle="script" />
+    <div class="grid gap-8 md:grid-cols-3">
+      {
+        cards.map((c) => (
+          <article class="flex flex-col bg-paper shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+            <div class="aspect-[16/9]"><Media {...c.image} /></div>
+            <h3 class="bg-accent px-6 py-4 text-center !font-body !text-base !not-italic font-bold text-paper">{c.title}</h3>
+            <p class="px-6 pt-6 pb-8 text-center">{c.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

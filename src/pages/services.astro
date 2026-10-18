@@ -20,8 +20,8 @@ import { offers } from "../data/offers";
   </section>
 
   <nav aria-label="Services" class="hidden bg-primary md:block">
-    <ul class="container-site flex justify-center gap-12 py-5">
-      {offers.map((o) => <li><a href={`#${o.id}`} class="uppercase tracking-[0.7px] text-paper no-underline hover:text-accent">{o.title}</a></li>)}
+    <ul class="grid divide-x divide-paper" style={`grid-template-columns: repeat(${offers.length}, minmax(0, 1fr))`}>
+      {offers.map((o) => <li><a href={`#${o.id}`} class="block py-5 text-center text-[15px] font-bold uppercase tracking-[0.7px] text-paper no-underline hover:bg-paper/10 hover:text-accent">{o.title}</a></li>)}
     </ul>
   </nav>
 

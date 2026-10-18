@@ -6,31 +6,25 @@ export const home = {
 
   hero: {
     image: { src: "/images/t1/hero.webp", alt: "Laptop surrounded by fresh vegetables", label: "Hero background" } as Img,
-    kicker: "Name the frustration your client is feeling right now?",
-    headline: "State the outcome you help them reach, in their words",
+    headline: "Add a headline that speaks to your audience",
+    subheadline: "Include a call to action that inspires visitors to take the next step.",
     cta: { label: "Let's talk strategy", href: site.cta.href } as Link,
   },
 
   problem: {
-    title: "Does this sound familiar?",
-    bullets: [
-      "Pain point #1, written the way your client would say it",
-      "Pain point #2: what they've tried that hasn't worked",
-      "Pain point #3: the everyday symptom or frustration",
-      "Pain point #4: what they're missing out on",
-      "Pain point #5: the confusion or overwhelm they feel",
+    title: "Relate to visitors by touching on their pain points",
+    paragraphs: [
+      "Describe what your ideal client is struggling with, in the words they'd use. Name the symptoms, the frustration, and what they've already tried.",
+      "Add a second short paragraph about how it's affecting their everyday life.",
     ],
     image: { src: "/images/t1/problem.webp", alt: "Tired woman rubbing her temples at a laptop", label: "Problem photo" } as Img,
   },
 
   solution: {
-    title: "Your approach is the answer, and here's why",
-    bullets: [
-      "Benefit #1: what they'll discover",
-      "Benefit #2: how it fits their life",
-      "Benefit #3: what's personalized",
-      "Benefit #4: how they'll feel",
-      "Benefit #5: the confidence they'll gain",
+    title: "Introduce visitors to your unique solution to their problem",
+    paragraphs: [
+      "Explain your approach and why it works when other things haven't. Keep the focus on the change they'll feel.",
+      "Add a second short paragraph about what makes working with you different.",
     ],
     image: { src: "/images/t1/solution.webp", alt: "Couple laughing while cooking together", label: "Solution photo" } as Img,
   },
@@ -65,6 +59,7 @@ export const home = {
       { label: "Step 03:", title: "Working together", body: "Describe what working with you looks like week to week, and what makes it effective." },
       { label: "Step 04:", title: "Maintain your success", body: "Explain how you support them long-term so the results last." },
     ] as Step[],
+    footnote: { text: "Questions? Check the", links: [{ label: "FAQ", href: "/services#faq" }, { label: "contact me.", href: "/contact" }] },
     images: [{ src: "/images/t1/process-1.webp", alt: "Man smiling at his phone", label: "Process photo 1" }, { src: "/images/t1/process-2.webp", alt: "Woman raising her arms in celebration", label: "Process photo 2" }] as Img[],
   },
 

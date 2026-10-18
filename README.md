@@ -35,6 +35,8 @@ Choose **Sample content** to load 3 sample posts + 3 testimonials from `.emdash/
 | Testimonials (shared) | EmDash admin → Testimonials (falls back to `src/data/testimonials.ts` if empty) |
 | "ready? / GET STARTED" band (shared) | `src/data/shared.ts` |
 | Contact + booking copy, contact form fields | `src/data/contact.ts` |
+| Program sales page (`/program`) | `src/data/program.ts` (duplicate it + `src/pages/program.astro` for more programs) |
+| Blog sidebar freebie box + in-post CTA | `sidebarFreebie` / `postCta` in `src/data/shared.ts` |
 | Blog posts | EmDash admin → Posts |
 | Production URL | `site.url` in `site.config.ts` **and** `site` in `astro.config.mjs` |
 
@@ -78,6 +80,13 @@ and swap the import in the component. Seeds only apply to a fresh database.
 
 **Importing a WordPress site:** export from WordPress (Tools → Export → All content), then upload the XML at
 `/_emdash/admin/import/wordpress`. Set up media storage first and keep the old site online until media finishes.
+
+## Blog
+
+- `/blog`: 9 posts per page with page numbers; `?q=` searches, `?category=` filters (EmDash **category** taxonomy).
+- Post pages: teal title panel + featured photo, article, "let's work together" CTA box, previous/next links.
+- Sidebar order: Search, boxes from **Widgets → Blog Sidebar** in the admin (e.g. *Meet the Author* as a Content widget),
+  View Categories, Download My Free Guide, View Recent Posts. Categories are managed in the admin under Categories.
 
 ## Blog sidebar widgets
 
