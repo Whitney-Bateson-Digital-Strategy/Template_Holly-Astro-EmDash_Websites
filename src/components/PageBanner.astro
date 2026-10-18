@@ -1,14 +1,25 @@
 ---
+/**
+ * Page title band. With an image: photo + teal overlay.
+ * Without one (T1 default for Contact): a solid teal band.
+ */
 import Media from "./Media.astro";
 import type { Img } from "../data/types";
-interface Props { title: string; image: Img }
+interface Props { title: string; image?: Img }
 const { title, image } = Astro.props;
+const hasPhoto = !!image?.src;
 ---
 
-<section class="relative flex min-h-[260px] items-center md:min-h-[340px]">
-  <div class="absolute inset-0"><Media {...image} eager hideLabel /></div>
-  <div class="absolute inset-0 bg-primary/55"></div>
-  <div class="relative container-site py-20 text-center">
+<section class:list={["relative flex items-center", hasPhoto ? "min-h-[260px] md:min-h-[340px]" : "min-h-[180px] bg-primary md:min-h-[280px]"]}>
+  {
+    hasPhoto && (
+      <>
+        <div class="absolute inset-0"><Media {...image} eager hideLabel /></div>
+        <div class="absolute inset-0 bg-primary/55" />
+      </>
+    )
+  }
+  <div class="relative container-site py-16 text-center">
     <h1 class="text-paper">{title}</h1>
   </div>
 </section>
