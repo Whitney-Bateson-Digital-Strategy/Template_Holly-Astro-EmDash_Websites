@@ -22,7 +22,7 @@ export const optin = {
   body: "One or two sentences on what's inside the freebie and why it helps.",
   button: { label: "Download Guide", href: "/free-guide" } as Link,
   fineprint: "",
-  image: { label: "Lead magnet photo" } as Img,
+  image: { src: "/images/t1/freebie.webp", alt: "Basket of fresh vegetables", label: "Lead magnet photo" } as Img,
 };
 
 /** Main footer text. Socials come from site.config.ts */
@@ -43,5 +43,5 @@ export const sidebarFreebie = {
   title: "Lead Magnet Title",
   body: "One sentence on what's inside and why it helps.",
   button: "Get the free guide",
-  image: { label: "Freebie mockup" } as Img,
+  image: { src: "/images/t1/freebie.webp", alt: "Basket of fresh vegetables", label: "Freebie mockup" } as Img,
 };

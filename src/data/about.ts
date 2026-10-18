@@ -8,7 +8,7 @@ export const about = {
     title: "I'm Your Name",
     body: "An overview of your mission statement or approach can go here, but keep it short. This is a brief introduction that you'll expand on below!",
     cta: { label: "Explore Services", href: "/services" } as Link,
-    image: { label: "Portrait" } as Img,
+    image: { src: "/images/t1/about-intro.webp", alt: "Smiling woman on the phone", label: "Portrait" } as Img,
   },
 
   story: {
@@ -31,22 +31,22 @@ export const about = {
       "Something from your background",
       "What you're currently learning",
     ],
-    image: { label: "Lifestyle photo" } as Img,
+    image: { src: "/images/t1/portrait-smile.webp", alt: "Smiling woman in sunglasses", label: "Lifestyle photo" } as Img,
   },
 
   education: {
     title: "Education",
     subtitle: "Highlight the education and credentials that make you qualified to support clients.",
     body: "List degrees, certifications, and specialized training. Mention any memberships or ongoing education that builds trust.",
-    image: { label: "Credentials photo" } as Img,
+    image: { src: "/images/t1/education.webp", alt: "Desk with notebook and pens", label: "Credentials photo" } as Img,
   },
 
   explore: {
     title: "Keep Exploring",
     cards: [
-      { label: "Read the Blog", href: "/blog", image: { label: "Blog" } as Img },
-      { label: "View My Services", href: "/services", image: { label: "Services" } as Img },
-      { label: "Book A Free Call", href: "/booking", image: { label: "Booking" } as Img },
+      { label: "Read the Blog", href: "/blog", image: { src: "/images/t1/explore-blog.webp", alt: "Family walking across a city street", label: "Blog" } as Img },
+      { label: "View My Services", href: "/services", image: { src: "/images/t1/explore-services.webp", alt: "Friends sharing brunch", label: "Services" } as Img },
+      { label: "Book A Free Call", href: "/booking", image: { src: "/images/t1/explore-booking.webp", alt: "Pastry on a pink plate", label: "Booking" } as Img },
     ],
   },
 };

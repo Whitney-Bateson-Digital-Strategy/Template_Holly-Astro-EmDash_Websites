@@ -5,7 +5,7 @@ export const home = {
   seo: { title: "", description: "" }, // blank = use site defaults
 
   hero: {
-    image: { label: "Hero background" } as Img,
+    image: { src: "/images/t1/hero.webp", alt: "Laptop surrounded by fresh vegetables", label: "Hero background" } as Img,
     kicker: "Name the frustration your client is feeling right now?",
     headline: "State the outcome you help them reach, in their words",
     cta: { label: "Let's talk strategy", href: site.cta.href } as Link,
@@ -20,7 +20,7 @@ export const home = {
       "Pain point #4: what they're missing out on",
       "Pain point #5: the confusion or overwhelm they feel",
     ],
-    image: { label: "Problem photo" } as Img,
+    image: { src: "/images/t1/problem.webp", alt: "Tired woman rubbing her temples at a laptop", label: "Problem photo" } as Img,
   },
 
   solution: {
@@ -32,7 +32,7 @@ export const home = {
       "Benefit #4: how they'll feel",
       "Benefit #5: the confidence they'll gain",
     ],
-    image: { label: "Solution photo" } as Img,
+    image: { src: "/images/t1/solution.webp", alt: "Couple laughing while cooking together", label: "Solution photo" } as Img,
   },
 
   services: { eyebrow: "services", title: "Let's Work Together" },
@@ -45,7 +45,7 @@ export const home = {
     subtitle: "A one-line connection: I know how you feel",
     body: "Two or three sentences on your story: why you do this work and what makes your approach different. Keep it warm and personal; the full story lives on the About page.",
     cta: { label: "Learn more about me", href: "/about" } as Link,
-    image: { label: "Headshot" } as Img,
+    image: { src: "/images/t1/portrait-smile.webp", alt: "Smiling woman in sunglasses", label: "Headshot" } as Img,
   },
 
   newsletter: {
@@ -65,7 +65,7 @@ export const home = {
       { label: "Step 03:", title: "Working together", body: "Describe what working with you looks like week to week, and what makes it effective." },
       { label: "Step 04:", title: "Maintain your success", body: "Explain how you support them long-term so the results last." },
     ] as Step[],
-    images: [{ label: "Process photo 1" }, { label: "Process photo 2" }] as Img[],
+    images: [{ src: "/images/t1/process-1.webp", alt: "Man smiling at his phone", label: "Process photo 1" }, { src: "/images/t1/process-2.webp", alt: "Woman raising her arms in celebration", label: "Process photo 2" }] as Img[],
   },
 
   blog: { eyebrow: "The Blog", viewAll: { label: "view all", href: "/blog" } as Link, count: 3 },

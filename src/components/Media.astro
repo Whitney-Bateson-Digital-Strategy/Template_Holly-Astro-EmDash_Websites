@@ -12,13 +12,14 @@ interface Props {
   eager?: boolean;
   /** Hide the placeholder label (for backgrounds sitting behind other content) */
   hideLabel?: boolean;
+  position?: string;
 }
-const { src, alt = "", label = "Image", class: className = "", eager = false, hideLabel = false } = Astro.props;
+const { src, alt = "", label = "Image", class: className = "", eager = false, hideLabel = false, position } = Astro.props;
 ---
 
 {
   src ? (
-    <img src={src} alt={alt} class:list={["h-full w-full object-cover", className]} loading={eager ? "eager" : "lazy"} decoding="async" />
+    <img src={src} alt={alt} class:list={["h-full w-full object-cover", className]} loading={eager ? "eager" : "lazy"} decoding="async" style={position ? `object-position: ${position}` : undefined} />
   ) : (
     <div
       role="img"
