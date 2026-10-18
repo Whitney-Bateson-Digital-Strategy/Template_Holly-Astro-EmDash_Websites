@@ -27,8 +27,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Astro
+      - name: Build Astro for Cloudflare Preview
         run: npm run build
+        env:
+          CLOUDFLARE_ENV: preview
+
+      - name: Verify preview bindings
+        run: |
+          npx wrangler deploy --dry-run --outdir /tmp/emdash-preview-check
 
       - name: Check credential formatting
         env:
@@ -42,4 +48,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --env preview
+          command: deploy
