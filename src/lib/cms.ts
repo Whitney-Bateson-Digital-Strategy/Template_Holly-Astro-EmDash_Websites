@@ -47,13 +47,13 @@ export async function getPosts(limit?: number): Promise<Post[]> {
     console.error("[cms] posts:", error);
     return [];
   }
-  return entries.map((e) => toPost(e as { id: string; data: Row }));
+  return entries.map((e) => toPost(e as unknown as { id: string; data: Row }));
 }
 
 export async function getPost(slug: string): Promise<Post | null> {
   const { entry, error } = await getEmDashEntry("posts", slug);
   if (error) console.error("[cms] post:", error);
-  return entry ? toPost(entry as { id: string; data: Row }) : null;
+  return entry ? toPost(entry as unknown as { id: string; data: Row }) : null;
 }
 
 /** Testimonials from EmDash; falls back to src/data/testimonials.ts if the collection is empty or missing. */
@@ -62,7 +62,7 @@ export async function getTestimonials(): Promise<Testimonial[]> {
     const { entries, error } = await getEmDashCollection("testimonials", { status: "published", orderBy: { order: "asc" } });
     if (error || !entries.length) return fallbackTestimonials;
     return entries.map(({ data }) => {
-      const d = data as Row;
+      const d = data as unknown as Row;
       return {
         label: String(d.label ?? "Client Successes"),
         headline: String(d.title ?? ""),

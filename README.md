@@ -1,10 +1,11 @@
-# Astro T1 Template + EmDash
+# WBDS T1 Website Template (Astro + EmDash)
 
-> EmDash version of the T1 template. Blog posts and testimonials are edited in the EmDash admin at `/_emdash/admin`.
-> Everything else still lives in `src/data/*.ts`. The static (no-CMS) version is the separate `astro-t1-template`.
+The T1 website template, rebuilt in Astro with the EmDash CMS. Clients edit blog posts, testimonials and the blog
+sidebar at `/_emdash/admin`. Everything else (page layouts and copy) lives in this repo and is changed via pull request.
 
-A static Astro + Tailwind rebuild of the WBDS **T1** Elementor template (Home, About, Services, Contact, Booking, Blog).
-Layout, spacing, colors and type are taken directly from the T1 Elementor kit and page data.
+Pages: Home, About, Services, Program, Blog, Blog post, Contact, Booking, Free guide, Terms, Disclaimer, Privacy Policy, 404.
+
+**New client site?** Follow "Playbook A" in the WBDS runbook (Notion: *WordPress → Astro + EmDash Website Build Runbook*).
 
 ## Run it
 
@@ -21,7 +22,7 @@ Choose **Sample content** to load 3 sample posts + 3 testimonials from `.emdash/
 
 `data.db` (content) and `uploads/` (media) are created locally and are git-ignored.
 
-## Spin up a new client site
+## Where everything lives
 
 | What | Where |
 |---|---|
@@ -29,24 +30,25 @@ Choose **Sample content** to load 3 sample posts + 3 testimonials from `.emdash/
 | Colors and fonts | `@theme` block at the top of `src/styles/global.css` |
 | Google Fonts link (if fonts change) | `src/layouts/BaseLayout.astro` |
 | Home page copy | `src/data/home.ts` |
+| Footer columns + newsletter copy, free-guide band, "ready?" band, in-post CTA | `src/data/shared.ts` |
+| Free guide page (`/free-guide`) + legal pages | `src/data/pages.ts` |
 | About page copy | `src/data/about.ts` |
 | Services page intro + FAQ | `src/data/services.ts` |
-| Offers (shared by home cards, services page, contact dropdown) | `src/data/offers.ts` |
+| Offers (shared by home rows, services page, contact dropdown) | `src/data/offers.ts` |
 | Testimonials (shared) | EmDash admin → Testimonials (falls back to `src/data/testimonials.ts` if empty) |
-| "ready? / GET STARTED" band (shared) | `src/data/shared.ts` |
 | Contact + booking copy, contact form fields | `src/data/contact.ts` |
 | Program sales page (`/program`) | `src/data/program.ts` (duplicate it + `src/pages/program.astro` for more programs) |
 | Blog sidebar boxes | EmDash admin → **Widgets → Blog Sidebar** |
-| In-post CTA box | `postCta` in `src/data/shared.ts` |
 | Blog posts | EmDash admin → Posts |
 | Production URL | `site.url` in `site.config.ts` **and** `site` in `astro.config.mjs` |
+| Worker, database and media bucket names | `wrangler.jsonc` (lowercase + dashes, e.g. `livable-nutrition`) |
 
 ### Images
 Every image is optional. Until a `src` is set, a labeled placeholder renders, so layouts can be reviewed
 without stock photos. To add a photo, put the file in `public/images/` and set it in the data file:
 
 ```ts
-image: { src: "/images/headshot.jpg", alt: "Holly smiling in her kitchen" }
+image: { src: "/images/headshot.jpg", alt: "Client smiling in her kitchen" }
 ```
 
 `position` controls which part of a photo stays visible when it's cropped, e.g. `position: "right"` or `"70% 30%"`.
@@ -55,23 +57,32 @@ Default photos live in `public/images/t1/` (the WBDS T1 stock set, resized to We
 keeping the same file names, or point the data files at new ones.
 
 ### Forms
-- **Newsletter:** set `site.newsletter.action` to the Kit form URL (`https://app.kit.com/forms/FORM_ID/subscriptions`).
+- **Newsletter** (footer + home): set `site.newsletter.action` to the Kit form URL (`https://app.kit.com/forms/FORM_ID/subscriptions`).
   Field names already match Kit.
-- **Contact:** set `site.contactForm.action` to any form endpoint (Formspree, GHL webhook, etc.).
+- **Free guide** (`/free-guide`): set `site.optin.action` to the freebie's own Kit form.
+- **Contact:** set `site.contactForm.action` to the form endpoint.
 
 ## Components
 
-`Hero`, `SplitSection` (image/text, either side), `CheckList`, `SectionHeading`, `ServiceCards`,
-`Testimonials` (scroll-snap slider, no library), `Newsletter`, `ProcessSteps`, `CTABand`, `LatestPosts`,
-`PostCard`, `PageBanner`, `OfferBlock`, `FaqAccordion` (native `<details>`), `LinkCards`, `Media` (image + placeholder).
+| Component | Used for |
+|---|---|
+| `Header`, `Footer`, `OptIn` | Site header (nav + dropdowns), 4-column footer, free-guide band above it |
+| `HeroBanner`, `PageBanner` | Home photo hero; page title band (photo or solid teal) |
+| `SplitSection` | Text + photo side by side; `ratio` locks the photo shape, `fullBleed` runs it to the screen edge |
+| `ServiceRows`, `OfferBlock` | Home offer rows; Services page offer sections (both read `offers.ts`) |
+| `Testimonials`, `Newsletter`, `StepsBand`, `CTABand`, `CenterBand` | Shared bands |
+| `LatestPosts`, `PostCard`, `PostImage`, `BlogSidebar` | Blog pieces |
+| `InfoCards`, `IconFeatures`, `PhotoPanel`, `PricingCards`, `FaqAccordion` | Program + Services sections |
+| `LinkCards`, `CheckList`, `SectionHeading`, `SocialIcon`, `Media`, `LegalPage` | Small building blocks |
 
 ## How EmDash is wired
 
 | File | Purpose |
 |---|---|
-| `astro.config.mjs` | `output: "server"`, Node adapter, React (admin UI), `emdash()` with SQLite + local media |
+| `astro.config.mjs` | `output: "server"`, React (admin UI), `emdash()`: SQLite + local media on your computer, D1 + R2 on Cloudflare |
 | `src/live.config.ts` | Registers the EmDash live collection loader |
-| `src/lib/cms.ts` | **All CMS reads.** `getPosts()`, `getPost()`, `getTestimonials()`. Components never call EmDash directly |
+| `src/lib/cms.ts` | **All CMS reads** (posts, testimonials, categories, tags, archives, search). Components never call EmDash directly |
+| `src/worker.ts` + `wrangler.jsonc` | Cloudflare Worker entry + database/media bindings |
 | `src/components/BlogSidebar.astro` | Blog post sidebar: renders the EmDash **Blog Sidebar** widgets in the T1 style |
 | `.emdash/seed.json` | Content model (Posts, Testimonials) + sample content applied by the setup wizard |
 
@@ -128,38 +139,17 @@ Upload photos at these sizes (or the same shape). Every slot crops to this shape
 | Contact photo | 820 × 835 |
 | Blog sidebar widget images (author, freebie) | 1160 × 596 |
 
-## Deploying
+## Deploying (Cloudflare)
 
-This is a **server** app, not static files, so the SiteGround FTP workflow does not apply.
+Every push to `main` builds and deploys automatically (`.github/workflows/deploy-cloudflare.yml`).
 
-### Cloudflare (recommended)
+**One time per Cloudflare account (already done for WBDS):** Workers Paid plan, R2 turned on, a workers.dev subdomain,
+and an "Edit Cloudflare Workers" API token.
 
-Local dev stays on SQLite + `uploads/`. Cloudflare builds use **D1** (database) + **R2** (media), switched by
-`DEPLOY_TARGET=cloudflare` (the `build:cf` script sets it).
-
-**Plan:** the Worker is ~5 MB compressed, over the 3 MB Free-plan limit, so you need **Workers Paid ($5/mo per account)**.
-R2 must be enabled on the account (Dashboard → R2) before the first deploy.
-
-**Option A (what this repo uses): GitHub Actions.** `.github/workflows/deploy-cloudflare.yml` builds with
-`npm run build:cf` and deploys on every push to `main`. Add repo (or org) secrets `CLOUDFLARE_API_TOKEN`
-(Cloudflare → My Profile → API Tokens → "Edit Cloudflare Workers" template) and `CLOUDFLARE_ACCOUNT_ID`, then do
-steps 3–4 below. No Cloudflare GitHub app approval needed.
-
-**Option A2: connect GitHub inside Cloudflare** (needs the GitHub org owner to approve the Cloudflare app)
-1. Cloudflare dashboard → **Workers & Pages → Create → Import a repository** → pick this repo.
-2. Build command: `npm run build:cf` · Deploy command: `npx wrangler deploy`
-3. After the first deploy: **Settings → Variables and Secrets** → add secret `EMDASH_ENCRYPTION_KEY`
-   (generate one with `npx emdash secrets generate`) and variable `EMDASH_SITE_URL` = the site's URL. Redeploy.
-4. Open `<your-url>/_emdash/admin` and run the setup wizard. Passkeys only work on the URL they were created on,
-   so run setup on the final domain when possible.
-
-**Option B: from your computer:** `npx wrangler login`, then `npm run deploy:cf`.
-
-The first deploy creates the D1 database, R2 bucket and KV namespace automatically, using the names in
-`wrangler.jsonc`. **Rename `name`, `database_name` and `bucket_name` for each client site.**
-Custom domain: the domain must be active in the same Cloudflare account; then uncomment the `routes` block.
-
-### Node host (Railway, Fly, VPS, Docker)
-
-`npm run build` then `npm start`. Needs a persistent disk for `data.db` + `uploads/`, and
-`EMDASH_ENCRYPTION_KEY` + `EMDASH_SITE_URL` set. Not suitable: Vercel/Netlify (no persistent disk).
+**Per site:**
+1. Repo → Settings → Secrets and variables → Actions: add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+2. Rename `name`, `database_name` and `bucket_name` in `wrangler.jsonc` (the first deploy creates them).
+3. Cloudflare → the worker → Settings → Variables and Secrets, both as **Secret** (plain text gets wiped on deploy):
+   `EMDASH_ENCRYPTION_KEY` (`npx emdash secrets generate`) and `EMDASH_SITE_URL` (exact site address, no trailing slash).
+4. Custom domain: add it to the Cloudflare account, uncomment `routes` in `wrangler.jsonc`, update `EMDASH_SITE_URL`.
+5. Open `<site>/_emdash/admin` and run setup **on the final address**: passkeys only work on the address they were made on.

@@ -8,11 +8,13 @@
 import OptIn from "./OptIn.astro";
 import { site } from "../site.config";
 import { footer } from "../data/shared";
+interface Props { hideOptIn?: boolean }
+const { hideOptIn = false } = Astro.props;
 const year = new Date().getFullYear();
 const nl = site.newsletter;
 ---
 
-<OptIn />
+{!hideOptIn && <OptIn />}
 
 <footer class="text-paper">
   <div class="bg-primary">
