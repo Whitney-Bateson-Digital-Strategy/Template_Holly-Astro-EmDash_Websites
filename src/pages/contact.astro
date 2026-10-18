@@ -11,61 +11,87 @@ import { site } from "../site.config";
   <PageBanner {...c.banner} />
 
   <section class="section">
-    <div class="container-site grid gap-12 md:grid-cols-3">
-      <div class="md:col-span-2">
-        <p class="font-display text-lg uppercase italic tracking-[1px] text-accent">{c.intro.eyebrow}</p>
-        <h2 class="mt-2">{c.intro.title}</h2>
+    <div class="container-site grid gap-x-16 gap-y-12 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+      <!-- Intro -->
+      <div class="self-center">
+        <p class="eyebrow-italic">{c.intro.eyebrow}</p>
+        <h2 class="mt-2 uppercase">{c.intro.title}</h2>
         <p class="mt-4 leading-relaxed">{c.intro.body}</p>
-        <p class="mt-4">
-          {c.intro.bookingNote.text} <a href={c.intro.bookingNote.link.href} class="underline decoration-accent underline-offset-4">{c.intro.bookingNote.link.label}</a>
+        <p class="mt-5 font-medium text-primary">
+          {c.intro.bookingNote.text} <a href={c.intro.bookingNote.link.href} class="underline underline-offset-4 hover:text-secondary">{c.intro.bookingNote.link.label}</a>
         </p>
-
-        <form action={site.contactForm.action || "#"} method={site.contactForm.method} class="mt-10 grid gap-4 md:grid-cols-2">
-          {
-            c.form.fields.map((f) => {
-              const id = `cf-${f.name}`;
-              const wide = f.type === "textarea" || f.type === "select";
-              return (
-                <div class:list={[wide && "md:col-span-2"]}>
-                  <label for={id} class="mb-1 block text-sm uppercase tracking-[0.7px]">
-                    {f.label}{f.required && <span class="text-secondary"> *</span>}
-                  </label>
-                  {f.type === "textarea" ? (
-                    <textarea id={id} name={f.name} rows="6" class="field" required={f.required} />
-                  ) : f.type === "select" ? (
-                    <select id={id} name={f.name} class="field" required={f.required}>
-                      <option value="">{f.placeholder}</option>
-                      {offers.map((o) => <option value={o.title}>{o.title}</option>)}
-                    </select>
-                  ) : (
-                    <input id={id} name={f.name} type={f.type} class="field" required={f.required} />
-                  )}
-                </div>
-              );
-            })
-          }
-          <div class="md:col-span-2"><button type="submit" class="btn">{c.form.button}</button></div>
-        </form>
       </div>
 
-      <aside class="space-y-8">
-        <div class="h-[320px]"><Media {...c.intro.image} /></div>
-        <div>
-          <p class="font-display text-lg uppercase italic tracking-[1px] text-accent">{c.socialTitle}</p>
-          <ul class="mt-4 space-y-4">
-            {
-              site.socials.map((s) => (
-                <li>
-                  <a href={s.href} target="_blank" rel="noopener" class="group flex flex-col no-underline">
-                    <span class="text-sm uppercase tracking-[0.7px] text-ink/70">{s.label}</span>
-                    <span class="font-medium group-hover:text-secondary">{s.handle}</span>
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
+      <!-- Photo -->
+      <div class="h-[300px] md:h-auto md:min-h-[300px]"><Media {...c.intro.image} /></div>
+
+      <!-- Form: labels sit inside the boxes, as in the T1 design -->
+      <form action={site.contactForm.action || "#"} method={site.contactForm.method} class="contact-form grid gap-4 md:grid-cols-2">
+        {
+          c.form.fields.map((f) => {
+            const id = `cf-${f.name}`;
+            const placeholder = f.label + (f.required ? "" : " (optional)");
+            return (
+              <div class:list={[!f.half && "md:col-span-2"]}>
+                <label for={id} class="sr-only">{f.label}</label>
+                {f.type === "textarea" ? (
+                  <textarea id={id} name={f.name} rows="5" class="cf-field" placeholder={placeholder} required={f.required} />
+                ) : f.type === "select" ? (
+                  <div class="relative">
+                    <select id={id} name={f.name} class="cf-field cf-select" required={f.required}>
+                      <option value="" selected disabled>{f.label}</option>
+                      {offers.map((o) => <option value={o.title}>{o.title}</option>)}
+                    </select>
+                    <span class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 border-x-[7px] border-t-[8px] border-x-transparent border-t-accent" aria-hidden="true" />
+                  </div>
+                ) : (
+                  <input id={id} name={f.name} type={f.type} class="cf-field" placeholder={placeholder} required={f.required} />
+                )}
+              </div>
+            );
+          })
+        }
+        <div class="flex justify-end md:col-span-2"><button type="submit" class="btn">{c.form.button}</button></div>
+      </form>
+
+      <!-- Socials -->
+      <aside>
+        <p class="eyebrow-italic">{c.socialTitle}</p>
+        <ul class="mt-4 space-y-4">
+          {
+            site.socials.map((s) => (
+              <li>
+                <a href={s.href} target="_blank" rel="noopener" class="group flex flex-col no-underline">
+                  <span class="font-medium group-hover:text-secondary">{s.label}</span>
+                  <span class="text-sm text-ink/70">{s.handle}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
       </aside>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .cf-field {
+    width: 100%;
+    background: #f4f8fc;
+    border: 0;
+    padding: 1.1rem 1.25rem;
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+  }
+  .cf-field::placeholder,
+  .cf-select:invalid {
+    color: var(--color-ink);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .cf-select { appearance: none; padding-right: 3rem; cursor: pointer; }
+  .cf-field:focus { outline: 2px solid var(--color-secondary); outline-offset: 0; }
+</style>
