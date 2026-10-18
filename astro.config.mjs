@@ -8,7 +8,6 @@ import emdash from "emdash/astro";
 import { d1, r2 } from "@emdash-cms/cloudflare";
 
 export default defineConfig({
-  // Update to the actual site address when available
   site: "https://example.com",
   trailingSlash: "ignore",
 
@@ -24,5 +23,7 @@ export default defineConfig({
     sitemap(),
   ],
 
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });
