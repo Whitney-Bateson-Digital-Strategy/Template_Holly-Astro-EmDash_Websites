@@ -36,12 +36,18 @@ export const footer = {
   socialTitle: "Follow Me On Social",
 };
 
-/** Freebie box at the top of the blog sidebar. Uses the same Kit form as the opt-in (site.optin). */
+/** Blog post sidebar boxes (T1 layout). The author bio and any extra boxes come from EmDash (Widgets -> Blog Sidebar). */
 export const sidebarFreebie = {
   show: true,
-  eyebrow: "free guide",
-  title: "Lead Magnet Title",
-  body: "One sentence on what's inside and why it helps.",
-  button: "Get the free guide",
+  title: "Download my free guide",
+  body: "One or two sentences on what's inside the freebie and why it helps.",
+  link: { label: "download the free guide", href: "/free-guide" } as Link,
   image: { src: "/images/t1/freebie.webp", alt: "Basket of fresh vegetables", label: "Freebie mockup" } as Img,
+};
+
+/** Box inside each blog post, after the article. */
+export const postCta = {
+  eyebrow: "let's work together!",
+  title: "Book a free discovery call today",
+  cta: { label: "Schedule your call", href: site.cta.href } as Link,
 };

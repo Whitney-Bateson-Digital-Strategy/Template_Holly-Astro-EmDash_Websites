@@ -11,11 +11,11 @@ const posts = await getPosts(count);
   posts.length > 0 && (
     <section class="pb-16 md:pb-20">
       <div class="container-site">
-        <div class="mb-8 flex items-end justify-between border-b border-ink/15 pb-3">
-          <h2 class="eyebrow-script !font-script !text-[2.5rem] text-ink">{eyebrow}</h2>
-          <a href={viewAll.href} class="uppercase tracking-[0.7px] text-sm no-underline hover:text-secondary">{viewAll.label} →</a>
+        <div class="mb-8 flex items-end justify-between border-b-2 border-ink pb-2">
+          <h2>{eyebrow}</h2>
+          <a href={viewAll.href} class="eyebrow-italic !text-xl no-underline hover:text-secondary">{viewAll.label}</a>
         </div>
-        <div class="grid gap-10 md:grid-cols-3">{posts.map((post) => <PostCard post={post} />)}</div>
+        <div class="grid gap-8 md:grid-cols-3">{posts.map((post) => <PostCard post={post} />)}</div>
       </div>
     </section>
   )

@@ -172,6 +172,11 @@
               ]
             }
           ]
+        },
+        "taxonomies": {
+          "category": [
+            "nutrition"
+          ]
         }
       },
       {
@@ -252,6 +257,11 @@
                 }
               ]
             }
+          ]
+        },
+        "taxonomies": {
+          "category": [
+            "recipes"
           ]
         }
       },
@@ -334,6 +344,11 @@
               ]
             }
           ]
+        },
+        "taxonomies": {
+          "category": [
+            "gut-health"
+          ]
         }
       }
     ],
@@ -384,7 +399,7 @@
       "widgets": [
         {
           "type": "content",
-          "title": "Hi, I'm Your Name",
+          "title": "Meet the Author",
           "content": [
             {
               "_type": "block",
@@ -423,26 +438,35 @@
               ]
             }
           ]
+        }
+      ]
+    }
+  ],
+  "taxonomies": [
+    {
+      "name": "category",
+      "label": "Categories",
+      "labelSingular": "Category",
+      "hierarchical": true,
+      "collections": [
+        "posts"
+      ],
+      "terms": [
+        {
+          "slug": "nutrition",
+          "label": "Nutrition"
         },
         {
-          "type": "component",
-          "title": "Recent Posts",
-          "componentId": "core:recent-posts",
-          "props": {
-            "count": 4,
-            "showDate": true,
-            "showThumbnails": false,
-            "urlTemplate": "/blog/:slug"
-          }
+          "slug": "recipes",
+          "label": "Recipes"
         },
         {
-          "type": "component",
-          "title": "Categories",
-          "componentId": "core:categories",
-          "props": {
-            "showCount": true,
-            "hierarchical": false
-          }
+          "slug": "gut-health",
+          "label": "Gut Health"
+        },
+        {
+          "slug": "lifestyle",
+          "label": "Lifestyle"
         }
       ]
     }

@@ -2,7 +2,6 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/Hero.astro";
 import SplitSection from "../components/SplitSection.astro";
-import CheckList from "../components/CheckList.astro";
 import ServiceCards from "../components/ServiceCards.astro";
 import Testimonials from "../components/Testimonials.astro";
 import Newsletter from "../components/Newsletter.astro";
@@ -17,13 +16,13 @@ const h = home;
   <Hero {...h.hero} />
 
   <SplitSection image={h.problem.image} imageSide="right">
-    <h2>{h.problem.title}</h2>
-    <CheckList items={h.problem.bullets} class="mt-6" />
+    <h2 class="!font-body !text-xl !leading-snug font-medium md:!text-2xl">{h.problem.title}</h2>
+    {h.problem.paragraphs.map((t) => <p class="mt-4 leading-relaxed">{t}</p>)}
   </SplitSection>
 
   <SplitSection image={h.solution.image} imageSide="left" class="pb-16 md:pb-20">
-    <h2>{h.solution.title}</h2>
-    <CheckList items={h.solution.bullets} class="mt-6" />
+    <h2 class="!font-body !text-xl !leading-snug font-medium md:!text-2xl">{h.solution.title}</h2>
+    {h.solution.paragraphs.map((t) => <p class="mt-4 leading-relaxed">{t}</p>)}
   </SplitSection>
 
   <ServiceCards {...h.services} />
