@@ -9,9 +9,11 @@ interface Props {
   description?: string;
   image?: string;
   noindex?: boolean;
+  /** Hide the free-guide band above the footer (e.g. on the free guide page itself) */
+  hideOptIn?: boolean;
 }
 
-const { title, description = site.description, image, noindex = false } = Astro.props;
+const { title, description = site.description, image, noindex = false, hideOptIn = false } = Astro.props;
 const fullTitle = title ? `${title} | ${site.name}` : `${site.name} | ${site.tagline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
 const ogImage = image ? new URL(image, Astro.site ?? site.url).href : undefined;
@@ -50,6 +52,6 @@ const ogImage = image ? new URL(image, Astro.site ?? site.url).href : undefined;
     <main id="main" class="flex-1">
       <slot />
     </main>
-    <Footer />
+    <Footer hideOptIn={hideOptIn} />
   </body>
 </html>

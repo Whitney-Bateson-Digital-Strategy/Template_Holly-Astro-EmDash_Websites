@@ -15,8 +15,8 @@ export const home = {
 
   /** Centered intro under the hero. The subtitle's `highlight` part is colored. */
   intro: {
-    title: "Tired of struggling with gut issues?",
-    subtitle: { before: "Need a solution that actually ", highlight: "heals your gut", after: " instead of just masking symptoms?" },
+    title: "Tired of struggling with the same problem?",
+    subtitle: { before: "Need a solution that actually ", highlight: "gets to the root", after: " instead of just masking it?" },
     paragraphs: [
       "Describe what your ideal client is struggling with, in the words they'd use: the symptoms, the frustration, and what they've already tried. Then introduce how you help and why it works when other things haven't.",
     ],

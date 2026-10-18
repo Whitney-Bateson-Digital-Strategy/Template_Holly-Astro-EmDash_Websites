@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageBanner from "../components/PageBanner.astro";
 import Media from "../components/Media.astro";
+import SocialIcon from "../components/SocialIcon.astro";
 import { contact as c } from "../data/contact";
 import { offers } from "../data/offers";
 import { site } from "../site.config";
@@ -61,9 +62,12 @@ import { site } from "../site.config";
           {
             site.socials.map((s) => (
               <li>
-                <a href={s.href} target="_blank" rel="noopener" class="group flex flex-col no-underline">
-                  <span class="font-medium group-hover:text-secondary">{s.label}</span>
-                  <span class="text-sm text-ink/70">{s.handle}</span>
+                <a href={s.href} target="_blank" rel="noopener" class="group flex items-center gap-4 no-underline">
+                  <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-paper transition-colors group-hover:bg-secondary"><SocialIcon name={s.label} class="h-4 w-4" /></span>
+                  <span class="flex flex-col">
+                    <span class="font-medium group-hover:text-secondary">{s.label}</span>
+                    <span class="text-sm text-ink/70">{s.handle}</span>
+                  </span>
                 </a>
               </li>
             ))
