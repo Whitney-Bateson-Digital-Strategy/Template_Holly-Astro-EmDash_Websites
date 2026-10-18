@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - cloudflare-preview
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -26,30 +27,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Astro + EmDash
+      - name: Build Astro
         run: npm run build
 
-              CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Check credential formatting
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          python3 - <<'PY'
-          import os
-
-          for name in ("CF_TOKEN", "CF_ACCOUNT"):
-              value = os.environ.get(name, "")
-              print(f"{name}:")
-              print(f"  Present: {bool(value)}")
-              print(f"  Has spaces: {' ' in value}")
-              print(f"  Has newline: {chr(10) in value or chr(13) in value}")
-          PY  print(f"  Contains Bearer prefix: {value.startswith('Bearer ')}")
-bash: -: command not found
-bash: env:: command not found
-bash: ${{ secrets.CLOUDFLARE_API_TOKEN }}: bad substitution
-bash: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}: bad substitution
+          python3 -c 'import os; t=os.getenv("CF_TOKEN",""); a=os.getenv("CF_ACCOUNT",""); print("Token present:",bool(t)); print("Token whitespace:",any(c.isspace() for c in t)); print("Account present:",bool(a)); print("Account whitespace:",any(c.isspace() for c in a)); print("Account length valid:",len(a)==32)'
 
       - name: Deploy preview to Cloudflare
-        uses: cloudflare/wrangler-action@v4
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --env preview
-
