@@ -1,14 +1,21 @@
 ---
 /**
- * Blog sidebar.
- * 1. Widgets managed in the EmDash admin: bio (Content widget), Recent Posts, Categories, etc.
- * 2. A freebie box with a real Kit form (src/data/shared.ts -> sidebarFreebie).
+ * Blog post sidebar (T1 layout), top to bottom:
+ *  1. Search
+ *  2. Boxes from the EmDash admin (Widgets -> "Blog Sidebar"), e.g. "Meet the Author" as a Content widget
+ *  3. View Categories (from the EmDash "category" taxonomy)
+ *  4. Download My Free Guide (src/data/shared.ts -> sidebarFreebie)
+ *  5. View Recent Posts
  */
 import { getWidgetAreas } from "emdash";
 import { WidgetArea } from "emdash/ui";
 import Media from "./Media.astro";
+import PostImage from "./PostImage.astro";
 import { sidebarFreebie as fb } from "../data/shared";
-import { site } from "../site.config";
+import { getCategories, getPosts } from "../lib/cms";
+
+interface Props { currentSlug?: string }
+const { currentSlug } = Astro.props;
 
 const PREFERRED = ["blog-sidebar", "sidebar"];
 let areaName: string | undefined;
@@ -18,39 +25,96 @@ try {
 } catch (e) {
   console.error("[sidebar]", e);
 }
-const f = site.optin;
+const [categories, recent] = await Promise.all([getCategories(), getPosts(4)]);
+const recentPosts = recent.filter((p) => p.slug !== currentSlug).slice(0, 3);
 ---
 
 <aside class="blog-sidebar space-y-8" aria-label="Sidebar">
+  <form action="/blog" method="get" role="search" class="relative">
+    <label for="sb-search" class="sr-only">Search the blog</label>
+    <input id="sb-search" type="search" name="q" placeholder="SEARCH" class="w-full bg-[#f4f8fc] py-4 pr-12 pl-5 text-xs font-bold tracking-[1px] placeholder:text-ink focus:outline-2 focus:outline-secondary" />
+    <button type="submit" class="absolute top-1/2 right-4 -translate-y-1/2 text-ink hover:text-secondary" aria-label="Search">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" stroke-linecap="round" /></svg>
+    </button>
+  </form>
+
+  {areaName && <WidgetArea name={areaName} class="space-y-8" />}
+
   {
-    fb.show && (
-      <section class="bg-primary p-6 text-center text-paper">
-        <div class="mb-4 h-40"><Media {...fb.image} /></div>
-        <p class="eyebrow-script !text-[2rem] text-accent">{fb.eyebrow}</p>
-        <h2 class="mt-1 !text-2xl text-paper">{fb.title}</h2>
-        <p class="mt-3 text-[15px] text-paper/85">{fb.body}</p>
-        <form action={f.action || "#"} method={f.method} class="mt-5 grid gap-2">
-          <label class="sr-only" for="sb-name">First name</label>
-          <input id="sb-name" class="field !bg-paper" type="text" name={f.nameField} placeholder="First Name" autocomplete="given-name" />
-          <label class="sr-only" for="sb-email">Email</label>
-          <input id="sb-email" class="field !bg-paper" type="email" name={f.emailField} placeholder="Email" autocomplete="email" required />
-          <button class="btn w-full" type="submit">{fb.button}</button>
-        </form>
+    categories.length > 0 && (
+      <section class="sb-box">
+        <h2 class="sb-title">View categories</h2>
+        <ul class="sb-body sb-list">
+          {categories.map((c) => <li><a href={`/blog?category=${c.slug}`}>{c.name}</a></li>)}
+          <li><a href="/blog">View all posts</a></li>
+        </ul>
       </section>
     )
   }
-  {areaName && <WidgetArea name={areaName} class="space-y-8" />}
+
+  {
+    fb.show && (
+      <section class="sb-box">
+        <h2 class="sb-title">{fb.title}</h2>
+        <div class="aspect-[2/1]"><Media {...fb.image} /></div>
+        <div class="sb-body">
+          <p class="text-sm">{fb.body}</p>
+          <a href={fb.link.href} class="mt-4 inline-block text-sm font-medium text-primary underline underline-offset-4 hover:text-secondary">{fb.link.label}</a>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    recentPosts.length > 0 && (
+      <section>
+        <h2 class="sb-title">View recent posts</h2>
+        <ul class="mt-4 space-y-6">
+          {recentPosts.map((p) => (
+            <li>
+              <a href={`/blog/${p.slug}`} class="group block no-underline">
+                <div class="aspect-[3/2] overflow-hidden"><PostImage image={p.image} /></div>
+                <p class="mt-3 text-center text-sm group-hover:text-secondary">{p.title}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
 </aside>
 
 <style is:global>
-  .blog-sidebar .widget { background: var(--color-sand); padding: 1.5rem; }
-  .blog-sidebar .widget__title { font-family: var(--font-body); font-style: normal; font-weight: 500; font-size: 1.1875rem; letter-spacing: 0.72px; text-transform: uppercase; color: var(--color-primary); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent); }
+  /* Shared box style: teal title bar on a white card (also applied to EmDash admin widgets) */
+  .blog-sidebar .sb-box,
+  .blog-sidebar .widget { background: var(--color-paper); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); }
+  .blog-sidebar .sb-title,
+  .blog-sidebar .widget__title {
+    margin: 0;
+    background: var(--color-primary);
+    color: var(--color-paper);
+    padding: 0.9rem 1.5rem;
+    font-family: var(--font-body);
+    font-style: normal;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+  .blog-sidebar .sb-body,
+  .blog-sidebar .widget__content { padding: 1.25rem 1.5rem 1.5rem; font-size: 0.875rem; }
   .blog-sidebar .widget__content p { margin-bottom: 0.75rem; }
-  .blog-sidebar .widget__content img { width: 100%; height: auto; margin-bottom: 0.75rem; }
-  .blog-sidebar .widget__content a { text-decoration: underline; text-decoration-color: var(--color-accent); text-underline-offset: 4px; }
-  .blog-sidebar .widget__content ul { list-style: none; padding: 0; }
-  .blog-sidebar .widget__content li { padding: 0.5rem 0; border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent); }
+  .blog-sidebar .widget__content img { width: calc(100% + 3rem); max-width: none; margin: -1.25rem -1.5rem 1rem; height: auto; }
+  .blog-sidebar .widget__content a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 4px; }
+  .blog-sidebar .sb-list li,
+  .blog-sidebar .widget__content li { padding: 0.6rem 0; border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent); }
+  .blog-sidebar .sb-list li:last-child,
   .blog-sidebar .widget__content li:last-child { border-bottom: 0; }
-  .blog-sidebar .widget__content li a { text-decoration: none; }
-  .blog-sidebar .widget__content time { display: block; font-size: 0.8rem; opacity: 0.65; }
+  .blog-sidebar .sb-list a,
+  .blog-sidebar .widget__content li a { color: var(--color-ink); text-decoration: none; }
+  .blog-sidebar .sb-list a:hover,
+  .blog-sidebar .widget__content li a:hover { color: var(--color-secondary); }
+  .blog-sidebar .widget__content ul { list-style: none; padding: 0; }
+  .blog-sidebar .widget__content time { display: block; font-size: 0.75rem; opacity: 0.65; }
 </style>

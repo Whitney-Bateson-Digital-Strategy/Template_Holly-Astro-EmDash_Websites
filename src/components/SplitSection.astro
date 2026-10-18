@@ -24,8 +24,17 @@ const { image, imageSide = "right", class: className = "section", textClass = ""
       <div
         class:list={[
           "flex flex-col justify-center py-8 md:py-[8%]",
-          fullBleed && "px-5 md:px-[5%]",
-          imageSide === "right" ? "md:order-1 md:pr-[13%]" : "md:order-2 md:pl-[13%]",
+          fullBleed
+            ? [
+                "px-5",
+                // keep the text aligned with the page's content width; image runs to the screen edge
+                imageSide === "right"
+                  ? "md:order-1 md:pr-[6%] md:pl-[max(1.25rem,calc((100vw-var(--container-site))/2))]"
+                  : "md:order-2 md:pl-[6%] md:pr-[max(1.25rem,calc((100vw-var(--container-site))/2))]",
+              ]
+            : imageSide === "right"
+              ? "md:order-1 md:pr-[13%]"
+              : "md:order-2 md:pl-[13%]",
           textClass,
         ]}
       >

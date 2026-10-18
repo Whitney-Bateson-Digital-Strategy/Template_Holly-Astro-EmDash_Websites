@@ -28,4 +28,4 @@ export interface Testimonial {
 }
 
 export interface Step { label: string; title: string; body: string }
-export interface Faq { q: string; a: string }
+export interface Faq { q: string; a: string; /** optional highlighted prefix, e.g. "Module 01:" */ tag?: string }

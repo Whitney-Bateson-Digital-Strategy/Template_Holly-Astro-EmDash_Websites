@@ -13,11 +13,17 @@ export const about = {
 
   story: {
     title: "My Story",
-    body: "Share how you got here: the moment that started it, what you learned along the way, and why you're passionate about helping people like your clients. Two short paragraphs is plenty.",
+    paragraphs: [
+      "Share how you got here: the moment that started it and what you were struggling with yourself.",
+      "Then what you learned along the way, and why you're passionate about helping people like your clients.",
+      "Close with a short line about where you are now.",
+    ],
   },
   philosophy: {
     title: "My Philosophy",
-    body: "Describe the beliefs that shape how you work. What do you do differently? What will clients never hear from you? What do you want them to feel?",
+    before: ["Describe the beliefs that shape how you work. What do you do differently from everyone else your clients have tried?"],
+    quote: "A short, memorable line that sums up your philosophy.",
+    after: ["Expand on it: what clients will never hear from you, and what you want them to feel when they work with you."],
   },
 
   funFacts: {

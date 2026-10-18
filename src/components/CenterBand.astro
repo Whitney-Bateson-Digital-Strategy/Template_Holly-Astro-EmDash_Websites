@@ -1,0 +1,16 @@
+---
+/** Full-width teal band with centered copy and a button (Program intro band). */
+import type { Link } from "../data/types";
+interface Props { eyebrow?: string; title: string; subtitle?: string; body?: string; cta?: Link }
+const { eyebrow, title, subtitle, body, cta } = Astro.props;
+---
+
+<section class="bg-primary py-16 text-center text-paper md:py-20">
+  <div class="container-site max-w-3xl">
+    {eyebrow && <p class="eyebrow-script text-accent">{eyebrow}</p>}
+    <h2 class="mt-2 text-paper uppercase">{title}</h2>
+    {subtitle && <p class="mt-3 text-xl font-medium">{subtitle}</p>}
+    {body && <p class="mt-4 text-paper/85">{body}</p>}
+    {cta && <a href={cta.href} class="btn mt-8">{cta.label}</a>}
+  </div>
+</section>
