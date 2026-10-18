@@ -25,12 +25,13 @@ export const site = {
 
   nav: [
     { label: "About", href: "/about" },
-    { label: "Services", href: "/services" },
+    // `children` = dropdown under that menu item (add more programs here)
+    { label: "Services", href: "/services", children: [{ label: "Program Name", href: "/program" }] },
     { label: "Blog", href: "/blog" },
     { label: "Contact", href: "/contact" },
   ],
 
-  /** Footer credit, shown as "© 2026 Brand Name | Design By WBDS" */
+  /** Footer credit, shown as "© 2026 Brand Name | Created by WBDS" */
   credit: { label: "WBDS", href: "https://whitneybateson.com" },
 
   footerLinks: [

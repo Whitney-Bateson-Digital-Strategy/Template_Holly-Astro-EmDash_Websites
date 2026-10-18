@@ -15,6 +15,8 @@ export interface Post {
   date?: Date;
   image?: unknown; // EmDash media value, rendered with <Image> from emdash/ui
   content?: unknown; // Portable Text, rendered with <PortableText> from emdash/ui
+  showDate: boolean; // "Show published date" checkbox (missing = shown)
+  showCategories: boolean; // "Show categories" checkbox (missing = shown)
 }
 
 type Row = Record<string, unknown>;
@@ -30,6 +32,8 @@ function toPost(entry: { id: string; data: Row }): Post {
     date: rawDate ? new Date(rawDate) : undefined,
     image: d.featured_image ?? undefined,
     content: d.content,
+    showDate: d.show_date !== false,
+    showCategories: d.show_categories !== false,
   };
 }
 
