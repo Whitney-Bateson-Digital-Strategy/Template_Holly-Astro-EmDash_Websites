@@ -1,0 +1,41 @@
+name: Deploy to Cloudflare
+
+# Builds the site for Cloudflare (D1 + R2) and deploys it on every push to main.
+# Needs two GitHub secrets (Settings -> Secrets and variables -> Actions):
+#   CLOUDFLARE_API_TOKEN   - "Edit Cloudflare Workers" token from the WBDS Cloudflare account
+#   CLOUDFLARE_ACCOUNT_ID  - that account's ID (Workers & Pages overview, right sidebar)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build for Cloudflare
+        run: npm run build:cf
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy

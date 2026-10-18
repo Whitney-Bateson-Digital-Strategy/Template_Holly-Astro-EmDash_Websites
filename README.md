@@ -107,7 +107,12 @@ Local dev stays on SQLite + `uploads/`. Cloudflare builds use **D1** (database) 
 **Plan:** the Worker is ~5 MB compressed, over the 3 MB Free-plan limit, so you need **Workers Paid ($5/mo per account)**.
 R2 must be enabled on the account (Dashboard → R2) before the first deploy.
 
-**Option A: connect GitHub (deploys on every push to `main`)**
+**Option A (what this repo uses): GitHub Actions.** `.github/workflows/deploy-cloudflare.yml` builds with
+`npm run build:cf` and deploys on every push to `main`. Add repo (or org) secrets `CLOUDFLARE_API_TOKEN`
+(Cloudflare → My Profile → API Tokens → "Edit Cloudflare Workers" template) and `CLOUDFLARE_ACCOUNT_ID`, then do
+steps 3–4 below. No Cloudflare GitHub app approval needed.
+
+**Option A2: connect GitHub inside Cloudflare** (needs the GitHub org owner to approve the Cloudflare app)
 1. Cloudflare dashboard → **Workers & Pages → Create → Import a repository** → pick this repo.
 2. Build command: `npm run build:cf` · Deploy command: `npx wrangler deploy`
 3. After the first deploy: **Settings → Variables and Secrets** → add secret `EMDASH_ENCRYPTION_KEY`
