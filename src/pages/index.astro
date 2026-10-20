@@ -1,5 +1,8 @@
 ---
-/** Home (T1 V1). Copy lives in src/data/home.ts; offer rows come from src/data/offers.ts. */
+/**
+ * Home (T1 V1). Copy and photos come from the EmDash "Homepage" entry (admin → Homepage, or click Edit on the page).
+ * Anything not in EmDash falls back to src/data/home.ts and src/data/offers.ts.
+ */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import HeroBanner from "../components/HeroBanner.astro";
 import ServiceRows from "../components/ServiceRows.astro";
@@ -8,39 +11,118 @@ import Testimonials from "../components/Testimonials.astro";
 import Newsletter from "../components/Newsletter.astro";
 import StepsBand from "../components/StepsBand.astro";
 import LatestPosts from "../components/LatestPosts.astro";
+import EditLink from "../components/EditLink.astro";
 import { home } from "../data/home";
-const h = home;
+import { offers } from "../data/offers";
+import { getHomepage } from "../lib/cms";
+
+const h = home; // template photos (shown until a photo is picked in EmDash) + layout settings
+const { text: t, images, edit, entry } = await getHomepage();
+
+const services = offers.map((o, i) => {
+  const p = `service_${i + 1}_`;
+  const bullets = [1, 2, 3, 4].map((j) => `${p}bullet_${j}`).filter((k) => t[k]);
+  return {
+    id: o.id,
+    eyebrow: t[p + "eyebrow"],
+    title: t[p + "title"],
+    summary: t[p + "summary"],
+    description: t[p + "text"],
+    homeBullets: bullets.map((k) => t[k]),
+    image: o.image,
+    media: images[p + "image"],
+    edit: {
+      image: edit(p + "image"), eyebrow: edit(p + "eyebrow"), title: edit(p + "title"), summary: edit(p + "summary"),
+      description: edit(p + "text"), bullets: bullets.map((k) => edit(k)),
+    },
+  };
+});
+
+const steps = h.process.items.map((_, i) => {
+  const p = `step_${i + 1}_`;
+  return { label: t[p + "label"], title: t[p + "title"], body: t[p + "text"], edit: { label: edit(p + "label"), title: edit(p + "title"), body: edit(p + "text") } };
+});
+
+/** Space between the intro subtitle parts (none before punctuation) */
+const gap = (s: string) => (s && !/^[.,!?;:)]/.test(s) ? " " : "");
 ---
 
-<BaseLayout title={h.seo.title || undefined} description={h.seo.description || undefined}>
-  <HeroBanner {...h.hero} />
+<BaseLayout title={t.seo_title || undefined} description={t.seo_description || undefined}>
+  <!-- `entry` must be the first editing annotation on the page: the edit toolbar reads the Publish status from it -->
+  <div class="contents" {...entry}>
+    <HeroBanner
+      image={h.hero.image}
+      media={images.hero_image}
+      headline={t.hero_headline}
+      highlight={t.hero_highlight}
+      subheadline={t.hero_text}
+      cta={{ label: t.hero_button_label, href: t.hero_button_link }}
+      edit={{
+        image: edit("hero_image"), headline: edit("hero_headline"), highlight: edit("hero_highlight"), subheadline: edit("hero_text"),
+        ctaLabel: edit("hero_button_label"), ctaHref: edit("hero_button_link"),
+      }}
+    />
 
-  <!-- Intro -->
-  <section class="section text-center">
-    <div class="container-site max-w-[900px]">
-      <h2 class="uppercase">{h.intro.title}</h2>
-      <p class="mt-4 text-lg font-medium md:text-xl">
-        {h.intro.subtitle.before}<span class="text-secondary">{h.intro.subtitle.highlight}</span>{h.intro.subtitle.after}
-      </p>
-      {h.intro.paragraphs.map((t) => <p class="mt-4 leading-relaxed">{t}</p>)}
+    <!-- Intro -->
+    <section class="section text-center">
+      <div class="container-site max-w-[900px]">
+        <h2 class="uppercase" {...edit("intro_title")}>{t.intro_title}</h2>
+        <p class="mt-4 text-lg font-medium md:text-xl">
+          <span {...edit("intro_subtitle_start")}>{t.intro_subtitle_start}</span>{gap(t.intro_subtitle_highlight)}<span class="text-secondary" {...edit("intro_subtitle_highlight")}>{t.intro_subtitle_highlight}</span>{gap(t.intro_subtitle_end)}<span {...edit("intro_subtitle_end")}>{t.intro_subtitle_end}</span>
+        </p>
+        {t.intro_text && <p class="mt-4 leading-relaxed" {...edit("intro_text")}>{t.intro_text}</p>}
+      </div>
+    </section>
+
+    <ServiceRows
+      eyebrow={t.services_eyebrow}
+      title={t.services_title}
+      ctaPrefix={t.services_button_prefix}
+      rows={services}
+      edit={{ eyebrow: edit("services_eyebrow"), title: edit("services_title"), ctaPrefix: edit("services_button_prefix") }}
+    />
+
+    <Testimonials eyebrow={t.testimonials_label} eyebrowEdit={edit("testimonials_label")} />
+
+    <Newsletter
+      eyebrow={t.newsletter_eyebrow}
+      title={t.newsletter_title}
+      body={t.newsletter_text}
+      fineprint={t.newsletter_fineprint}
+      button={t.newsletter_button}
+      edit={{
+        eyebrow: edit("newsletter_eyebrow"), title: edit("newsletter_title"), body: edit("newsletter_text"),
+        fineprint: edit("newsletter_fineprint"), button: edit("newsletter_button"),
+      }}
+    />
+
+    <SplitSection image={h.about.image} media={images.about_image} imageEdit={edit("about_image")} imageSide="right" ratio="1563/1126" class="pb-16 md:pb-20">
+      <p class="eyebrow-script text-primary" {...edit("about_eyebrow")}>{t.about_eyebrow}</p>
+      <h2 class="mt-2 uppercase" {...edit("about_title")}>{t.about_title}</h2>
+      {t.about_subtitle && <p class="mt-3 text-lg font-medium" {...edit("about_subtitle")}>{t.about_subtitle}</p>}
+      {t.about_text && <p class="mt-4 leading-relaxed" {...edit("about_text")}>{t.about_text}</p>}
+      <a href={t.about_button_link} class="btn mt-8 self-start"><span {...edit("about_button_label")}>{t.about_button_label}</span></a>
+      <EditLink attrs={edit("about_button_link")} href={t.about_button_link} />
+    </SplitSection>
+
+    <StepsBand
+      eyebrow={t.process_eyebrow}
+      title={t.process_title}
+      items={steps}
+      cta={{ label: t.process_button_label, href: t.process_button_link }}
+      edit={{
+        eyebrow: edit("process_eyebrow"), title: edit("process_title"),
+        ctaLabel: edit("process_button_label"), ctaHref: edit("process_button_link"),
+      }}
+    />
+
+    <div class="pt-16 md:pt-20">
+      <LatestPosts
+        eyebrow={t.blog_title}
+        viewAll={{ label: t.blog_link_label, href: h.blog.viewAll.href }}
+        count={h.blog.count}
+        edit={{ eyebrow: edit("blog_title"), viewAll: edit("blog_link_label") }}
+      />
     </div>
-  </section>
-
-  <ServiceRows {...h.services} />
-
-  <Testimonials {...h.testimonials} />
-
-  <Newsletter {...h.newsletter} />
-
-  <SplitSection image={h.about.image} imageSide="right" ratio="1563/1126" class="pb-16 md:pb-20">
-    <p class="eyebrow-script text-primary">{h.about.eyebrow}</p>
-    <h2 class="mt-2 uppercase">{h.about.title}</h2>
-    <p class="mt-3 text-lg font-medium">{h.about.subtitle}</p>
-    <p class="mt-4 leading-relaxed">{h.about.body}</p>
-    <a href={h.about.cta.href} class="btn mt-8 self-start">{h.about.cta.label}</a>
-  </SplitSection>
-
-  <StepsBand {...h.process} />
-
-  <div class="pt-16 md:pt-20"><LatestPosts {...h.blog} /></div>
+  </div>
 </BaseLayout>

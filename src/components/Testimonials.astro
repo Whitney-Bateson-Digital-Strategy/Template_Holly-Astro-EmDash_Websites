@@ -1,13 +1,15 @@
 ---
 import { getTestimonials } from "../lib/cms";
-interface Props { eyebrow?: string }
-const { eyebrow = "Testimonials" } = Astro.props;
+import type { EditAttrs } from "../data/types";
+/** `eyebrowEdit` = on-page editing attributes for the eyebrow (each quote carries its own) */
+interface Props { eyebrow?: string; eyebrowEdit?: EditAttrs }
+const { eyebrow = "Testimonials", eyebrowEdit } = Astro.props;
 const testimonials = await getTestimonials();
 ---
 
 <section class="section bg-sand" data-slider>
   <div class="container-site text-center">
-    <p class="eyebrow-label text-accent">{eyebrow}</p>
+    <p class="eyebrow-label text-accent" {...eyebrowEdit}>{eyebrow}</p>
     <div class="mx-auto mt-4 h-px w-16 bg-primary"></div>
 
     <div class="relative mx-auto mt-10 max-w-3xl">
@@ -15,10 +17,10 @@ const testimonials = await getTestimonials();
         {
           testimonials.map((t, i) => (
             <figure class="w-full shrink-0 snap-center px-2 md:px-10" aria-roledescription="slide" aria-label={`${i + 1} of ${testimonials.length}`}>
-              <p class="eyebrow-script text-primary">{t.label}</p>
-              <h2 class="mt-3 !text-2xl md:!text-3xl">{t.headline}</h2>
-              <blockquote class="mt-6 text-lg leading-relaxed">“{t.quote}”</blockquote>
-              <figcaption class="mt-4 eyebrow-label !text-sm text-ink/80">– {t.name}</figcaption>
+              <p class="eyebrow-script text-primary" {...t.edit?.label}>{t.label}</p>
+              <h2 class="mt-3 !text-2xl md:!text-3xl" {...t.edit?.headline}>{t.headline}</h2>
+              <blockquote class="mt-6 text-lg leading-relaxed">“<span {...t.edit?.quote}>{t.quote}</span>”</blockquote>
+              <figcaption class="mt-4 eyebrow-label !text-sm text-ink/80">– <span {...t.edit?.name}>{t.name}</span></figcaption>
             </figure>
           ))
         }
