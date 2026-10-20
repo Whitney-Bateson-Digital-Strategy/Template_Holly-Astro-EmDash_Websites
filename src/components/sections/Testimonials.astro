@@ -1,0 +1,8 @@
+---
+/** Testimonials slider: the quotes come from the Testimonials collection */
+import Testimonials from "../Testimonials.astro";
+import type { SectionProps } from "./types";
+const { b, e } = Astro.props as SectionProps;
+---
+
+<Testimonials eyebrow={b.label} eyebrowEdit={e.attrs("label")} />

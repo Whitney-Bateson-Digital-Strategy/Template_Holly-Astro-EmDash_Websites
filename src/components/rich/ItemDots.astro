@@ -1,0 +1,5 @@
+---
+const { node: _node, index: _index, isInline: _isInline, ...attrs } = Astro.props as Record<string, unknown>;
+---
+
+<li class="flex gap-3" {...attrs}><span class="rt-marker mt-[0.6em] h-1.5 w-1.5 shrink-0 rounded-full bg-current" aria-hidden="true"></span><span><slot /></span></li>

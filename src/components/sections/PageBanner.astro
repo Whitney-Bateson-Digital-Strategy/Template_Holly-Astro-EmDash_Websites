@@ -1,0 +1,8 @@
+---
+/** Page title banner: photo + teal overlay, or a solid teal band without a photo. Click the band to add a photo. */
+import PageBanner from "../PageBanner.astro";
+import type { SectionProps } from "./types";
+const { b, e } = Astro.props as SectionProps;
+---
+
+<PageBanner title={b.title} media={b.image} edit={e} />

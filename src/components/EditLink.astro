@@ -4,14 +4,14 @@
  * Renders nothing for visitors (attrs is {} outside edit mode).
  */
 import type { EditAttrs } from "../data/types";
-interface Props { attrs?: EditAttrs; href: string; class?: string }
-const { attrs = {}, href, class: className } = Astro.props;
+interface Props { attrs?: EditAttrs; href: string; class?: string; label?: string }
+const { attrs = {}, href, class: className, label = "Button goes to:" } = Astro.props;
 ---
 
 {
   Object.keys(attrs).length > 0 && (
     <p class:list={["edit-link", className]}>
-      Button goes to: <span {...attrs}>{href}</span>
+      {label} <span {...attrs}>{href}</span>
     </p>
   )
 }

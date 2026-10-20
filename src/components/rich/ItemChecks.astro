@@ -1,0 +1,10 @@
+---
+const { node: _node, index: _index, isInline: _isInline, ...attrs } = Astro.props as Record<string, unknown>;
+---
+
+<li class="flex gap-3" {...attrs}>
+  <svg class="rt-marker mt-1 h-4 w-4 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path d="M2.5 8.5l3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2" stroke-linecap="square"></path>
+  </svg>
+  <span><slot /></span>
+</li>

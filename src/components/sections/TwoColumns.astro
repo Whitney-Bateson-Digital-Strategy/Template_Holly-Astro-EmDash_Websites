@@ -1,0 +1,24 @@
+---
+/** Two columns of text. Quotes in the text get the pull-quote style, lists get dots. */
+import RichText from "../RichText.astro";
+import type { SectionProps } from "./types";
+const { b, e, flush } = Astro.props as SectionProps;
+const sand = b.background === "Sand";
+const columns = [
+  ["left_title", "left_text"],
+  ["right_title", "right_text"],
+] as const;
+---
+
+<section class:list={sand ? "section bg-sand" : ["pb-16 md:pb-20", !flush && "pt-16 md:pt-20"]}>
+  <div class="container-site grid gap-12 md:grid-cols-2 md:gap-16">
+    {
+      columns.map(([title, text]) => (
+        <div>
+          {b[title] && <h2 class="!font-body !text-xl !leading-normal font-medium" {...e.attrs(title)}>{b[title]}</h2>}
+          <RichText value={b[text]} edit={e} field={text} relaxed class="mt-4" />
+        </div>
+      ))
+    }
+  </div>
+</section>

@@ -1,12 +1,10 @@
 /**
  * All EmDash reads go through this file, so components never talk to the CMS directly.
- * Want another section editable in the admin? Add a collection to .emdash/seed.json
- * (or create it in the admin), then add a getter here with a data-file fallback.
+ * Content the site can't find in EmDash falls back to the starting content in .emdash/seed.json.
  */
-import { getEmDashCollection, getEmDashEntry, getEntryTerms, getEntriesByTerm, getTaxonomyTerms, search } from "emdash";
-import { testimonials as fallbackTestimonials } from "../data/testimonials";
-import { home } from "../data/home";
-import { offers } from "../data/offers";
+import { getCollectionInfo, getEmDashCollection, getEmDashEntry, getEntryTerms, getEntriesByTerm, getMenu, getTaxonomyTerms, search } from "emdash";
+import seed from "../../.emdash/seed.json";
+import { Edit, entryRef, noEdit } from "./edit";
 import type { EditAttrs, Testimonial } from "../data/types";
 
 export interface Post {
@@ -58,11 +56,16 @@ export async function getPost(slug: string): Promise<Post | null> {
   return entry ? toPost(entry as unknown as { id: string; data: Row }) : null;
 }
 
-/** Testimonials from EmDash; falls back to src/data/testimonials.ts if the collection is empty or missing. */
+/** Testimonials from EmDash; falls back to the seed's testimonials if the collection is empty or missing. */
+const fallbackTestimonials = (): Testimonial[] =>
+  ((seed as { content: Record<string, { data: Row }[]> }).content.testimonials ?? []).map(({ data: d }) => ({
+    label: String(d.label ?? "Client Successes"), headline: String(d.title ?? ""), quote: String(d.quote ?? ""), name: String(d.name ?? ""),
+  }));
+
 export async function getTestimonials(): Promise<Testimonial[]> {
   try {
     const { entries, error } = await getEmDashCollection("testimonials", { status: "published", orderBy: { order: "asc" } });
-    if (error || !entries.length) return fallbackTestimonials;
+    if (error || !entries.length) return fallbackTestimonials();
     return entries.map(({ data, edit }) => {
       const d = data as unknown as Row;
       const e = edit as unknown as Record<string, EditAttrs | undefined>;
@@ -76,97 +79,85 @@ export async function getTestimonials(): Promise<Testimonial[]> {
       };
     });
   } catch {
-    return fallbackTestimonials;
+    return fallbackTestimonials();
   }
 }
 
-export interface Homepage {
-  /** Text fields (see the "homepage" collection in .emdash/seed.json) */
-  text: Record<string, string>;
-  /** Image fields: EmDash media values, undefined = use the template photo from src/data */
-  images: Record<string, unknown>;
-  /** On-page editing attributes for one field ({} unless a logged-in editor is in edit mode) */
-  edit: (field: string) => EditAttrs;
-  /** Entry-level attributes. Put them on the first annotated element on the page: the toolbar reads its Publish status from there */
-  entry: EditAttrs;
-  /** True while a logged-in editor is in edit mode */
-  editing: boolean;
+// ---------- Pages, services, site-wide content, menus ----------
+// Each falls back to the starting content in .emdash/seed.json when the site doesn't have it yet
+// (set up before these existed), so pages always render. scripts/add-site-content.mjs adds them.
+
+type SeedEntry = { slug?: string; data: Row };
+const seedContent = (seed as { content: Record<string, SeedEntry[]> }).content;
+const seedMenus = (seed as { menus: { name: string; label: string; items: SeedMenuItem[] }[] }).menus;
+type SeedMenuItem = { label: string; url: string; children?: SeedMenuItem[] };
+
+export interface Entry {
+  data: Row;
+  /** Editing attributes for this entry's fields ({} for visitors) */
+  edit: Edit;
 }
 
-/** Homepage copy as it was in src/data before EmDash, keyed by field. Used for any field missing from EmDash. */
-function homepageFallback(): Record<string, string> {
-  const h = home;
-  const t: Record<string, string> = {
-    title: "Homepage",
-    hero_headline: h.hero.headline,
-    hero_highlight: h.hero.highlight,
-    hero_text: h.hero.subheadline,
-    hero_button_label: h.hero.cta.label,
-    hero_button_link: h.hero.cta.href,
-    intro_title: h.intro.title,
-    intro_subtitle_start: h.intro.subtitle.before.trim(),
-    intro_subtitle_highlight: h.intro.subtitle.highlight,
-    intro_subtitle_end: h.intro.subtitle.after.trim(),
-    intro_text: h.intro.paragraphs.join("\n\n"),
-    services_eyebrow: h.services.eyebrow,
-    services_title: h.services.title,
-    services_button_prefix: h.services.ctaPrefix,
-    testimonials_label: h.testimonials.eyebrow,
-    newsletter_eyebrow: h.newsletter.eyebrow,
-    newsletter_title: h.newsletter.title,
-    newsletter_text: h.newsletter.body,
-    newsletter_fineprint: h.newsletter.fineprint,
-    newsletter_button: h.newsletter.button,
-    about_eyebrow: h.about.eyebrow,
-    about_title: h.about.title,
-    about_subtitle: h.about.subtitle,
-    about_text: h.about.body,
-    about_button_label: h.about.cta.label,
-    about_button_link: h.about.cta.href,
-    process_eyebrow: h.process.eyebrow,
-    process_title: h.process.title,
-    process_button_label: h.process.cta.label,
-    process_button_link: h.process.cta.href,
-    blog_title: h.blog.eyebrow,
-    blog_link_label: h.blog.viewAll.label,
-    seo_title: h.seo.title,
-    seo_description: h.seo.description,
-  };
-  offers.forEach((o, i) => {
-    const p = `service_${i + 1}_`;
-    Object.assign(t, { [p + "eyebrow"]: o.eyebrow, [p + "title"]: o.title, [p + "summary"]: o.summary, [p + "text"]: o.description });
-    o.homeBullets?.forEach((b, j) => (t[`${p}bullet_${j + 1}`] = b));
-  });
-  h.process.items.forEach((s, i) => Object.assign(t, { [`step_${i + 1}_label`]: s.label, [`step_${i + 1}_title`]: s.title, [`step_${i + 1}_text`]: s.body }));
-  return t;
-}
+const fromSeed = (collection: string, slug: string): Entry | null => {
+  const e = seedContent[collection]?.find((c) => c.slug === slug);
+  return e ? { data: e.data, edit: noEdit } : null;
+};
+const toEntry = (e: { data: unknown; edit?: unknown }): Entry => ({ data: e.data as Row, edit: new Edit(entryRef(e)) });
 
-/**
- * Homepage content from the single "home" entry in the EmDash "homepage" collection.
- * Any field that's missing (or the whole entry, on a site that hasn't added it yet) falls back to src/data,
- * so the page always renders. An empty field stays empty: optional lines are hidden when cleared.
- */
-export async function getHomepage(): Promise<Homepage> {
-  const text = homepageFallback();
-  const images: Record<string, unknown> = {};
-  let proxy: Record<string, EditAttrs | undefined> = {};
-  let entry: EditAttrs = {};
+/** A page by slug ("home" = the home page). null = no such page (404). */
+export async function getPage(slug: string): Promise<Entry | null> {
   try {
-    const { entry: e, error } = await getEmDashEntry("homepage", "home");
-    if (error) console.error("[cms] homepage:", error);
-    if (e) {
-      for (const [k, v] of Object.entries(e.data as unknown as Row)) {
-        if (v == null) continue;
-        if (typeof v === "string") text[k] = v;
-        else if (typeof v === "object" && k.endsWith("_image")) images[k] = v;
-      }
-      proxy = e.edit as unknown as Record<string, EditAttrs | undefined>;
-      entry = { ...(e.edit as unknown as EditAttrs) };
+    // Only fall back to the seed when the site has no Pages collection yet; otherwise a missing page is a 404
+    if (!(await getCollectionInfo("pages"))) return fromSeed("pages", slug);
+    const { entry, error } = await getEmDashEntry("pages", slug);
+    if (error) console.error("[cms] page:", error);
+    return entry ? toEntry(entry) : null;
+  } catch (err) {
+    console.error("[cms] page:", err);
+    return fromSeed("pages", slug);
+  }
+}
+
+/** The single "site" entry: name, logo, announcement bar, free guide band, footer, social links. */
+export async function getSite(): Promise<Entry> {
+  try {
+    const { entry } = await getEmDashEntry("site", "site");
+    if (entry) return toEntry(entry);
+  } catch (err) {
+    console.error("[cms] site:", err);
+  }
+  return fromSeed("site", "site")!;
+}
+
+export interface Service extends Entry { slug: string }
+
+/** Services, in their sort order */
+export async function getServices(): Promise<Service[]> {
+  try {
+    if (await getCollectionInfo("services")) {
+      const { entries, error } = await getEmDashCollection("services", { status: "published", orderBy: { order: "asc" } });
+      if (!error) return entries.map((e) => ({ ...toEntry(e), slug: String((e.data as Row).slug ?? e.id) }));
     }
   } catch (err) {
-    console.error("[cms] homepage:", err);
+    console.error("[cms] services:", err);
   }
-  return { text, images, edit: (field) => proxy[field] ?? {}, entry, editing: Object.keys(entry).length > 0 };
+  return (seedContent.services ?? []).map((e) => ({ data: e.data, edit: noEdit, slug: e.slug! }));
+}
+
+export interface MenuLink { label: string; href: string; children: MenuLink[] }
+
+/** A menu from admin → Menus: primary (header), footer-1 / footer-2 (footer columns), legal (footer bar) */
+export async function getMenuLinks(name: string): Promise<{ label: string; items: MenuLink[] }> {
+  const fromItems = (items: { label: string; url: string; children?: unknown[] }[]): MenuLink[] =>
+    items.map((i) => ({ label: i.label, href: i.url, children: fromItems((i.children ?? []) as typeof items) }));
+  try {
+    const menu = await getMenu(name);
+    if (menu) return { label: menu.label, items: fromItems(menu.items) };
+  } catch (err) {
+    console.error(`[cms] menu ${name}:`, err);
+  }
+  const m = seedMenus.find((x) => x.name === name);
+  return { label: m?.label ?? "", items: fromItems(m?.items ?? []) };
 }
 
 export interface Category { name: string; slug: string; count?: number }

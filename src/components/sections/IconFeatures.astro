@@ -1,0 +1,32 @@
+---
+/** Check-mark highlights with a button (Program "special bonuses") */
+import Button from "../Button.astro";
+import type { SectionProps } from "./types";
+const { b, e, flush } = Astro.props as SectionProps;
+const items: Record<string, string>[] = Array.isArray(b.items) ? b.items : [];
+---
+
+<section class:list={["pb-16 md:pb-20", !flush && "pt-16 md:pt-20"]}>
+  <div class="container-site text-center">
+    {b.eyebrow && <p class="eyebrow-script text-primary" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
+    {b.subtitle && <p class="mt-2 text-lg font-medium" {...e.attrs("subtitle")}>{b.subtitle}</p>}
+    <div class="mt-10 grid gap-10 md:grid-cols-3">
+      {
+        items.map((it, i) => {
+          const ie = e.at("items").at(i);
+          return (
+            <div>
+              <svg class="mx-auto h-14 w-14" viewBox="0 0 56 56" aria-hidden="true">
+                <circle cx="26" cy="30" r="22" fill="var(--color-primary)" />
+                <path d="M15 29l9 9 24-26" fill="none" stroke="var(--color-accent)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <h3 class="mt-4 !font-body !text-base !not-italic font-bold" {...ie.attrs("title")}>{it.title}</h3>
+              <p class="mx-auto mt-2 max-w-xs text-sm" {...ie.attrs("text", "text")}>{it.text}</p>
+            </div>
+          );
+        })
+      }
+    </div>
+    <Button label={b.button_label} href={b.button_link} edit={e} class="btn mt-10" linkClass="mx-auto" />
+  </div>
+</section>

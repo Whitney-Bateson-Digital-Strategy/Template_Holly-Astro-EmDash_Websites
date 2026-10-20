@@ -1,10 +1,12 @@
 # WBDS T1 Website Template (Astro + EmDash)
 
-The T1 website template, rebuilt in Astro with the EmDash CMS. Clients edit the home page (text, photos, buttons),
-blog posts, testimonials and the blog sidebar themselves, right on the page or at `/_emdash/admin`.
-Everything else (layouts, design, other pages' copy) lives in this repo and is changed via pull request.
+The T1 website template, rebuilt in Astro with the EmDash CMS. Clients edit their whole site themselves at
+`/_emdash/admin` or right on the page: every page's text, photos, buttons and blocks (add, remove, reorder),
+their services, menus, header, footer, blog posts and testimonials. The design (layouts, colors, fonts, spacing)
+lives in this repo and is changed via pull request, so clients can't break it.
 
-Pages: Home, About, Services, Program, Blog, Blog post, Contact, Booking, Free guide, Terms, Disclaimer, Privacy Policy, 404.
+Pages: Home, About, Services, Program, Blog, Blog post, Contact, Booking, Free guide, Terms, Disclaimer, Privacy Policy, 404,
+plus any page a client adds in the admin.
 
 **New client site?** Follow "Playbook A" in the WBDS runbook (Notion: *WordPress → Astro + EmDash Website Build Runbook*).
 
@@ -19,7 +21,7 @@ npm run dev                                 # http://localhost:4321
 ```
 
 Then open **http://localhost:4321/_emdash/admin**. The setup wizard asks for the site title, an admin account and a passkey.
-Choose **Sample content** to load the home page copy, 3 sample posts + 3 testimonials from `.emdash/seed.json`.
+Choose **Sample content** to load the pages, services, menus, 3 sample posts + 3 testimonials from `.emdash/seed.json`.
 
 `data.db` (content) and `uploads/` (media) are created locally and are git-ignored.
 
@@ -27,54 +29,99 @@ Choose **Sample content** to load the home page copy, 3 sample posts + 3 testimo
 
 | What | Where |
 |---|---|
-| Brand name, nav, CTA, socials, form endpoints, booking embed | `src/site.config.ts` |
+| Page copy, photos, buttons and blocks (every page but the blog) | EmDash → **Pages** (or Edit mode on the page) |
+| Services (home rows, Services page, contact form dropdown) | EmDash → **Services** |
+| Business name, logo, announcement bar, header button, free guide band, footer newsletter text, social links, blog post CTA box | EmDash → **Site-wide content** |
+| Header menu (+ dropdowns), footer link columns, footer legal links | EmDash → **Menus** ("Main menu", "Work With Me", "Resources", "Footer legal links") |
+| Testimonials, blog posts, blog sidebar | EmDash → Testimonials, Posts, **Widgets → Blog Sidebar** |
+| Starting content for new sites (and the fallback before a site has it) | `.emdash/seed.json` |
+| Form endpoints, default booking embed, footer credit | `src/site.config.ts` |
 | Colors and fonts | `@theme` block at the top of `src/styles/global.css` |
 | Google Fonts link (if fonts change) | `src/layouts/BaseLayout.astro` |
-| Home page copy, photos, button text + links | EmDash: click **Edit** on the home page, or admin → **Homepage** (starting copy + fallback: `src/data/home.ts`) |
-| Footer columns + newsletter copy, free-guide band, "ready?" band, in-post CTA | `src/data/shared.ts` |
-| Free guide page (`/free-guide`) + legal pages | `src/data/pages.ts` |
-| About page copy | `src/data/about.ts` |
-| Services page intro + FAQ | `src/data/services.ts` |
-| Offers (services page, contact dropdown; home rows start from these) | `src/data/offers.ts` |
-| Testimonials (shared) | EmDash admin → Testimonials (falls back to `src/data/testimonials.ts` if empty) |
-| Contact + booking copy, contact form fields | `src/data/contact.ts` |
-| Program sales page (`/program`) | `src/data/program.ts` (duplicate it + `src/pages/program.astro` for more programs) |
-| Blog sidebar boxes | EmDash admin → **Widgets → Blog Sidebar** |
-| Blog posts | EmDash admin → Posts |
-| Production URL | `site.url` in `site.config.ts` **and** `site` in `astro.config.mjs` |
+| Production URL | `site.url` in `site.config.ts` **and** `SITE` in `astro.config.mjs` |
 | Worker, database and media bucket names | `wrangler.jsonc` (lowercase + dashes, e.g. `livable-nutrition`) |
 
 ### Images
-Every image is optional. Until a `src` is set, a labeled placeholder renders, so layouts can be reviewed
-without stock photos. To add a photo, put the file in `public/images/` and set it in the data file:
-
-```ts
-image: { src: "/images/headshot.jpg", alt: "Client smiling in her kitchen" }
-```
-
-`position` controls which part of a photo stays visible when it's cropped, e.g. `position: "right"` or `"70% 30%"`.
-
-Default photos live in `public/images/t1/` (the WBDS T1 stock set, resized to WebP). Replace them per client,
-keeping the same file names, or point the data files at new ones.
+Photos are EmDash images: clients upload or pick them from the media library, and set alt text. The starting photos
+are the WBDS T1 stock set in `public/images/t1/` (resized to WebP), referenced by path from `.emdash/seed.json`
+(`{ "id": "", "provider": "external", "src": "/images/t1/hero.webp", "alt": "…", "focalX": 0.7 }`; keep
+`"provider": "external"` or EmDash drops the alt text and focal point on the next save). An empty photo shows a
+labeled placeholder.
 
 ### Forms
-- **Newsletter** (footer + home): set `site.newsletter.action` to the Kit form URL (`https://app.kit.com/forms/FORM_ID/subscriptions`).
+- **Newsletter** (footer + Newsletter blocks): set `site.newsletter.action` to the Kit form URL (`https://app.kit.com/forms/FORM_ID/subscriptions`).
   Field names already match Kit.
-- **Free guide** (`/free-guide`): set `site.optin.action` to the freebie's own Kit form.
-- **Contact:** set `site.contactForm.action` to the form endpoint.
+- **Free guide** (`/free-guide`, and the free guide band in "Sign-up form" mode): set `site.optin.action` to the freebie's own Kit form.
+- **Contact:** set `site.contactForm.action` to the form endpoint. The form's fields are in `src/components/sections/Contact.astro`.
 
-## Components
+## Pages and blocks
 
-| Component | Used for |
-|---|---|
-| `Header`, `Footer`, `OptIn` | Site header (nav + dropdowns), 4-column footer, free-guide band above it |
-| `HeroBanner`, `PageBanner` | Home photo hero; page title band (photo or solid teal) |
-| `SplitSection` | Text + photo side by side; `ratio` locks the photo shape, `fullBleed` runs it to the screen edge |
-| `ServiceRows`, `OfferBlock` | Home offer rows; Services page offer sections (both read `offers.ts`) |
-| `Testimonials`, `Newsletter`, `StepsBand`, `CTABand`, `CenterBand` | Shared bands |
-| `LatestPosts`, `PostCard`, `PostImage`, `BlogSidebar` | Blog pieces |
-| `InfoCards`, `IconFeatures`, `PhotoPanel`, `PricingCards`, `FaqAccordion` | Program + Services sections |
-| `LinkCards`, `CheckList`, `SectionHeading`, `SocialIcon`, `Media`, `LegalPage` | Small building blocks |
+Every page except the blog is an entry in EmDash → **Pages**: a name, SEO title/description, and a list of **blocks**
+(the `sections` field). `src/pages/[...slug].astro` renders them; `/` is the page with slug `home`. Clients add, remove,
+reorder and duplicate blocks in the admin, and can add new pages (they appear at `/<slug>` once published; add them
+to the menu under Menus). Hidden-until-published, with revision history.
+
+Each block type is defined in `.emdash/seed.json` → `blockTypes` and rendered by a component in
+`src/components/sections/` (mapped in `src/components/Sections.astro`):
+
+| Block | Component | Used on |
+|---|---|---|
+| Big photo banner | `Hero` | Home |
+| Page title banner | `PageBanner` | Services, Contact, Booking, legal pages |
+| Page intro with photo | `PageIntro` | About, Program |
+| Centered intro / Centered intro on sand | `Intro`, `SandIntro` | Home, Services |
+| Text and photo | `Split` | Home, About, Program |
+| Two columns of text | `TwoColumns` | About, Program |
+| Text | `Text` | Legal pages |
+| Services (photo rows) / Services (full details) | `ServiceRows`, `ServicesDetail` | Home, Services |
+| Testimonials | `Testimonials` | Home, Services, Program |
+| Call-to-action box / Teal band / Newsletter sign-up | `CtaBand`, `CenterBand`, `Newsletter` | About, Services, Program, Home |
+| Steps / Photo cards / Link cards / Check-mark highlights / Photo with text panel | `Steps`, `InfoCards`, `LinkCards`, `IconFeatures`, `PhotoPanel` | Home, About, Program |
+| Questions (accordion) / Pricing | `Faq`, `Pricing` | Services, Program |
+| Latest blog posts | `LatestPosts` | Home |
+| Contact form / Booking calendar / Free guide sign-up | `Contact`, `Booking`, `GuideSignup` | Contact, Booking, Free guide |
+
+Spacing is automatic: a white block right after another white block skips its top padding (as in the T1 designs).
+Text that can be long (paragraphs, lists, quotes) is rich text (`src/components/RichText.astro`), so clients get bold,
+italics, links and lists; headlines and button text are plain so they always match the design.
+
+**Adding a block type:** add it to `blockTypes` and to the `allowedTypes` of the Pages `sections` field in
+`.emdash/seed.json`, write its component in `src/components/sections/`, map it in `Sections.astro`, and add it to
+existing sites with the script below (it adds missing block types). Changing an existing type's fields: see
+"Change a block schema" in the EmDash docs (breaking changes need a new version).
+
+## Editing on the page (clients)
+
+1. Log in at `<site>/_emdash/admin`, then click **View Site**. A bar with an **Edit mode** switch sits at the bottom.
+2. Turn on **Edit mode**. Click any text to change it; press Enter (or click away) to save. Esc cancels.
+   Paragraphs and lists open a rich-text editor (bold, italics, links, lists).
+3. Click a photo (or an empty part of a photo banner) to **Upload** a new one, pick one from the library (**Replace**),
+   or change its alt text.
+4. Under each button, a dark **Button goes to:** label shows its link (edit mode only). Click it to change it.
+5. Click **Publish**. Until then, changes are drafts that only logged-in editors see. One click publishes everything
+   changed on that page (the page, Site-wide content and Services). Testimonials and menus go live as soon as they're saved.
+
+How it's built: EmDash's visual editing edits any element carrying `data-emdash-ref`. Components get an `Edit`
+helper (`src/lib/edit.ts`) and spread `e.attrs("field")` / `e.image("field")`; outside edit mode they produce nothing.
+EmDash saves one top-level field at a time, so for fields inside blocks and list items (`sections.<key>.title`,
+`socials.0.url`) `src/scripts/edit-adapter.js` (loaded only in edit mode) turns the save into an update of the whole
+field, and makes Publish publish every entry on the page. If it ever fails, a click opens the admin form instead.
+Clients should have the **Editor** role: they can edit and publish everything but can't change content types,
+settings, plugins or users.
+
+**Existing site, set up before its pages were editable?** Seeds only apply to a fresh database, so add everything once:
+GitHub → Actions → **Add editable site content** → Run workflow (needs the `EMDASH_TOKEN` repo secret), or locally
+`EMDASH_TOKEN=... node scripts/add-site-content.mjs https://the-site`. Token: admin → Settings → API Tokens, created
+by an Admin, with the scopes `schema:read`, `schema:write`, `content:read`, `content:write`. It only adds what's missing
+and never changes existing content; edits made in the earlier single "Homepage" entry are copied into the new Home page.
+Until it's run, pages show the starting content from `.emdash/seed.json` and can't be edited.
+
+**Deploys never touch content.** Content and uploads live in the D1 database and R2 bucket, not in the repo, so
+pushing code (or redeploying) can't overwrite what clients edited. Changing `.emdash/seed.json` after launch only changes
+new sites and the fallback; edit the live copy in EmDash instead.
+
+**Importing a WordPress site:** export from WordPress (Tools → Export → All content), then upload the XML at
+`/_emdash/admin/import/wordpress`. Set up media storage first and keep the old site online until media finishes.
 
 ## How EmDash is wired
 
@@ -82,47 +129,16 @@ keeping the same file names, or point the data files at new ones.
 |---|---|
 | `astro.config.mjs` | `output: "server"`, React (admin UI), `emdash()`: SQLite + local media on your computer, D1 + R2 on Cloudflare |
 | `src/live.config.ts` | Registers the EmDash live collection loader |
-| `src/lib/cms.ts` | **All CMS reads** (posts, testimonials, categories, tags, archives, search). Components never call EmDash directly |
+| `src/lib/cms.ts` | **All CMS reads** (pages, services, site-wide content, menus, posts, testimonials, taxonomies, search), with seed fallbacks |
+| `src/lib/edit.ts`, `src/scripts/edit-adapter.js` | On-page editing attributes, and the edit-mode adapter for fields inside blocks |
 | `src/worker.ts` + `wrangler.jsonc` | Cloudflare Worker entry + database/media bindings |
 | `src/components/BlogSidebar.astro` | Blog post sidebar: renders the EmDash **Blog Sidebar** widgets in the T1 style |
-| `.emdash/seed.json` | Content model (Posts, Testimonials) + sample content applied by the setup wizard |
-
-## Editing the home page (clients)
-
-1. Log in at `<site>/_emdash/admin`, then open the website. A bar with an **Edit mode** switch sits at the bottom.
-2. Turn on **Edit mode**. Click any text to change it; press Enter (or click away) to save. Esc cancels.
-3. Click a photo (or an empty part of the top banner) to **Upload** a new one, pick one from the library (**Replace**),
-   or change its alt text.
-4. Under each button, a dark **Button goes to:** label shows its link (edit mode only). Click it to change it.
-5. Click **Publish**. Until then, changes are a draft that only logged-in editors see.
-
-The same fields are in admin → **Homepage** (one entry, grouped by section), along with revision history.
-Testimonials edited on the page go live as soon as they're saved (that collection has no draft step).
-
-How it's built: `src/pages/index.astro` reads the single "home" entry through `getHomepage()` in `src/lib/cms.ts`
-and spreads `edit(field)` onto each element (EmDash's visual editing). Any field missing from EmDash falls back to
-`src/data/home.ts`, so the page never breaks. Text fields are edited in place; image fields open the photo picker.
-
-**Existing site, set up before the Homepage existed?** Seeds only apply to a fresh database, so add it once with
-`EMDASH_TOKEN=... node scripts/add-homepage-content.mjs https://the-site` (token: admin → Settings → API Tokens,
-scopes `schema:read`, `schema:write`, `content:read`, `content:write`). It only adds what's missing and never changes existing content.
-Until it's run, the home page shows the `src/data/home.ts` copy.
-
-**Deploys never touch content.** Content and uploads live in the D1 database and R2 bucket, not in the repo, so
-pushing code (or redeploying) can't overwrite what clients edited. Changing `home.ts` after launch only changes the
-fallback; edit the live copy in EmDash instead.
-
-**Making more sections editable** (offers, FAQ, page copy): add a collection in the admin, snapshot it with
-`npx emdash export-seed > .emdash/seed.json`, add a getter in `src/lib/cms.ts` with a data-file fallback,
-and swap the import in the component. Seeds only apply to a fresh database.
-
-**Importing a WordPress site:** export from WordPress (Tools → Export → All content), then upload the XML at
-`/_emdash/admin/import/wordpress`. Set up media storage first and keep the old site online until media finishes.
+| `.emdash/seed.json` | Content model (block types, Pages, Services, Site-wide content, Posts, Testimonials, menus) + starting content |
 
 ## Blog
 
 - `/blog`: 9 posts per page with page numbers; `?q=` searches; `?category=`, `?tag=` and `?date=` filter.
-- Post pages: teal title panel + featured photo, article, "let's work together" CTA box, previous/next links.
+- Post pages: teal title panel + featured photo, article, "let's work together" CTA box (Site-wide content), previous/next links.
 - Sidebar: whatever is in **Widgets → Blog Sidebar** (see below). Categories and tags are managed in the admin.
 
 ## Blog sidebar widgets
@@ -146,6 +162,7 @@ New sites start with: Search, Meet the Author, View Categories, Download My Free
 ## Image sizes (from the T1 V1 designs)
 
 Upload photos at these sizes (or the same shape). Every slot crops to this shape, so other sizes still work.
+Each photo field in the admin shows its size too.
 
 | Where | Size (px) |
 |---|---|

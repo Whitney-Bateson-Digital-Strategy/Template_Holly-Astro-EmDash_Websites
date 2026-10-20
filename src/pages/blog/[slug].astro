@@ -4,14 +4,17 @@ import { PortableText } from "emdash/ui";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PostImage from "../../components/PostImage.astro";
 import BlogSidebar from "../../components/BlogSidebar.astro";
-import { getPost, getPosts, getPostCategories } from "../../lib/cms";
-import { postCta } from "../../data/shared";
+import Button from "../../components/Button.astro";
+import { getPost, getPosts, getPostCategories, getSite } from "../../lib/cms";
 
 const { slug } = Astro.params;
 const post = slug ? await getPost(slug) : null;
 if (!post) return Astro.rewrite("/404");
 
-const [all, categories] = await Promise.all([getPosts(), getPostCategories(post.id)]);
+const [all, categories, siteContent] = await Promise.all([getPosts(), getPostCategories(post.id), getSite()]);
+// The "let's work together" box after each post: EmDash → Site-wide content
+const cta = siteContent.data as Record<string, string>;
+const ce = siteContent.edit;
 const i = all.findIndex((p) => p.slug === post.slug);
 const newer = i > 0 ? all[i - 1] : undefined;
 const older = i >= 0 && i < all.length - 1 ? all[i + 1] : undefined;
@@ -52,9 +55,9 @@ const showCats = post.showCategories && categories.length > 0;
 
         <!-- In-post CTA -->
         <div class="mt-12 bg-primary px-6 py-10 text-center text-paper shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-          <p class="eyebrow-script !text-[2rem] text-accent">{postCta.eyebrow}</p>
-          <p class="mt-2 text-xl font-medium">{postCta.title}</p>
-          <a href={postCta.cta.href} class="btn mt-6">{postCta.cta.label}</a>
+          <p class="eyebrow-script !text-[2rem] text-accent" {...ce.attrs("post_cta_eyebrow")}>{cta.post_cta_eyebrow}</p>
+          <p class="mt-2 text-xl font-medium" {...ce.attrs("post_cta_title")}>{cta.post_cta_title}</p>
+          <Button label={cta.post_cta_button_label} href={cta.post_cta_button_link} edit={ce} labelField="post_cta_button_label" linkField="post_cta_button_link" class="btn mt-6" linkClass="mx-auto" />
         </div>
 
         <!-- Previous / next -->

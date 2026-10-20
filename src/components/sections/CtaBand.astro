@@ -1,0 +1,17 @@
+---
+/** Call-to-action box: sage box with a headline and a gold button */
+import Button from "../Button.astro";
+import type { SectionProps } from "./types";
+const { b, e, flush } = Astro.props as SectionProps;
+---
+
+<section class:list={["pb-16 md:pb-20", !flush && "pt-16 md:pt-20"]}>
+  <div class="container-site">
+    <div class="bg-accent px-5 pt-[70px] pb-20 text-center">
+      {b.eyebrow && <p class="eyebrow-script text-primary" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
+      <h2 class="mt-2 uppercase text-paper" {...e.attrs("title")}>{b.title}</h2>
+      {b.subtitle && <p class="mt-3 text-xl font-medium text-paper" {...e.attrs("subtitle")}>{b.subtitle}</p>}
+      <Button label={b.button_label} href={b.button_link} edit={e} class="btn btn-gold mt-8" linkClass="mx-auto" />
+    </div>
+  </div>
+</section>

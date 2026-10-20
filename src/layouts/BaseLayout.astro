@@ -2,7 +2,9 @@
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import { site } from "../site.config";
+import { getSite } from "../lib/cms";
+import type { Edit } from "../lib/edit";
+import editAdapter from "../scripts/edit-adapter.js?raw";
 
 interface Props {
   title?: string;
@@ -11,12 +13,20 @@ interface Props {
   noindex?: boolean;
   /** Hide the free-guide band above the footer (e.g. on the free guide page itself) */
   hideOptIn?: boolean;
+  /** The page's EmDash entry: its Publish status shows on the edit toolbar */
+  edit?: Edit;
 }
 
-const { title, description = site.description, image, noindex = false, hideOptIn = false } = Astro.props;
-const fullTitle = title ? `${title} | ${site.name}` : `${site.name} | ${site.tagline}`;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
-const ogImage = image ? new URL(image, Astro.site ?? site.url).href : undefined;
+const siteContent = await getSite();
+const s = siteContent.data as Record<string, string>;
+const { title, description = s.description, image, noindex = false, hideOptIn = false, edit } = Astro.props;
+const fullTitle = title ? `${title} | ${s.brand_name}` : `${s.brand_name} | ${s.tagline}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = image ? new URL(image, Astro.site).href : undefined;
+
+// Edit mode (a logged-in editor turned it on): the toolbar reads Publish status from the first annotated element
+const primary = edit?.on ? edit : siteContent.edit;
+const editing = primary.on;
 ---
 
 <!doctype html>
@@ -32,7 +42,7 @@ const ogImage = image ? new URL(image, Astro.site ?? site.url).href : undefined;
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content={site.name} />
+    <meta property="og:site_name" content={s.brand_name} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -45,13 +55,15 @@ const ogImage = image ? new URL(image, Astro.site ?? site.url).href : undefined;
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Oooh+Baby&family=Questrial&display=swap"
     />
+    {editing && <script is:inline set:html={editAdapter} />}
   </head>
   <body class="flex min-h-screen flex-col">
+    {editing && <div hidden {...primary.entry()}></div>}
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-paper focus:px-4 focus:py-2">Skip to content</a>
-    <Header />
+    <Header site={siteContent} />
     <main id="main" class="flex-1">
       <slot />
     </main>
-    <Footer hideOptIn={hideOptIn} />
+    <Footer site={siteContent} hideOptIn={hideOptIn} />
   </body>
 </html>

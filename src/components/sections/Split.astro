@@ -1,0 +1,37 @@
+---
+/**
+ * Text and photo side by side. Lists in the text use dots or check marks (list_style).
+ * Spacing follows the T1 designs: a white section right after another white one skips its top padding.
+ */
+import SplitSection from "../SplitSection.astro";
+import RichText from "../RichText.astro";
+import Button from "../Button.astro";
+import type { SectionProps } from "./types";
+const { b, e, flush } = Astro.props as SectionProps;
+
+const RATIOS: Record<string, string> = { Standard: "1563/1126", Wide: "1943/1284", Tall: "1563/1409", Medium: "1160/950" };
+const ratio = RATIOS[String(b.photo_shape ?? "").split(" ")[0]] ?? RATIOS.Standard;
+const sand = b.background === "Sand";
+const checks = b.list_style === "Check marks";
+const text: any[] = Array.isArray(b.text) ? b.text : [];
+const listFirst = !!text[0]?.listItem;
+const sectionClass = sand
+  ? "section bg-sand"
+  : [!flush && "pt-16 md:pt-20", b.space_below === "Small" ? "pb-8 md:pb-10" : "pb-16 md:pb-20"].filter(Boolean).join(" ");
+---
+
+<SplitSection media={b.image} imageEdit={e.image("image")} imageSide={b.photo_side === "Left" ? "left" : "right"} ratio={ratio} class={sectionClass}>
+  {b.eyebrow && <p class={b.eyebrow_style === "Italic" ? "eyebrow-italic" : "eyebrow-script text-primary"} {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
+  {b.title && <h2 class:list={["uppercase", b.eyebrow && "mt-2"]} {...e.attrs("title")}>{b.title}</h2>}
+  {b.subtitle && <p class:list={[listFirst ? "mt-2" : "mt-3", "text-lg font-medium"]} {...e.attrs("subtitle")}>{b.subtitle}</p>}
+  <RichText
+    value={b.text}
+    edit={e}
+    field="text"
+    list={checks ? "checks" : "dots"}
+    mark={checks ? "primary" : "accent"}
+    relaxed
+    class={listFirst ? (checks ? "mt-6" : "mt-5") : "mt-4"}
+  />
+  <Button label={b.button_label} href={b.button_link} edit={e} class="btn mt-8 self-start" />
+</SplitSection>

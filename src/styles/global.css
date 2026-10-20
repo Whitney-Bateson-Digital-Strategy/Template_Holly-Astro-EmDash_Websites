@@ -65,6 +65,19 @@
   .btn-gold { background-color: var(--color-gold); color: var(--color-paper); }
   .btn-gold:hover, .btn-gold:focus-visible { background-color: color-mix(in srgb, var(--color-gold) 48%, transparent); }
 
+  /* Rich text from EmDash (RichText.astro): paragraph spacing, list markers, pull quotes, links */
+  .rt-gap > * + * { margin-top: 1rem; }
+  .rt-relaxed > p { line-height: 1.625; }
+  .rt a { text-decoration: underline; text-underline-offset: 4px; }
+  .rt blockquote { margin-block: 1.5rem; font-family: var(--font-display); font-size: 1.25rem; font-style: italic; line-height: 1.375; color: var(--color-primary); }
+  .rt blockquote:not(:has(> p))::before, .rt blockquote > p:first-child::before { content: "\201C"; }
+  .rt blockquote:not(:has(> p))::after, .rt blockquote > p:last-child::after { content: "\201D"; }
+  .rt-marker { color: var(--color-accent); }
+  .rt-mark-primary .rt-marker { color: var(--color-primary); }
+  .rt-legal > * { margin-top: 1rem; }
+  .rt-legal > p { line-height: 1.625; }
+  .rt-legal > h2 { margin-top: 2.5rem; font-family: var(--font-body); font-size: 1.25rem; line-height: 1.4; font-weight: 500; }
+
   .prose-site p { @apply mb-4; }
   .prose-site ul { @apply mb-4 list-disc space-y-2 pl-5; }
   .prose-site a { @apply underline decoration-accent underline-offset-4; }

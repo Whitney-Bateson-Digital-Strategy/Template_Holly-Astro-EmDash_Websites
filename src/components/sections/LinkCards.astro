@@ -1,0 +1,30 @@
+---
+/** Link cards: photo cards that link to other pages ("Keep exploring") */
+import Media from "../Media.astro";
+import EditLink from "../EditLink.astro";
+import type { SectionProps } from "./types";
+const { b, e, flush } = Astro.props as SectionProps;
+const cards: Record<string, any>[] = Array.isArray(b.cards) ? b.cards : [];
+---
+
+<section class:list={["pb-16 md:pb-20", !flush && "pt-16 md:pt-20"]}>
+  <div class="container-site">
+    {b.title && <h2 class="mb-10 text-center uppercase" {...e.attrs("title")}>{b.title}</h2>}
+    <div class="grid gap-8 md:grid-cols-3">
+      {
+        cards.map((c, i) => {
+          const ce = e.at("cards").at(i);
+          return (
+            <div>
+              <a href={c.link || "#"} class="group block bg-paper no-underline shadow-[0_8px_30px_rgba(0,0,0,0.10)]">
+                <div class="aspect-[1143/754] overflow-hidden" {...ce.image("image")}><div class="h-full transition-transform duration-500 group-hover:scale-105"><Media media={c.image} label={c.label || "Card photo"} /></div></div>
+                <p class="px-6 py-5 text-center text-lg font-medium group-hover:text-secondary"><span {...ce.attrs("label")}>{c.label}</span></p>
+              </a>
+              <EditLink attrs={ce.attrs("link")} href={c.link || "#"} class="mx-auto" />
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,59 @@
+---
+/**
+ * Renders a page's sections (the EmDash `sections` blocks field) in order.
+ * Section types and their fields are defined in .emdash/seed.json (blockTypes); each has a component in ./sections.
+ * Spacing: a white section that follows another white section skips its top padding (as in the T1 designs).
+ */
+import type { Edit } from "../lib/edit";
+import Hero from "./sections/Hero.astro";
+import PageBanner from "./sections/PageBanner.astro";
+import PageIntro from "./sections/PageIntro.astro";
+import Intro from "./sections/Intro.astro";
+import SandIntro from "./sections/SandIntro.astro";
+import Split from "./sections/Split.astro";
+import TwoColumns from "./sections/TwoColumns.astro";
+import Text from "./sections/Text.astro";
+import ServiceRows from "./sections/ServiceRows.astro";
+import ServicesDetail from "./sections/ServicesDetail.astro";
+import Testimonials from "./sections/Testimonials.astro";
+import CtaBand from "./sections/CtaBand.astro";
+import CenterBand from "./sections/CenterBand.astro";
+import Newsletter from "./sections/Newsletter.astro";
+import Steps from "./sections/Steps.astro";
+import InfoCards from "./sections/InfoCards.astro";
+import LinkCards from "./sections/LinkCards.astro";
+import IconFeatures from "./sections/IconFeatures.astro";
+import PhotoPanel from "./sections/PhotoPanel.astro";
+import Faq from "./sections/Faq.astro";
+import Pricing from "./sections/Pricing.astro";
+import LatestPosts from "./sections/LatestPosts.astro";
+import Contact from "./sections/Contact.astro";
+import Booking from "./sections/Booking.astro";
+import GuideSignup from "./sections/GuideSignup.astro";
+
+interface Props { sections: unknown; edit: Edit }
+const { sections, edit } = Astro.props;
+
+const COMPONENTS: Record<string, any> = {
+  hero: Hero, page_banner: PageBanner, page_intro: PageIntro, intro: Intro, sand_intro: SandIntro, split: Split,
+  two_columns: TwoColumns, text: Text, service_rows: ServiceRows, services_detail: ServicesDetail, testimonials: Testimonials,
+  cta_band: CtaBand, center_band: CenterBand, newsletter: Newsletter, steps: Steps, info_cards: InfoCards, link_cards: LinkCards,
+  icon_features: IconFeatures, photo_panel: PhotoPanel, faq: Faq, pricing: Pricing, latest_posts: LatestPosts,
+  contact: Contact, booking: Booking, guide_signup: GuideSignup,
+};
+
+/** Sections with a plain white background (their top padding collapses after another white section) */
+const isWhite = (b: Record<string, any>) =>
+  ["intro", "text", "cta_band", "newsletter", "info_cards", "link_cards", "icon_features", "faq", "latest_posts", "contact", "booking"].includes(b._type) ||
+  (["split", "two_columns"].includes(b._type) && b.background !== "Sand");
+
+const blocks = (Array.isArray(sections) ? sections : []).filter((b) => b && COMPONENTS[b._type]) as Record<string, any>[];
+const seen: Record<string, number> = {};
+const items = blocks.map((b, i) => {
+  const n = seen[b._type] ?? 0;
+  seen[b._type] = n + 1;
+  return { b, Component: COMPONENTS[b._type], n, flush: i > 0 && isWhite(b) && isWhite(blocks[i - 1]), e: edit.at("sections").at(b._key) };
+});
+---
+
+{items.map(({ Component, b, e, flush, n }) => <Component b={b} e={e} flush={flush} n={n} />)}

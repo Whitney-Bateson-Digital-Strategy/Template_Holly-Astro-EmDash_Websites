@@ -1,27 +1,42 @@
 ---
-import { site } from "../site.config";
+/**
+ * Announcement bar + header. Business name, logo, announcement and header button: EmDash → Site-wide content.
+ * Menu: EmDash → Menus → "Main menu" (put items under another item for a dropdown).
+ */
+import { Image } from "emdash/ui";
+import Button from "./Button.astro";
+import EditLink from "./EditLink.astro";
+import { getMenuLinks, type Entry } from "../lib/cms";
+interface Props { site: Entry }
+const { site: siteContent } = Astro.props;
+const s = siteContent.data as Record<string, any>;
+const e = siteContent.edit;
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
 const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
-type NavItem = { label: string; href: string; children?: { label: string; href: string }[] };
-const nav = site.nav as NavItem[];
+const nav = (await getMenuLinks("primary")).items;
 const linkClass = "text-[15px] font-bold uppercase tracking-[0.7px] no-underline transition-colors hover:text-accent";
 ---
 
 {
-  site.announcement.text && (
+  s.announcement_text && (
     <div class="bg-primary px-5 py-2.5 text-center text-[15px] font-semibold text-paper">
-      {site.announcement.href ? <a href={site.announcement.href} class="no-underline hover:text-accent">{site.announcement.text}</a> : site.announcement.text}
+      {s.announcement_link ? (
+        <a href={s.announcement_link} class="no-underline hover:text-accent"><span {...e.attrs("announcement_text")}>{s.announcement_text}</span></a>
+      ) : (
+        <span {...e.attrs("announcement_text")}>{s.announcement_text}</span>
+      )}
+      <EditLink attrs={e.attrs("announcement_link")} href={s.announcement_link || "(no link)"} label="Links to:" class="mx-auto" />
     </div>
   )
 }
 <header class="sticky top-0 z-40 bg-paper shadow-[0_3px_40px_rgba(0,0,0,0.15)]">
   <div class="container-site flex items-center justify-between gap-6 py-4">
-    <a href="/" class="shrink-0 no-underline" aria-label={`${site.name} home`}>
+    <a href="/" class="shrink-0 no-underline" aria-label={`${s.brand_name} home`}>
       {
-        site.logo ? (
-          <img src={site.logo} alt={site.logoAlt} class="h-12 w-auto" />
+        s.logo ? (
+          <span class="block" {...e.image("logo")}><Image image={s.logo} class="!h-12 !w-auto" priority /></span>
         ) : (
-          <span class="font-display text-2xl tracking-tight text-primary">{site.name}</span>
+          <span class="font-display text-2xl tracking-tight text-primary" {...e.attrs("brand_name")}>{s.brand_name}</span>
         )
       }
     </a>
@@ -59,7 +74,7 @@ const linkClass = "text-[15px] font-bold uppercase tracking-[0.7px] no-underline
           })
         }
       </ul>
-      <a href={site.cta.href} class="btn !py-3">{site.cta.label}</a>
+      <Button label={s.header_button_label} href={s.header_button_link} edit={e} labelField="header_button_label" linkField="header_button_link" class="btn !py-3" />
     </nav>
 
     <details class="mobile-nav relative lg:hidden">
@@ -77,7 +92,7 @@ const linkClass = "text-[15px] font-bold uppercase tracking-[0.7px] no-underline
                 <a href={item.href} class="block uppercase tracking-[0.7px] no-underline" aria-current={isActive(item.href) ? "page" : undefined}>
                   {item.label}
                 </a>
-                {item.children?.length && (
+                {item.children.length > 0 && (
                   <ul class="mt-3 space-y-3 border-l border-ink/15 pl-4">
                     {item.children.map((c) => (
                       <li><a href={c.href} class="block text-sm uppercase tracking-[0.7px] no-underline" aria-current={isActive(c.href) ? "page" : undefined}>{c.label}</a></li>
@@ -88,7 +103,7 @@ const linkClass = "text-[15px] font-bold uppercase tracking-[0.7px] no-underline
             ))
           }
         </ul>
-        <a href={site.cta.href} class="btn mt-6 w-full">{site.cta.label}</a>
+        {s.header_button_label && <a href={s.header_button_link || "#"} class="btn mt-6 w-full">{s.header_button_label}</a>}
       </nav>
     </details>
   </div>

@@ -1,0 +1,53 @@
+---
+/**
+ * Rich text (EmDash Portable Text): paragraphs, bold, italics, links, lists, quotes.
+ * In edit mode it renders EmDash's on-page rich-text editor for `field` (a path inside a section works too,
+ * via the edit adapter). Lists use the template's list styles: `list` picks dots, check marks or bullets.
+ * `gap` spaces paragraphs 1rem apart; `relaxed` gives paragraphs the relaxed line height.
+ */
+import { PortableText } from "emdash/ui";
+import type { Edit } from "../lib/edit";
+import ListDots from "./rich/ListDots.astro";
+import ListChecks from "./rich/ListChecks.astro";
+import ListBullets from "./rich/ListBullets.astro";
+import ItemDots from "./rich/ItemDots.astro";
+import ItemChecks from "./rich/ItemChecks.astro";
+import ItemBullets from "./rich/ItemBullets.astro";
+
+interface Props {
+  value?: unknown;
+  edit?: Edit;
+  field?: string;
+  class?: string;
+  list?: "dots" | "checks" | "bullets";
+  /** Color of list markers */
+  mark?: "accent" | "primary";
+  gap?: boolean;
+  relaxed?: boolean;
+}
+const { value, edit, field, class: className, list = "dots", mark = "accent", gap = true, relaxed = false } = Astro.props;
+
+const blocks = Array.isArray(value) ? value : [];
+const editing = !!(edit?.on && field);
+let rendered = blocks;
+if (editing) {
+  // EmDash's PortableText shows its inline editor for values tagged with this (non-enumerable) field reference
+  rendered = [...blocks];
+  Object.defineProperty(rendered, Symbol.for("__emdash"), {
+    value: { collection: edit!.ref!.collection, id: edit!.ref!.id, field: edit!.path(field!) },
+    enumerable: false,
+    configurable: true,
+  });
+}
+const lists = { dots: [ListDots, ItemDots], checks: [ListChecks, ItemChecks], bullets: [ListBullets, ItemBullets] }[list];
+const components = { list: { bullet: lists[0] }, listItem: { bullet: lists[1] } };
+const classes = ["rt", gap && "rt-gap", relaxed && "rt-relaxed", mark === "primary" && "rt-mark-primary", className];
+---
+
+{
+  editing ? (
+    <div class:list={classes} {...edit!.attrs(field!, "portableText")}><PortableText value={rendered as any} components={components} /></div>
+  ) : (
+    blocks.length > 0 && <div class:list={classes}><PortableText value={rendered as any} components={components} /></div>
+  )
+}

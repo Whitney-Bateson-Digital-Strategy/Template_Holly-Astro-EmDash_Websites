@@ -2,29 +2,39 @@
 /**
  * T1 V1 footer: lead-magnet band (OptIn), then a teal band with three link columns +
  * "Keep in touch" newsletter form, then a dark bar with legal links and the credit.
- * Column links + newsletter copy: `footer` in src/data/shared.ts. Legal links, socials,
- * newsletter form endpoint and credit: src/site.config.ts.
+ * Link columns: EmDash → Menus ("Work With Me", "Resources"); the middle column lists the social links.
+ * Newsletter copy, social links and business name: EmDash → Site-wide content. Legal links: Menus → "Footer legal links".
+ * Newsletter form endpoint and the "Created by" credit: src/site.config.ts.
  */
 import OptIn from "./OptIn.astro";
 import { site } from "../site.config";
-import { footer } from "../data/shared";
-interface Props { hideOptIn?: boolean }
-const { hideOptIn = false } = Astro.props;
+import { getMenuLinks, type Entry } from "../lib/cms";
+interface Props { site: Entry; hideOptIn?: boolean }
+const { site: siteContent, hideOptIn = false } = Astro.props;
+const s = siteContent.data as Record<string, any>;
+const e = siteContent.edit;
 const year = new Date().getFullYear();
 const nl = site.newsletter;
+const [col1, col2, legal] = await Promise.all([getMenuLinks("footer-1"), getMenuLinks("footer-2"), getMenuLinks("legal")]);
+const socials: Record<string, string>[] = Array.isArray(s.socials) ? s.socials : [];
+const columns = [
+  { title: col1.label, links: col1.items.map((l) => ({ label: l.label, href: l.href, external: false })) },
+  { title: s.footer_social_title, titleEdit: e.attrs("footer_social_title"), links: socials.map((x) => ({ label: x.network, href: x.url, external: true })) },
+  { title: col2.label, links: col2.items.map((l) => ({ label: l.label, href: l.href, external: false })) },
+];
 ---
 
-{!hideOptIn && <OptIn />}
+{!hideOptIn && <OptIn site={siteContent} />}
 
 <footer class="text-paper">
   <div class="bg-primary">
     <div class="container-site grid grid-cols-2 gap-10 py-12 sm:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_2.4fr] lg:gap-8">
       {
-        footer.columns.map((col) => (
+        columns.map((col) => (
           <nav aria-label={col.title}>
-            <h2 class="footer-heading">{col.title}</h2>
+            <h2 class="footer-heading" {...col.titleEdit}>{col.title}</h2>
             <ul class="mt-4 space-y-1.5">
-              {(col.socials ? site.socials.map((s) => ({ label: s.label, href: s.href, external: true })) : col.links.map((l) => ({ ...l, external: false }))).map((l) => (
+              {col.links.map((l) => (
                 <li>
                   <a href={l.href} class="text-paper no-underline transition-colors hover:text-accent" {...(l.external ? { target: "_blank", rel: "noopener" } : {})}>
                     {l.label}
@@ -37,14 +47,14 @@ const nl = site.newsletter;
       }
 
       <div class="col-span-2 sm:col-span-3 lg:col-span-1">
-        <h2 class="footer-heading">{footer.newsletter.title}</h2>
-        <p class="mt-4">{footer.newsletter.body}</p>
+        <h2 class="footer-heading" {...e.attrs("newsletter_title")}>{s.newsletter_title}</h2>
+        <p class="mt-4" {...e.attrs("newsletter_text", "text")}>{s.newsletter_text}</p>
         <form action={nl.action || "#"} method={nl.method} class="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
           <label class="sr-only" for="footer-name">First name</label>
           <input id="footer-name" class="field !border-0 !bg-mist !py-3 text-ink" type="text" name={nl.nameField} placeholder="NAME" autocomplete="given-name" />
           <label class="sr-only" for="footer-email">Email address</label>
           <input id="footer-email" class="field !border-0 !bg-mist !py-3 text-ink" type="email" name={nl.emailField} placeholder="EMAIL ADDRESS" autocomplete="email" required />
-          <button class="btn !px-8 !py-3" type="submit">{footer.newsletter.button}</button>
+          <button class="btn !px-8 !py-3" type="submit"><span {...e.attrs("newsletter_button")}>{s.newsletter_button || "Join"}</span></button>
         </form>
       </div>
     </div>
@@ -53,9 +63,9 @@ const nl = site.newsletter;
   <div class="footer-bar py-5">
     <div class="container-site text-center">
       {
-        site.footerLinks.length > 0 && (
+        legal.items.length > 0 && (
           <ul class="mb-1.5 flex flex-wrap justify-center gap-y-1 text-xs font-bold uppercase tracking-[1px]">
-            {site.footerLinks.map((l, i) => (
+            {legal.items.map((l, i) => (
               <li class:list={["px-3", i > 0 && "border-l border-paper/40"]}>
                 <a href={l.href} class="text-paper no-underline hover:text-accent">{l.label}</a>
               </li>
@@ -64,7 +74,7 @@ const nl = site.newsletter;
         )
       }
       <p class="text-[13px] leading-[22px]">
-        © {year} {site.name} <span class="px-2 opacity-60">|</span> Created by <a href={site.credit.href} target="_blank" rel="noopener" class="text-paper no-underline hover:text-accent">{site.credit.label}</a>
+        © {year} {s.brand_name} <span class="px-2 opacity-60">|</span> Created by <a href={site.credit.href} target="_blank" rel="noopener" class="text-paper no-underline hover:text-accent">{site.credit.label}</a>
       </p>
     </div>
   </div>

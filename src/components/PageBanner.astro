@@ -1,26 +1,26 @@
 ---
 /**
- * Page title band. With an image: photo + teal overlay.
+ * Page title band. With a photo: photo + teal overlay.
  * Without one (T1 default for Contact): a solid teal band.
- * Photo design size: 2157 x 713 px.
+ * Photo design size: 2157 x 713 px. `media` = EmDash image; `edit` makes the title and photo editable.
  */
 import Media from "./Media.astro";
-import type { Img } from "../data/types";
-interface Props { title: string; image?: Img }
-const { title, image } = Astro.props;
-const hasPhoto = !!image?.src;
+import { noEdit, type Edit } from "../lib/edit";
+interface Props { title: string; media?: unknown; edit?: Edit }
+const { title, media, edit = noEdit } = Astro.props;
+const hasPhoto = !!media;
 ---
 
-<section class:list={["relative flex items-center", hasPhoto ? "min-h-[260px] md:aspect-[2157/713] md:max-h-[600px] md:min-h-0" : "min-h-[160px] bg-primary md:min-h-[220px]"]}>
+<section class:list={["relative flex items-center", hasPhoto ? "min-h-[260px] md:aspect-[2157/713] md:max-h-[600px] md:min-h-0" : "min-h-[160px] bg-primary md:min-h-[220px]"]} {...edit.image("image")}>
   {
     hasPhoto && (
       <>
-        <div class="absolute inset-0"><Media {...image} eager hideLabel /></div>
+        <div class="absolute inset-0"><Media media={media} label="Page banner" eager hideLabel /></div>
         <div class="absolute inset-0 bg-primary/55" />
       </>
     )
   }
   <div class="relative container-site py-16 text-center">
-    <h1 class="text-paper">{title}</h1>
+    <h1 class="text-paper" {...edit.attrs("title")}>{title}</h1>
   </div>
 </section>

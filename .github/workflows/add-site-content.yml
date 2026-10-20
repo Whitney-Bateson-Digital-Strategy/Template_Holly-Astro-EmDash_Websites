@@ -1,0 +1,43 @@
+name: Add editable site content (one time per site)
+
+# Runs scripts/add-site-content.mjs against a site that was set up before its pages were editable in EmDash.
+# It only ADDS what's missing (page block types, Pages / Services / Site-wide content, menus and their starting copy);
+# existing content is never changed. Edits made in the earlier "Homepage" entry are carried into the new Home page.
+# Safe to re-run.
+# Needs the repo secret EMDASH_TOKEN: admin → Settings → API Tokens, created by an Admin, with the scopes
+# schema:read, schema:write, content:read and content:write.
+# Run it from GitHub: Actions → "Add editable site content" → Run workflow. Tick "dry run" first to see what it would add.
+
+on:
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: "Site address (no trailing slash)"
+        required: true
+        default: "https://t1-emdash-template.whitneybateson.workers.dev"
+      dry_run:
+        description: "Dry run (only list what would be added)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  add-site-content:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Add the editable pages to the site
+        env:
+          EMDASH_TOKEN: ${{ secrets.EMDASH_TOKEN }}
+          SITE_URL: ${{ inputs.site_url }}
+        run: node scripts/add-site-content.mjs "$SITE_URL" ${{ inputs.dry_run && '--dry-run' || '' }}

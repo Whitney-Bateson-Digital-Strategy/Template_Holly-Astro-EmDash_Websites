@@ -1,0 +1,32 @@
+---
+/** Services (full details): a tab bar, then every service with its photo (1943 x 1943, square), lists and button */
+import SplitSection from "../SplitSection.astro";
+import RichText from "../RichText.astro";
+import Button from "../Button.astro";
+import { getServices } from "../../lib/cms";
+import type { SectionProps } from "./types";
+const { b, e } = Astro.props as SectionProps;
+const services = await getServices();
+---
+
+<nav aria-label="Services" class="hidden bg-primary md:block">
+  <ul class="grid divide-x divide-paper" style={`grid-template-columns: repeat(${services.length}, minmax(0, 1fr))`}>
+    {services.map((s) => <li><a href={`#${s.slug}`} class="block py-5 text-center text-[15px] font-bold uppercase tracking-[0.7px] text-paper no-underline hover:bg-paper/10 hover:text-accent">{s.data.title}</a></li>)}
+  </ul>
+</nav>
+
+{
+  services.map(({ data: d, edit: se, slug }, i) => (
+    <SplitSection id={slug} media={d.image} image={{ label: String(d.title) }} imageEdit={se.image("image")} imageSide={i % 2 === 0 ? "right" : "left"} fullBleed ratio="1/1" class="scroll-mt-24 py-8 md:py-12" textClass="md:!py-6">
+      <p class="eyebrow-label text-accent" {...se.attrs("eyebrow")}>{d.eyebrow}</p>
+      <div class="my-3 h-px w-12 bg-primary"></div>
+      <h2 class="uppercase" {...se.attrs("title")}>{d.title}</h2>
+      <RichText value={d.description} edit={se} field="description" class="mt-4" />
+      <h3 class="mt-8 !font-body !text-xl !not-italic font-medium" {...e.attrs("for_you_title")}>{b.for_you_title}</h3>
+      <RichText value={d.for_you_if} edit={se} field="for_you_if" class="mt-3" />
+      <h3 class="mt-8 !font-body !text-xl !not-italic font-medium" {...e.attrs("included_title")}>{b.included_title}</h3>
+      <RichText value={d.included} edit={se} field="included" class="mt-3" />
+      <Button label={d.button_label} href={d.button_link} edit={se} class="btn mt-8 self-start" />
+    </SplitSection>
+  ))
+}

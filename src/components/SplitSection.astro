@@ -7,7 +7,8 @@ import Media from "./Media.astro";
 import type { EditAttrs, Img } from "../data/types";
 
 interface Props {
-  image: Img;
+  /** Template photo (src/alt/label); `media` takes over when set */
+  image?: Img;
   /** Photo picked in EmDash (replaces image.src) */
   media?: unknown;
   /** On-page editing attributes for the photo */
@@ -53,7 +54,7 @@ const { image, media, imageEdit, imageSide = "right", class: className = "sectio
         style={ratio ? `aspect-ratio: ${ratio}` : undefined}
         {...imageEdit}
       >
-        <Media {...image} media={media} />
+        <Media {...(image ?? {})} media={media} />
       </div>
     </div>
   </div>

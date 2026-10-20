@@ -1,0 +1,29 @@
+---
+/** Steps on a teal band ("3 steps to success"). Add or remove steps in the admin. */
+import Button from "../Button.astro";
+import type { SectionProps } from "./types";
+const { b, e } = Astro.props as SectionProps;
+const steps: Record<string, string>[] = Array.isArray(b.steps) ? b.steps : [];
+---
+
+<section class="bg-primary py-16 text-center text-paper md:py-20">
+  <div class="container-site">
+    {b.eyebrow && <p class="text-sm font-bold uppercase tracking-[1px]" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
+    <h2 class="mt-2 text-paper uppercase" {...e.attrs("title")}>{b.title}</h2>
+    <div class="mt-10 grid gap-10 md:grid-cols-3">
+      {
+        steps.map((s, i) => {
+          const se = e.at("steps").at(i);
+          return (
+            <div>
+              <p class="eyebrow-script !text-[2rem] text-accent" {...se.attrs("label")}>{s.label}</p>
+              <h3 class="mt-1 !font-body !text-lg !not-italic font-medium" {...se.attrs("title")}>{s.title}</h3>
+              <p class="mx-auto mt-2 max-w-xs text-sm text-paper/85" {...se.attrs("text", "text")}>{s.text}</p>
+            </div>
+          );
+        })
+      }
+    </div>
+    <Button label={b.button_label} href={b.button_link} edit={e} class="btn mt-10" linkClass="mx-auto" />
+  </div>
+</section>

@@ -8,6 +8,7 @@ import react from "@astrojs/react";
 import emdash, { local } from "emdash/astro";
 import { sqlite } from "emdash/db";
 import { d1, r2 } from "@emdash-cms/cloudflare";
+import { readFileSync } from "node:fs";
 
 /**
  * Two ways to run this site:
@@ -17,9 +18,16 @@ import { d1, r2 } from "@emdash-cms/cloudflare";
  */
 const onCloudflare = process.env.DEPLOY_TARGET === "cloudflare";
 
+// Keep in sync with site.url in src/site.config.ts
+const SITE = "https://example.com";
+
+// Pages render from EmDash (src/pages/[...slug].astro), so list the template's pages for sitemap-index.xml.
+// EmDash also serves /sitemap.xml, which includes pages added in the admin.
+const seed = JSON.parse(readFileSync(new URL("./.emdash/seed.json", import.meta.url), "utf8"));
+const pageUrls = seed.content.pages.map((p) => `${SITE}/${p.slug === "home" ? "" : `${p.slug}/`}`);
+
 export default defineConfig({
-  // Keep in sync with site.url in src/site.config.ts
-  site: "https://example.com",
+  site: SITE,
   trailingSlash: "ignore",
 
   // EmDash reads content at request time, so the site runs as a server. Admin: /_emdash/admin
@@ -39,7 +47,7 @@ export default defineConfig({
             storage: local({ directory: "./uploads", baseUrl: "/_emdash/api/media/file" }),
           },
     ),
-    sitemap(),
+    sitemap({ customPages: pageUrls }),
   ],
   vite: { plugins: [tailwindcss()] },
 });

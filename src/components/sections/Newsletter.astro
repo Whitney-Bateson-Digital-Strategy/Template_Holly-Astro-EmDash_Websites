@@ -1,0 +1,26 @@
+---
+/** Newsletter sign-up box. The form posts to site.newsletter in src/site.config.ts. */
+import RichText from "../RichText.astro";
+import { site } from "../../site.config";
+import type { SectionProps } from "./types";
+const { b, e, flush } = Astro.props as SectionProps;
+const nl = site.newsletter;
+---
+
+<section class:list={["pb-16 md:pb-20", !flush && "pt-16 md:pt-20"]}>
+  <div class="container-site">
+    <div class="bg-primary px-6 py-14 text-center text-paper md:p-20">
+      {b.eyebrow && <p class="eyebrow-script text-accent" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
+      <h2 class="mt-2 text-paper" {...e.attrs("title")}>{b.title}</h2>
+      <RichText value={b.text} edit={e} field="text" class="mx-auto mt-4 max-w-xl text-[15px]" />
+      {b.fineprint && <p class="mt-1 text-[13px] text-paper/80" {...e.attrs("fineprint")}>{b.fineprint}</p>}
+      <form action={nl.action || "#"} method={nl.method} class="mx-auto mt-8 grid max-w-2xl gap-3 md:grid-cols-[1fr_1fr_auto]">
+        <label class="sr-only" for="nl-name">Name</label>
+        <input id="nl-name" class="field" type="text" name={nl.nameField} placeholder="Name" autocomplete="given-name" />
+        <label class="sr-only" for="nl-email">Email</label>
+        <input id="nl-email" class="field" type="email" name={nl.emailField} placeholder="Email" autocomplete="email" required />
+        <button class="btn" type="submit"><span {...e.attrs("button_label")}>{b.button_label || "Subscribe"}</span></button>
+      </form>
+    </div>
+  </div>
+</section>

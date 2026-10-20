@@ -1,0 +1,13 @@
+---
+/** Centered intro on sand: short headline and text */
+import RichText from "../RichText.astro";
+import type { SectionProps } from "./types";
+const { b, e } = Astro.props as SectionProps;
+---
+
+<section class="section bg-sand">
+  <div class="container-site max-w-3xl text-center">
+    <h2 class="!font-body !text-[1.75rem] font-medium" {...e.attrs("title")}>{b.title}</h2>
+    <RichText value={b.text} edit={e} field="text" relaxed class="mt-4" />
+  </div>
+</section>

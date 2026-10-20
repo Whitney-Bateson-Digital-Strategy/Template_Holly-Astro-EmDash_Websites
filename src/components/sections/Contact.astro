@@ -1,0 +1,119 @@
+---
+/**
+ * Contact: intro, photo (820 x 835), contact form and social links.
+ * The form posts to site.contactForm in src/site.config.ts; the "services" choices come from the Services list
+ * and the social links from Site-wide content.
+ */
+import Media from "../Media.astro";
+import RichText from "../RichText.astro";
+import EditLink from "../EditLink.astro";
+import SocialIcon from "../SocialIcon.astro";
+import { getServices, getSite } from "../../lib/cms";
+import { site } from "../../site.config";
+import type { SectionProps } from "./types";
+const { b, e, flush } = Astro.props as SectionProps;
+const [services, siteContent] = await Promise.all([getServices(), getSite()]);
+const socials: Record<string, string>[] = Array.isArray(siteContent.data.socials) ? (siteContent.data.socials as Record<string, string>[]) : [];
+
+// Labels show inside each box. half: true puts two fields side by side on desktop.
+const fields = [
+  { name: "name", label: "Name", type: "text", required: true, half: true },
+  { name: "email", label: "Email Address", type: "email", required: true, half: true },
+  { name: "goals", label: "What are you hoping to achieve through working together?", type: "text", required: true },
+  { name: "service", label: "Which services are you interested in?", type: "select", required: true },
+  { name: "message", label: "What questions do you have for me?", type: "textarea", required: true },
+];
+---
+
+<section class:list={["pb-16 md:pb-20", !flush && "pt-16 md:pt-20"]}>
+  <div class="container-site grid gap-x-16 gap-y-12 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+    <!-- Intro -->
+    <div class="self-center">
+      {b.eyebrow && <p class="eyebrow-italic" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
+      {b.title && <h2 class="mt-2 uppercase" {...e.attrs("title")}>{b.title}</h2>}
+      <RichText value={b.text} edit={e} field="text" relaxed class="mt-4" />
+      {
+        b.note_text && (
+          <p class="mt-5 font-medium text-primary">
+            {e.on ? <span {...e.attrs("note_text")}>{b.note_text}</span> : b.note_text} <a href={b.note_link || "#"} class="underline underline-offset-4 hover:text-secondary" {...e.attrs("note_link_label")}>{b.note_link_label}</a>
+          </p>
+        )
+      }
+      {b.note_text && <EditLink attrs={e.attrs("note_link")} href={b.note_link || "#"} />}
+    </div>
+
+    <!-- Photo -->
+    <div class="aspect-[820/835]" {...e.image("image")}><Media media={b.image} label="Contact photo" /></div>
+
+    <!-- Form: labels sit inside the boxes, as in the T1 design -->
+    <form action={site.contactForm.action || "#"} method={site.contactForm.method} class="contact-form grid gap-4 md:grid-cols-2">
+      {
+        fields.map((f) => {
+          const id = `cf-${f.name}`;
+          const placeholder = f.label + (f.required ? "" : " (optional)");
+          return (
+            <div class:list={[!f.half && "md:col-span-2"]}>
+              <label for={id} class="sr-only">{f.label}</label>
+              {f.type === "textarea" ? (
+                <textarea id={id} name={f.name} rows="5" class="cf-field" placeholder={placeholder} required={f.required} />
+              ) : f.type === "select" ? (
+                <div class="relative">
+                  <select id={id} name={f.name} class="cf-field cf-select" required={f.required}>
+                    <option value="" selected disabled>{f.label}</option>
+                    {services.map((s) => <option value={String(s.data.title)}>{s.data.title}</option>)}
+                  </select>
+                  <span class="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 border-x-[7px] border-t-[8px] border-x-transparent border-t-accent" aria-hidden="true" />
+                </div>
+              ) : (
+                <input id={id} name={f.name} type={f.type} class="cf-field" placeholder={placeholder} required={f.required} />
+              )}
+            </div>
+          );
+        })
+      }
+      <div class="flex justify-end md:col-span-2"><button type="submit" class="btn"><span {...e.attrs("button_label")}>{b.button_label || "Submit"}</span></button></div>
+    </form>
+
+    <!-- Socials (edit them in Site-wide content) -->
+    <aside>
+      {b.social_title && <p class="eyebrow-italic" {...e.attrs("social_title")}>{b.social_title}</p>}
+      <ul class="mt-4 space-y-4">
+        {
+          socials.map((s) => (
+            <li>
+              <a href={s.url} target="_blank" rel="noopener" class="group flex items-center gap-4 no-underline">
+                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-paper transition-colors group-hover:bg-secondary"><SocialIcon name={s.network} class="h-4 w-4" /></span>
+                <span class="flex flex-col">
+                  <span class="font-medium group-hover:text-secondary">{s.network}</span>
+                  <span class="text-sm text-ink/70">{s.handle}</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .cf-field {
+    width: 100%;
+    background: #f4f8fc;
+    border: 0;
+    padding: 1.1rem 1.25rem;
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+  }
+  .cf-field::placeholder,
+  .cf-select:invalid {
+    color: var(--color-ink);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .cf-select { appearance: none; padding-right: 3rem; cursor: pointer; }
+  .cf-field:focus { outline: 2px solid var(--color-secondary); outline-offset: 0; }
+</style>

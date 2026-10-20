@@ -1,0 +1,6 @@
+---
+/** Bullet list inside RichText (same markup as the template's lists) */
+const { node: _node, index: _index, isInline: _isInline, ...attrs } = Astro.props as Record<string, unknown>;
+---
+
+<ul class="space-y-2" {...attrs}><slot /></ul>

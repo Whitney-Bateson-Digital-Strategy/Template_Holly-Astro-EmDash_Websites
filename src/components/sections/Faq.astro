@@ -1,0 +1,59 @@
+---
+/**
+ * Questions (accordion), in two columns. Questions can carry a highlighted prefix like "Module 01:".
+ * In edit mode every answer is open so it can be edited.
+ */
+import Button from "../Button.astro";
+import EditLink from "../EditLink.astro";
+import type { SectionProps } from "./types";
+const { b, e, n, flush } = Astro.props as SectionProps;
+const items: Record<string, string>[] = Array.isArray(b.items) ? b.items : [];
+const half = Math.ceil(items.length / 2);
+const cols = [items.slice(0, half), items.slice(half)].map((col, c) => col.map((f, i) => ({ f, ie: e.at("items").at(c * half + i) })));
+---
+
+<section id={n === 0 ? "faq" : `faq-${n + 1}`} class:list={["scroll-mt-24 pb-16 md:pb-20", !flush && "pt-16 md:pt-20"]}>
+  <div class="container-site">
+    {b.title && <h2 class="mb-10 text-center uppercase" {...e.attrs("title")}>{b.title}</h2>}
+    <div class="grid gap-4 md:grid-cols-2 md:gap-6">
+      {
+        cols.map((col) => (
+          <div class="space-y-4">
+            {col.map(({ f, ie }) => (
+              <details class="faq group bg-primary text-paper shadow-[0_6px_20px_rgba(0,0,0,0.08)]" open={e.on || undefined}>
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5">
+                  <span>
+                    {f.tag && <span class="mr-1 font-bold text-accent" {...ie.attrs("tag")}>{f.tag}</span>}
+                    <span class="font-medium" {...ie.attrs("question")}>{f.question}</span>
+                  </span>
+                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-lg leading-none font-bold text-primary transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                </summary>
+                <div class="px-6 pb-6 text-paper/85" {...ie.attrs("answer", "text")}>{f.answer}</div>
+              </details>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+    {
+      b.footnote_text && (
+        <p class="mt-10 text-center">
+          {e.on ? <span {...e.attrs("footnote_text")}>{b.footnote_text}</span> : b.footnote_text} <a href={b.footnote_link || "#"} class="font-medium text-secondary underline underline-offset-4" {...e.attrs("footnote_link_label")}>{b.footnote_link_label}</a>
+        </p>
+      )
+    }
+    {b.footnote_text && <EditLink attrs={e.attrs("footnote_link")} href={b.footnote_link || "#"} class="mx-auto" />}
+    {
+      (b.closing || b.button_label) && (
+        <div class="mt-10 text-center">
+          {b.closing && <p class="text-lg font-medium" {...e.attrs("closing")}>{b.closing}</p>}
+          <Button label={b.button_label} href={b.button_link} edit={e} class="btn mt-5" linkClass="mx-auto" />
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .faq summary::-webkit-details-marker { display: none; }
+</style>

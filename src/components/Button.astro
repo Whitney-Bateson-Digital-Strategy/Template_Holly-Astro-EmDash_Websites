@@ -1,0 +1,29 @@
+---
+/**
+ * A button whose text and link come from EmDash. The text is edited in place; in edit mode a small
+ * "Button goes to" label underneath lets editors change the link. Renders nothing without text.
+ */
+import EditLink from "./EditLink.astro";
+import { noEdit, type Edit } from "../lib/edit";
+interface Props {
+  label?: unknown;
+  href?: unknown;
+  edit?: Edit;
+  labelField?: string;
+  linkField?: string;
+  class?: string;
+  /** Classes for the edit-mode link label, e.g. "mx-auto" in centered layouts */
+  linkClass?: string;
+}
+const { label, href, edit = noEdit, labelField = "button_label", linkField = "button_link", class: className = "btn", linkClass } = Astro.props;
+const link = String(href ?? "") || "#";
+---
+
+{
+  !!label && (
+    <>
+      <a href={link} class={className}><span {...edit.attrs(labelField)}>{String(label)}</span></a>
+      <EditLink attrs={edit.attrs(linkField)} href={link} class={linkClass} />
+    </>
+  )
+}

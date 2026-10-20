@@ -1,0 +1,57 @@
+---
+/**
+ * Services (photo rows), the home page "Let's work together": heading, a tab bar that jumps to each service,
+ * then one row per service (photo 1565 x 1282), alternating sides. Every second row is teal.
+ * Services come from the Services collection; each one's text and photo are edited right here.
+ */
+import Media from "../Media.astro";
+import RichText from "../RichText.astro";
+import { getServices } from "../../lib/cms";
+import type { SectionProps } from "./types";
+const { b, e } = Astro.props as SectionProps;
+const services = await getServices();
+---
+
+<section id="services">
+  <div class="bg-mist pt-14 text-center md:pt-16">
+    <p class="eyebrow-script text-primary" {...e.attrs("eyebrow")}>{b.eyebrow}</p>
+    <h2 class="mt-1 uppercase" {...e.attrs("title")}>{b.title}</h2>
+    <nav aria-label="Services" class="mt-10 grid bg-primary sm:grid-cols-3">
+      {
+        services.map((s, i) => (
+          <a href={`#home-${s.slug}`} class:list={["block px-4 py-4 text-sm font-bold uppercase tracking-[1px] text-paper no-underline hover:bg-paper/10 hover:text-accent", i > 0 && "border-t border-paper/40 sm:border-t-0 sm:border-l"]}>
+            {s.data.title}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+
+  {
+    services.map(({ data: d, edit: se, slug }, i) => {
+      const dark = i % 2 === 1;
+      const imageLeft = i % 2 === 1;
+      const highlights = Array.isArray(d.highlights) && d.highlights.length > 0;
+      return (
+        <div id={`home-${slug}`} class:list={["scroll-mt-28 py-14 md:py-16", dark ? "bg-primary text-paper" : "bg-paper"]}>
+          <div class="container-site grid items-center gap-8 md:grid-cols-2 md:gap-[7%]">
+            <div class:list={[imageLeft ? "md:order-2" : "md:order-1"]}>
+              <p class:list={["inline-block border-b-2 pb-1 text-sm font-bold uppercase tracking-[1px]", dark ? "border-accent text-accent" : "border-primary text-primary"]} {...se.attrs("eyebrow")}>{d.eyebrow}</p>
+              <h2 class:list={["mt-4 uppercase", dark && "text-paper"]} {...se.attrs("title")}>{d.title}</h2>
+              <p class="mt-2 text-lg font-medium" {...se.attrs("summary")}>{d.summary}</p>
+              {highlights ? (
+                <RichText value={d.highlights} edit={se} field="highlights" list="bullets" class="mt-4" />
+              ) : (
+                <RichText value={d.description} edit={se} field="description" relaxed class="mt-4" />
+              )}
+              <a href={`/services#${slug}`} class="btn mt-8"><span><span {...e.attrs("button_prefix")}>{b.button_prefix}</span> {d.title}</span></a>
+            </div>
+            <div class:list={["order-first", imageLeft ? "md:order-1" : "md:order-2"]} style="aspect-ratio: 1565/1282" {...se.image("home_image")}>
+              <Media media={d.home_image} label={`${d.title} photo`} />
+            </div>
+          </div>
+        </div>
+      );
+    })
+  }
+</section>

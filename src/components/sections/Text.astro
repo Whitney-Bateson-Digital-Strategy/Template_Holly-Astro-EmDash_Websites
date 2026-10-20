@@ -1,0 +1,13 @@
+---
+/** Plain text section for long copy (policies). Headings in the text become subheadings. */
+import RichText from "../RichText.astro";
+import type { SectionProps } from "./types";
+const { b, e, flush } = Astro.props as SectionProps;
+---
+
+<section class:list={["pb-16 md:pb-20", !flush && "pt-16 md:pt-20"]}>
+  <div class="container-site max-w-3xl">
+    {b.updated && <p class="text-sm text-ink/70">Last updated: <span {...e.attrs("updated")}>{b.updated}</span></p>}
+    <RichText value={b.text} edit={e} field="text" gap={false} class="rt-legal" />
+  </div>
+</section>

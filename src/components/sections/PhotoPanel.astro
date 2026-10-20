@@ -1,0 +1,28 @@
+---
+/** Photo with text panel: full-width photo (1680 x 1132) with a translucent teal panel on one side */
+import Media from "../Media.astro";
+import RichText from "../RichText.astro";
+import Button from "../Button.astro";
+import type { SectionProps } from "./types";
+const { b, e } = Astro.props as SectionProps;
+const left = b.panel_side !== "Right";
+---
+
+<section class="relative flex min-h-[560px] items-center overflow-hidden py-16 md:min-h-[680px] md:py-24" {...e.image("image")}>
+  <div class="absolute inset-0"><Media media={b.image} label="Background photo" hideLabel /></div>
+  <div class="relative w-full">
+    <div
+      class:list={[
+        "bg-primary/90 px-6 py-10 text-paper md:w-1/2 md:py-14",
+        left
+          ? "md:pr-12 md:pl-[max(1.25rem,calc((100vw-var(--container-site))/2))]"
+          : "md:ml-auto md:pl-12 md:pr-[max(1.25rem,calc((100vw-var(--container-site))/2))]",
+      ]}
+    >
+      <h2 class="text-paper uppercase" {...e.attrs("title")}>{b.title}</h2>
+      {b.subtitle && <p class="mt-2 text-lg font-medium" {...e.attrs("subtitle")}>{b.subtitle}</p>}
+      <RichText value={b.text} edit={e} field="text" class="mt-5" />
+      <Button label={b.button_label} href={b.button_link} edit={e} class="btn mt-8" />
+    </div>
+  </div>
+</section>

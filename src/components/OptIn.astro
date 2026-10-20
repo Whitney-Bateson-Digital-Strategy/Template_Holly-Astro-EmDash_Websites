@@ -1,38 +1,47 @@
 ---
+/**
+ * Free guide band above the footer (every page except the free guide page). Copy, photo and on/off:
+ * EmDash → Site-wide content. "Sign-up form" mode posts to site.optin in src/site.config.ts.
+ */
 import Media from "./Media.astro";
-import { optin } from "../data/shared";
+import RichText from "./RichText.astro";
+import Button from "./Button.astro";
 import { site } from "../site.config";
+import type { Entry } from "../lib/cms";
+interface Props { site: Entry }
+const s = Astro.props.site.data as Record<string, any>;
+const e = Astro.props.site.edit;
 const f = site.optin;
 ---
 
 {
-  optin.show && (
+  s.optin_show !== false && (
     <section id="optin" class="scroll-mt-24">
       <div class="grid md:grid-cols-2">
         <div class="order-2 flex items-center justify-center bg-[#f4f8fc] px-5 py-12 md:order-1 md:py-14">
           <div class="w-full max-w-[460px] text-center">
-            <p class="eyebrow-italic">{optin.eyebrow}</p>
-            <h2 class="mt-3 !font-body !text-xl !leading-snug font-medium text-ink">{optin.title}</h2>
-            <p class="mt-4 text-lg">{optin.body}</p>
+            {s.optin_eyebrow && <p class="eyebrow-italic" {...e.attrs("optin_eyebrow")}>{s.optin_eyebrow}</p>}
+            <h2 class="mt-3 !font-body !text-xl !leading-snug font-medium text-ink" {...e.attrs("optin_title")}>{s.optin_title}</h2>
+            <RichText value={s.optin_text} edit={e} field="optin_text" class="mt-4 text-lg" />
             {
-              optin.mode === "form" ? (
+              s.optin_mode === "Sign-up form" ? (
                 <form action={f.action || "#"} method={f.method} class="mt-6 grid gap-3">
                   <label class="sr-only" for="optin-name">First name</label>
                   <input id="optin-name" class="field !bg-paper" type="text" name={f.nameField} placeholder="First Name" autocomplete="given-name" />
                   <label class="sr-only" for="optin-email">Email</label>
                   <input id="optin-email" class="field !bg-paper" type="email" name={f.emailField} placeholder="Email" autocomplete="email" required />
-                  <button class="btn" type="submit">{optin.button.label}</button>
+                  <button class="btn" type="submit"><span {...e.attrs("optin_button_label")}>{s.optin_button_label}</span></button>
                 </form>
               ) : (
-                <a href={optin.button.href} class="btn mt-6">{optin.button.label}</a>
+                <Button label={s.optin_button_label} href={s.optin_button_link} edit={e} labelField="optin_button_label" linkField="optin_button_link" class="btn mt-6" linkClass="mx-auto" />
               )
             }
-            {optin.fineprint && <p class="mt-2 text-[13px] text-ink/70">{optin.fineprint}</p>}
+            {s.optin_fineprint && <p class="mt-2 text-[13px] text-ink/70" {...e.attrs("optin_fineprint")}>{s.optin_fineprint}</p>}
           </div>
         </div>
         <!-- Photo fills the height of the text column (it never makes the section taller) -->
-        <div class="relative order-1 h-[240px] md:order-2 md:h-auto">
-          <div class="absolute inset-0"><Media {...optin.image} /></div>
+        <div class="relative order-1 h-[240px] md:order-2 md:h-auto" {...e.image("optin_image")}>
+          <div class="absolute inset-0"><Media media={s.optin_image} label="Lead magnet photo" /></div>
         </div>
       </div>
     </section>

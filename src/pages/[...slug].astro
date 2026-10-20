@@ -1,0 +1,21 @@
+---
+/**
+ * Every page except the blog: Home (/), About, Services, Program, Contact, Booking, Free guide, legal pages,
+ * and any page added in the admin. Content = the page's entry in EmDash → Pages: a list of sections
+ * (see src/components/Sections.astro). Sites set up before Pages existed fall back to the seed's pages.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Sections from "../components/Sections.astro";
+import { getPage } from "../lib/cms";
+
+const slug = Astro.params.slug;
+if (slug === "home") return Astro.redirect("/", 301);
+const page = await getPage(slug ?? "home");
+if (!page) return Astro.rewrite("/404");
+const d = page.data;
+const title = (d.seo_title as string) || (slug ? (d.title as string) : undefined);
+---
+
+<BaseLayout title={title} description={(d.seo_description as string) || undefined} hideOptIn={!!d.hide_free_guide_band} edit={page.edit}>
+  <Sections sections={d.sections} edit={page.edit} />
+</BaseLayout>

@@ -3,7 +3,8 @@
  * Image with a built-in placeholder.
  * Pass `src` once real photos exist; until then a labeled placeholder renders
  * so layouts can be reviewed without stock images.
- * `media` = an image picked in EmDash; it replaces `src` (same cropping, responsive sizes, alt text set in EmDash).
+ * `media` = an image from EmDash (uploaded, or a template photo by path); it replaces `src`. Alt text and the
+ * focal point come from EmDash. The ! classes beat EmDash's own `height: auto` so the photo fills its frame.
  */
 import { Image } from "emdash/ui";
 interface Props {
@@ -22,7 +23,7 @@ const { media, src, alt = "", label = "Image", class: className = "", eager = fa
 
 {
   media ? (
-    <Image image={media as any} priority={eager} class:list={["h-full w-full object-cover", className]} />
+    <Image image={media as any} priority={eager} class:list={["!h-full !w-full object-cover", className]} />
   ) : src ? (
     <img src={src} alt={alt} class:list={["h-full w-full object-cover", className]} loading={eager ? "eager" : "lazy"} decoding="async" style={position ? `object-position: ${position}` : undefined} />
   ) : (
