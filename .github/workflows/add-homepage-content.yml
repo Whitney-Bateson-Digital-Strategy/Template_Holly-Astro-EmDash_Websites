@@ -1,0 +1,40 @@
+name: Add editable homepage (one time per site)
+
+# Runs scripts/add-homepage-content.mjs against a site that was set up before the editable Homepage existed.
+# It only ADDS the Homepage collection and its starting copy; existing content is never changed. Safe to re-run.
+# Needs the repo secret EMDASH_TOKEN (admin → Settings → API Tokens, scopes schema:write + content:write).
+# Run it from GitHub: Actions → "Add editable homepage" → Run workflow. Tick "dry run" first to see what it would add.
+
+on:
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: "Site address (no trailing slash)"
+        required: true
+        default: "https://t1-emdash-template.whitneybateson.workers.dev"
+      dry_run:
+        description: "Dry run (only list what would be added)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  add-homepage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Add the Homepage to the site
+        env:
+          EMDASH_TOKEN: ${{ secrets.EMDASH_TOKEN }}
+          SITE_URL: ${{ inputs.site_url }}
+        run: node scripts/add-homepage-content.mjs "$SITE_URL" ${{ inputs.dry_run && '--dry-run' || '' }}
