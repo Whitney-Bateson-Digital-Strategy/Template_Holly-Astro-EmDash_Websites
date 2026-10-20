@@ -2,7 +2,7 @@ name: Add editable homepage (one time per site)
 
 # Runs scripts/add-homepage-content.mjs against a site that was set up before the editable Homepage existed.
 # It only ADDS the Homepage collection and its starting copy; existing content is never changed. Safe to re-run.
-# Needs the repo secret EMDASH_TOKEN (admin → Settings → API Tokens, scopes schema:write + content:write).
+# Needs the repo secret EMDASH_TOKEN (admin → Settings → API Tokens, scopes schema:read, schema:write, content:read, content:write).
 # Run it from GitHub: Actions → "Add editable homepage" → Run workflow. Tick "dry run" first to see what it would add.
 
 on:

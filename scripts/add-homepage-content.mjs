@@ -9,7 +9,7 @@
  *   node scripts/add-homepage-content.mjs http://localhost:4321          (local dev, no token needed)
  *   add --dry-run to see what would be added
  *
- * Token: admin → Settings → API Tokens, with the "schema:write" and "content:write" scopes (or "admin").
+ * Token: admin → Settings → API Tokens, with the "schema:read", "schema:write", "content:read" and "content:write" scopes (or "admin").
  */
 import { readFile } from "node:fs/promises";
 import { EmDashClient } from "emdash/client";

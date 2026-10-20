@@ -105,7 +105,7 @@ and spreads `edit(field)` onto each element (EmDash's visual editing). Any field
 
 **Existing site, set up before the Homepage existed?** Seeds only apply to a fresh database, so add it once with
 `EMDASH_TOKEN=... node scripts/add-homepage-content.mjs https://the-site` (token: admin → Settings → API Tokens,
-scopes `schema:write` + `content:write`). It only adds what's missing and never changes existing content.
+scopes `schema:read`, `schema:write`, `content:read`, `content:write`). It only adds what's missing and never changes existing content.
 Until it's run, the home page shows the `src/data/home.ts` copy.
 
 **Deploys never touch content.** Content and uploads live in the D1 database and R2 bucket, not in the repo, so
