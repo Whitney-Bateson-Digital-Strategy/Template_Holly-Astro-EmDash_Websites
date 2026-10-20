@@ -3,7 +3,7 @@
   "version": "1",
   "meta": {
     "name": "Astro T1 Template",
-    "description": "WBDS T1 website template: blog posts + testimonials editable in EmDash"
+    "description": "WBDS T1 website template: homepage, blog posts + testimonials editable in EmDash"
   },
   "settings": {
     "title": "Brand Name",
@@ -46,6 +46,18 @@
           "slug": "excerpt",
           "label": "Excerpt",
           "type": "text"
+        },
+        {
+          "slug": "show_date",
+          "label": "Show published date",
+          "type": "boolean",
+          "defaultValue": true
+        },
+        {
+          "slug": "show_categories",
+          "label": "Show categories",
+          "type": "boolean",
+          "defaultValue": true
         }
       ]
     },
@@ -87,6 +99,371 @@
           "label": "Sort order",
           "type": "integer",
           "defaultValue": 0
+        }
+      ]
+    },
+    {
+      "slug": "homepage",
+      "label": "Homepage",
+      "labelSingular": "Homepage",
+      "description": "The words and photos on your home page. Easiest way to edit: open your website, click Edit in the bar at the bottom, then click any text or photo.",
+      "supports": [
+        "drafts",
+        "revisions"
+      ],
+      "routable": false,
+      "sortOrder": 0,
+      "admin": {
+        "quickCreate": false
+      },
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Page name (only shown here in the admin)",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "hero_image",
+          "label": "Top banner · Background photo (2250 × 944 px)",
+          "type": "image"
+        },
+        {
+          "slug": "hero_headline",
+          "label": "Top banner · Headline",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "hero_highlight",
+          "label": "Top banner · Headline second line (accent color)",
+          "type": "string"
+        },
+        {
+          "slug": "hero_text",
+          "label": "Top banner · Text under headline",
+          "type": "text"
+        },
+        {
+          "slug": "hero_button_label",
+          "label": "Top banner · Button text",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "hero_button_link",
+          "label": "Top banner · Button link (e.g. /booking)",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "intro_title",
+          "label": "Intro · Headline",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "intro_subtitle_start",
+          "label": "Intro · Subheading, first part",
+          "type": "string"
+        },
+        {
+          "slug": "intro_subtitle_highlight",
+          "label": "Intro · Subheading, colored part",
+          "type": "string"
+        },
+        {
+          "slug": "intro_subtitle_end",
+          "label": "Intro · Subheading, last part",
+          "type": "string"
+        },
+        {
+          "slug": "intro_text",
+          "label": "Intro · Paragraph",
+          "type": "text"
+        },
+        {
+          "slug": "services_eyebrow",
+          "label": "Services · Small script heading",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "services_title",
+          "label": "Services · Headline",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "services_button_prefix",
+          "label": "Services · Button text before each service name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "service_1_image",
+          "label": "Service 1 · Photo (1565 × 1282 px)",
+          "type": "image"
+        },
+        {
+          "slug": "service_1_eyebrow",
+          "label": "Service 1 · Small label",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "service_1_title",
+          "label": "Service 1 · Name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "service_1_summary",
+          "label": "Service 1 · One-line summary",
+          "type": "text"
+        },
+        {
+          "slug": "service_1_text",
+          "label": "Service 1 · Description",
+          "type": "text"
+        },
+        {
+          "slug": "service_2_image",
+          "label": "Service 2 · Photo (1565 × 1282 px)",
+          "type": "image"
+        },
+        {
+          "slug": "service_2_eyebrow",
+          "label": "Service 2 · Small label",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "service_2_title",
+          "label": "Service 2 · Name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "service_2_summary",
+          "label": "Service 2 · One-line summary",
+          "type": "text"
+        },
+        {
+          "slug": "service_2_text",
+          "label": "Service 2 · Description",
+          "type": "text"
+        },
+        {
+          "slug": "service_3_image",
+          "label": "Service 3 · Photo (1565 × 1282 px)",
+          "type": "image"
+        },
+        {
+          "slug": "service_3_eyebrow",
+          "label": "Service 3 · Small label",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "service_3_title",
+          "label": "Service 3 · Name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "service_3_summary",
+          "label": "Service 3 · One-line summary",
+          "type": "text"
+        },
+        {
+          "slug": "service_3_bullet_1",
+          "label": "Service 3 · Bullet 1",
+          "type": "string"
+        },
+        {
+          "slug": "service_3_bullet_2",
+          "label": "Service 3 · Bullet 2",
+          "type": "string"
+        },
+        {
+          "slug": "service_3_bullet_3",
+          "label": "Service 3 · Bullet 3",
+          "type": "string"
+        },
+        {
+          "slug": "service_3_bullet_4",
+          "label": "Service 3 · Bullet 4",
+          "type": "string"
+        },
+        {
+          "slug": "testimonials_label",
+          "label": "Testimonials · Small heading (edit the quotes under Testimonials)",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "newsletter_eyebrow",
+          "label": "Newsletter · Small script heading",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "newsletter_title",
+          "label": "Newsletter · Headline",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "newsletter_text",
+          "label": "Newsletter · Text",
+          "type": "text"
+        },
+        {
+          "slug": "newsletter_fineprint",
+          "label": "Newsletter · Small print",
+          "type": "string"
+        },
+        {
+          "slug": "newsletter_button",
+          "label": "Newsletter · Button text",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "about_image",
+          "label": "About · Photo (1563 × 1126 px)",
+          "type": "image"
+        },
+        {
+          "slug": "about_eyebrow",
+          "label": "About · Small script heading",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "about_title",
+          "label": "About · Headline",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "about_subtitle",
+          "label": "About · Subheading",
+          "type": "string"
+        },
+        {
+          "slug": "about_text",
+          "label": "About · Paragraph",
+          "type": "text"
+        },
+        {
+          "slug": "about_button_label",
+          "label": "About · Button text",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "about_button_link",
+          "label": "About · Button link (e.g. /about)",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "process_eyebrow",
+          "label": "Steps · Small heading",
+          "type": "string"
+        },
+        {
+          "slug": "process_title",
+          "label": "Steps · Headline",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "step_1_label",
+          "label": "Step 1 · Script label",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "step_1_title",
+          "label": "Step 1 · Title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "step_1_text",
+          "label": "Step 1 · Text",
+          "type": "text"
+        },
+        {
+          "slug": "step_2_label",
+          "label": "Step 2 · Script label",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "step_2_title",
+          "label": "Step 2 · Title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "step_2_text",
+          "label": "Step 2 · Text",
+          "type": "text"
+        },
+        {
+          "slug": "step_3_label",
+          "label": "Step 3 · Script label",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "step_3_title",
+          "label": "Step 3 · Title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "step_3_text",
+          "label": "Step 3 · Text",
+          "type": "text"
+        },
+        {
+          "slug": "process_button_label",
+          "label": "Steps · Button text",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "process_button_link",
+          "label": "Steps · Button link (e.g. /services)",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "blog_title",
+          "label": "Blog · Headline (the 3 newest posts show automatically)",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "blog_link_label",
+          "label": "Blog · \"View all\" link text",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "seo_title",
+          "label": "Search engines · Page title",
+          "type": "string"
+        },
+        {
+          "slug": "seo_description",
+          "label": "Search engines · Description",
+          "type": "text"
         }
       ]
     }
@@ -389,14 +766,88 @@
           "order": 3
         }
       }
+    ],
+    "homepage": [
+      {
+        "id": "homepage",
+        "slug": "home",
+        "status": "published",
+        "data": {
+          "title": "Homepage",
+          "hero_headline": "Add a headline that",
+          "hero_highlight": "speaks to your audience",
+          "hero_text": "Include a call to action that inspires visitors to take the next step.",
+          "hero_button_label": "Let's get started",
+          "hero_button_link": "/booking",
+          "intro_title": "Tired of struggling with the same problem?",
+          "intro_subtitle_start": "Need a solution that actually",
+          "intro_subtitle_highlight": "gets to the root",
+          "intro_subtitle_end": "instead of just masking it?",
+          "intro_text": "Describe what your ideal client is struggling with, in the words they'd use: the symptoms, the frustration, and what they've already tried. Then introduce how you help and why it works when other things haven't.",
+          "services_eyebrow": "services",
+          "services_title": "Let's Work Together",
+          "services_button_prefix": "Learn more about",
+          "service_1_eyebrow": "Individual",
+          "service_1_title": "1:1 Coaching",
+          "service_1_summary": "One sentence on the result this offer creates and who it's best for.",
+          "service_1_text": "Describe the offering in two or three sentences: what it is, how long it runs, and the change your client can expect.",
+          "service_2_eyebrow": "Collaborate",
+          "service_2_title": "Group Coaching",
+          "service_2_summary": "One sentence on the result this offer creates and who it's best for.",
+          "service_2_text": "Describe the offering in two or three sentences: what it is, how long it runs, and the change your client can expect.",
+          "service_3_eyebrow": "Self-Paced",
+          "service_3_title": "Online Program",
+          "service_3_summary": "One sentence on the result this offer creates and who it's best for.",
+          "service_3_bullet_1": "A key benefit or feature of this offer",
+          "service_3_bullet_2": "A second benefit, in your client's words",
+          "service_3_bullet_3": "What makes it easy to start",
+          "service_3_bullet_4": "Who it's the best fit for",
+          "testimonials_label": "Testimonials",
+          "newsletter_eyebrow": "newsletter",
+          "newsletter_title": "Keep In Touch",
+          "newsletter_text": "Get inspiration and expert advice delivered to your inbox, twice a month!",
+          "newsletter_fineprint": "(No spam. Unsubscribe at any time.)",
+          "newsletter_button": "Subscribe",
+          "about_eyebrow": "hi there!",
+          "about_title": "I'm Your Name",
+          "about_subtitle": "A one-line connection: I know how you feel",
+          "about_text": "Two or three sentences on your story: why you do this work and what makes your approach different. Keep it warm and personal; the full story lives on the About page.",
+          "about_button_label": "Learn more about me",
+          "about_button_link": "/about",
+          "process_eyebrow": "3 steps to success",
+          "process_title": "Your process goes here",
+          "step_1_label": "step 1:",
+          "step_1_title": "Book your call",
+          "step_1_text": "Describe the first step: how they get started and what happens on the call.",
+          "step_2_label": "step 2:",
+          "step_2_title": "Get your plan",
+          "step_2_text": "Explain how you map out their plan and match them to the right offer.",
+          "step_3_label": "step 3:",
+          "step_3_title": "Start seeing results",
+          "step_3_text": "Describe what working together looks like and the change they'll feel.",
+          "process_button_label": "Explore programs",
+          "process_button_link": "/services",
+          "blog_title": "The Blog",
+          "blog_link_label": "view all",
+          "seo_title": "",
+          "seo_description": ""
+        }
+      }
     ]
   },
   "widgetAreas": [
     {
       "name": "blog-sidebar",
       "label": "Blog Sidebar",
-      "description": "Boxes shown beside every blog post",
+      "description": "Boxes beside every blog post. Add, remove or drag to reorder.",
       "widgets": [
+        {
+          "type": "component",
+          "componentId": "core:search",
+          "props": {
+            "placeholder": "SEARCH"
+          }
+        },
         {
           "type": "content",
           "title": "Meet the Author",
@@ -430,7 +881,7 @@
                 {
                   "_type": "span",
                   "_key": "ws1",
-                  "text": "Learn more about me \u2192",
+                  "text": "Learn more about me →",
                   "marks": [
                     "l1"
                   ]
@@ -438,6 +889,66 @@
               ]
             }
           ]
+        },
+        {
+          "type": "component",
+          "title": "View categories",
+          "componentId": "core:categories",
+          "props": {
+            "showCount": false
+          }
+        },
+        {
+          "type": "content",
+          "title": "Download my free guide",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "f0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "f0s",
+                  "text": "One or two sentences on what's inside the freebie and why it helps. Tip: add an image at the top of this box for the freebie mockup.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "f1",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "f1l",
+                  "href": "/free-guide"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "f1s",
+                  "text": "download the free guide",
+                  "marks": [
+                    "f1l"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "component",
+          "title": "View recent posts",
+          "componentId": "core:recent-posts",
+          "props": {
+            "count": 3,
+            "showThumbnails": true,
+            "showDate": false
+          }
         }
       ]
     }
@@ -469,6 +980,16 @@
           "label": "Lifestyle"
         }
       ]
+    },
+    {
+      "name": "tag",
+      "label": "Tags",
+      "labelSingular": "Tag",
+      "hierarchical": false,
+      "collections": [
+        "posts"
+      ],
+      "terms": []
     }
   ]
 }

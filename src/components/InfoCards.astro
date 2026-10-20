@@ -14,7 +14,7 @@ const { eyebrow, title, cards } = Astro.props;
       {
         cards.map((c) => (
           <article class="flex flex-col bg-paper shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-            <div class="aspect-[16/9]"><Media {...c.image} /></div>
+            <div class="aspect-[820/462]"><Media {...c.image} /></div>
             <h3 class="bg-accent px-6 py-4 text-center !font-body !text-base !not-italic font-bold text-paper">{c.title}</h3>
             <p class="px-6 pt-6 pb-8 text-center">{c.body}</p>
           </article>

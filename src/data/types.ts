@@ -18,6 +18,8 @@ export interface Offer {
   cardImage?: Img;
   image?: Img;
   cta?: Link;
+  /** Optional bullet list shown instead of the description on the home page row */
+  homeBullets?: string[];
 }
 
 export interface Testimonial {
@@ -25,7 +27,12 @@ export interface Testimonial {
   headline: string;
   quote: string;
   name: string;
+  /** On-page editing attributes per field (set by src/lib/cms.ts) */
+  edit?: Partial<Record<"label" | "headline" | "quote" | "name", EditAttrs>>;
 }
+
+/** `data-emdash-ref` attribute for EmDash on-page editing; {} for visitors */
+export type EditAttrs = Record<string, string>;
 
 export interface Step { label: string; title: string; body: string }
 export interface Faq { q: string; a: string; /** optional highlighted prefix, e.g. "Module 01:" */ tag?: string }

@@ -39,6 +39,7 @@ export const offers: Offer[] = [
     included: ["Video lessons", "Downloadable guides", "Lifetime access", "Optional add-on check-in call"],
     cardImage: { src: "/images/t1/card-3.webp", alt: "Online program", label: "Offer 3 image" },
     image: { src: "/images/t1/offer-3.webp", alt: "Laptop, notebook and a bowl of fruit", label: "Offer 3 photo" },
+    homeBullets: ["A key benefit or feature of this offer", "A second benefit, in your client's words", "What makes it easy to start", "Who it's the best fit for"],
     cta: { label: "Get Started", href: "/booking" },
   },
 ];

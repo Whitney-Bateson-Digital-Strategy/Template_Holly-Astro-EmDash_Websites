@@ -1,75 +1,87 @@
 ---
+/**
+ * T1 V1 footer: lead-magnet band (OptIn), then a teal band with three link columns +
+ * "Keep in touch" newsletter form, then a dark bar with legal links and the credit.
+ * Column links + newsletter copy: `footer` in src/data/shared.ts. Legal links, socials,
+ * newsletter form endpoint and credit: src/site.config.ts.
+ */
 import OptIn from "./OptIn.astro";
-import SocialIcon from "./SocialIcon.astro";
 import { site } from "../site.config";
 import { footer } from "../data/shared";
+interface Props { hideOptIn?: boolean }
+const { hideOptIn = false } = Astro.props;
 const year = new Date().getFullYear();
+const nl = site.newsletter;
 ---
 
-<OptIn />
+{!hideOptIn && <OptIn />}
 
-<footer>
-  <!-- Main footer: sand -->
-  <div class="bg-sand">
-    <div class="container-site grid gap-10 py-14 md:grid-cols-[52%_1fr_auto] md:items-start">
-      <div class="md:pr-[14%]">
-        {
-          site.logo ? (
-            <img src={site.logo} alt={site.logoAlt} class="w-1/2 min-w-[180px]" />
-          ) : (
-            <p class="font-display text-2xl tracking-[2px] text-ink uppercase">{site.name}</p>
-          )
-        }
-        <p class="mt-6 text-ink">{footer.tagline}</p>
-      </div>
+<footer class="text-paper">
+  <div class="bg-primary">
+    <div class="container-site grid grid-cols-2 gap-10 py-12 sm:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_2.4fr] lg:gap-8">
+      {
+        footer.columns.map((col) => (
+          <nav aria-label={col.title}>
+            <h2 class="footer-heading">{col.title}</h2>
+            <ul class="mt-4 space-y-1.5">
+              {(col.socials ? site.socials.map((s) => ({ label: s.label, href: s.href, external: true })) : col.links.map((l) => ({ ...l, external: false }))).map((l) => (
+                <li>
+                  <a href={l.href} class="text-paper no-underline transition-colors hover:text-accent" {...(l.external ? { target: "_blank", rel: "noopener" } : {})}>
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
 
-      <nav aria-label="Footer">
-        <h2 class="!font-body !text-lg !leading-normal font-normal text-ink">{footer.linksTitle}</h2>
-        <ul class="mt-5 space-y-2">
-          {footer.links.map((l) => <li><a href={l.href} class="text-ink no-underline transition-colors hover:text-secondary">{l.label}</a></li>)}
-        </ul>
-      </nav>
-
-      <div class="md:text-right">
-        <h2 class="!font-body !text-lg !leading-normal font-normal text-ink">{footer.socialTitle}</h2>
-        <ul class="mt-5 flex flex-wrap gap-2 md:justify-end">
-          {
-            site.socials.map((s) => (
-              <li>
-                <a
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener"
-                  aria-label={s.label}
-                  class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-paper no-underline transition-colors hover:bg-secondary"
-                >
-                  <SocialIcon name={s.label} />
-                </a>
-              </li>
-            ))
-          }
-        </ul>
+      <div class="col-span-2 sm:col-span-3 lg:col-span-1">
+        <h2 class="footer-heading">{footer.newsletter.title}</h2>
+        <p class="mt-4">{footer.newsletter.body}</p>
+        <form action={nl.action || "#"} method={nl.method} class="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+          <label class="sr-only" for="footer-name">First name</label>
+          <input id="footer-name" class="field !border-0 !bg-mist !py-3 text-ink" type="text" name={nl.nameField} placeholder="NAME" autocomplete="given-name" />
+          <label class="sr-only" for="footer-email">Email address</label>
+          <input id="footer-email" class="field !border-0 !bg-mist !py-3 text-ink" type="email" name={nl.emailField} placeholder="EMAIL ADDRESS" autocomplete="email" required />
+          <button class="btn !px-8 !py-3" type="submit">{footer.newsletter.button}</button>
+        </form>
       </div>
     </div>
   </div>
 
-  <!-- Bottom bar: gold -->
-  <div class="bg-gold py-5 text-paper">
+  <div class="footer-bar py-5">
     <div class="container-site text-center">
       {
         site.footerLinks.length > 0 && (
-          <ul class="mb-2 flex flex-wrap justify-center gap-y-1 text-xs font-semibold uppercase tracking-wide">
+          <ul class="mb-1.5 flex flex-wrap justify-center gap-y-1 text-xs font-bold uppercase tracking-[1px]">
             {site.footerLinks.map((l, i) => (
-              <li class:list={["px-2.5", i > 0 && "border-l border-[#ddd]"]}>
-                <a href={l.href} class="no-underline hover:text-secondary">{l.label}</a>
+              <li class:list={["px-3", i > 0 && "border-l border-paper/40"]}>
+                <a href={l.href} class="text-paper no-underline hover:text-accent">{l.label}</a>
               </li>
             ))}
           </ul>
         )
       }
-      <p class="text-[13px] font-medium leading-[22px]">
-        © {year} {site.name} | Design By <a href={site.credit.href} target="_blank" rel="noopener" class="no-underline hover:text-secondary">{site.credit.label}</a>
+      <p class="text-[13px] leading-[22px]">
+        © {year} {site.name} <span class="px-2 opacity-60">|</span> Created by <a href={site.credit.href} target="_blank" rel="noopener" class="text-paper no-underline hover:text-accent">{site.credit.label}</a>
       </p>
     </div>
   </div>
 </footer>
+
+<style>
+  .footer-heading {
+    margin: 0;
+    font-family: var(--font-body);
+    font-style: normal;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 1.4;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .footer-bar { background: color-mix(in srgb, var(--color-primary) 70%, black); }
+  .field::placeholder { color: var(--color-ink); font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; opacity: 0.85; }
+</style>

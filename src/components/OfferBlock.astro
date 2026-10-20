@@ -6,10 +6,11 @@ interface Props { offer: Offer; imageSide: "left" | "right" }
 const { offer, imageSide } = Astro.props;
 ---
 
-<SplitSection id={offer.id} image={offer.image ?? { label: offer.title }} imageSide={imageSide} fullBleed class="scroll-mt-24 pb-12 md:pb-0" textClass="md:!py-20">
+<!-- Photo: 1943 x 1943 px (square) -->
+<SplitSection id={offer.id} image={offer.image ?? { label: offer.title }} imageSide={imageSide} fullBleed ratio="1/1" class="scroll-mt-24 py-8 md:py-12" textClass="md:!py-6">
   <p class="eyebrow-label text-accent">{offer.eyebrow}</p>
   <div class="my-3 h-px w-12 bg-primary"></div>
-  <h2>{offer.title}</h2>
+  <h2 class="uppercase">{offer.title}</h2>
   <p class="mt-4">{offer.description}</p>
   <h3 class="mt-8 !font-body !text-xl !not-italic font-medium">This is for you if:</h3>
   <CheckList items={offer.forYouIf} class="mt-3" variant="dot" />

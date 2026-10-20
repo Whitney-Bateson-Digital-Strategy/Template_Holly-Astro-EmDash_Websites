@@ -1,25 +1,37 @@
 ---
-/** Blog index (T1 layout): solid teal banner, 3-column grid, page numbers. Supports ?q= search and ?category= filter. */
+/** Blog index (T1 layout): solid teal banner, 3-column grid, page numbers. Supports ?q= search and ?category= / ?tag= / ?date= filters (used by the sidebar widgets). */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageBanner from "../../components/PageBanner.astro";
 import PostCard from "../../components/PostCard.astro";
-import { findPosts, getCategories } from "../../lib/cms";
+import { findPosts, getCategories, getTags, getArchives } from "../../lib/cms";
 
 const PER_PAGE = 9;
 const url = Astro.url;
 const q = url.searchParams.get("q") ?? "";
 const category = url.searchParams.get("category") ?? "";
+const tag = url.searchParams.get("tag") ?? "";
+const date = url.searchParams.get("date") ?? "";
 const page = Math.max(1, Number(url.searchParams.get("page")) || 1);
 
-const posts = await findPosts({ q, category });
+const posts = await findPosts({ q, category, tag, date });
 const pages = Math.max(1, Math.ceil(posts.length / PER_PAGE));
 const shown = posts.slice((page - 1) * PER_PAGE, page * PER_PAGE);
-const categoryName = category ? (await getCategories()).find((c) => c.slug === category)?.name ?? category : "";
+const filterLabel = q
+  ? `Results for “${q}”`
+  : category
+    ? `Category: ${(await getCategories()).find((c) => c.slug === category)?.name ?? category}`
+    : tag
+      ? `Tag: ${(await getTags()).find((t) => t.slug === tag)?.name ?? tag}`
+      : date
+        ? `Posts from ${(await getArchives(date.length === 4 ? "yearly" : "monthly", 1000)).find((a) => a.key === date)?.label ?? date}`
+        : "";
 
 const href = (n: number) => {
   const p = new URLSearchParams();
   if (q) p.set("q", q);
   if (category) p.set("category", category);
+  if (tag) p.set("tag", tag);
+  if (date) p.set("date", date);
   if (n > 1) p.set("page", String(n));
   const s = p.toString();
   return s ? `/blog?${s}` : "/blog";
@@ -31,9 +43,9 @@ const href = (n: number) => {
   <section class="section">
     <div class="container-site">
       {
-        (q || category) && (
+        filterLabel && (
           <p class="mb-8 text-center">
-            {q ? <>Results for “{q}”</> : <>Category: {categoryName}</>} · <a href="/blog" class="text-primary underline underline-offset-4">View all posts</a>
+            {filterLabel} · <a href="/blog" class="text-primary underline underline-offset-4">View all posts</a>
           </p>
         )
       }

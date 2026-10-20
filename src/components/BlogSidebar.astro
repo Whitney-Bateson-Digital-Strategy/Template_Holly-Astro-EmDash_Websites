@@ -1,95 +1,166 @@
 ---
 /**
- * Blog post sidebar (T1 layout), top to bottom:
- *  1. Search
- *  2. Boxes from the EmDash admin (Widgets -> "Blog Sidebar"), e.g. "Meet the Author" as a Content widget
- *  3. View Categories (from the EmDash "category" taxonomy)
- *  4. Download My Free Guide (src/data/shared.ts -> sidebarFreebie)
- *  5. View Recent Posts
+ * Blog post sidebar (T1 layout). 100% driven by the EmDash admin: Widgets -> "Blog Sidebar".
+ * Add, remove and reorder boxes there. Each widget type gets the T1 look:
+ *
+ *   Content (rich text)  -> titled box. Use it for Meet the Author, a freebie (add an image + link), etc.
+ *   Menu                 -> titled box with a link list
+ *   Search               -> T1 search bar (searches the blog)
+ *   Categories           -> link list -> /blog?category=...
+ *   Tags                 -> link list -> /blog?tag=...
+ *   Recent Posts         -> image + title cards (turn "thumbnails" off for a plain list)
+ *   Archives             -> month/year list -> /blog?date=YYYY-MM
+ *
+ * No widgets in the area = no sidebar boxes.
  */
-import { getWidgetAreas } from "emdash";
-import { WidgetArea } from "emdash/ui";
-import Media from "./Media.astro";
+import { getWidgetArea, getWidgetAreas, getMenu, type Widget } from "emdash";
+import { PortableText } from "emdash/ui";
 import PostImage from "./PostImage.astro";
-import { sidebarFreebie as fb } from "../data/shared";
-import { getCategories, getPosts } from "../lib/cms";
+import { getCategories, getTags, getPosts, getArchives } from "../lib/cms";
 
 interface Props { currentSlug?: string }
 const { currentSlug } = Astro.props;
 
 const PREFERRED = ["blog-sidebar", "sidebar"];
-let areaName: string | undefined;
+let widgets: Widget[] = [];
 try {
-  const areas = await getWidgetAreas();
-  areaName = PREFERRED.find((n) => areas.some((a) => a.name === n)) ?? areas[0]?.name;
+  let area = null;
+  for (const name of PREFERRED) {
+    area = await getWidgetArea(name);
+    if (area) break;
+  }
+  if (!area) {
+    const first = (await getWidgetAreas())[0];
+    if (first) area = await getWidgetArea(first.name);
+  }
+  widgets = area?.widgets ?? [];
 } catch (e) {
   console.error("[sidebar]", e);
 }
-const [categories, recent] = await Promise.all([getCategories(), getPosts(4)]);
-const recentPosts = recent.filter((p) => p.slug !== currentSlug).slice(0, 3);
+
+type Box =
+  | { kind: "content"; title?: string; content: unknown }
+  | { kind: "links"; title?: string; links: { label: string; href: string; note?: string }[] }
+  | { kind: "search"; placeholder: string }
+  | { kind: "posts"; title?: string; thumbs: boolean; showDate: boolean; posts: Awaited<ReturnType<typeof getPosts>> };
+
+const boxes: Box[] = [];
+for (const w of widgets) {
+  const props = (w.componentProps ?? {}) as Record<string, unknown>;
+  try {
+    if (w.type === "content" && w.content) {
+      boxes.push({ kind: "content", title: w.title, content: w.content });
+    } else if (w.type === "menu" && w.menuName) {
+      const menu = await getMenu(w.menuName);
+      if (menu?.items?.length) boxes.push({ kind: "links", title: w.title, links: menu.items.map((i) => ({ label: i.label, href: i.url })) });
+    } else if (w.type === "component") {
+      switch (w.componentId) {
+        case "core:search":
+          boxes.push({ kind: "search", placeholder: String(props.placeholder ?? "SEARCH") });
+          break;
+        case "core:categories": {
+          const showCount = props.showCount === true;
+          const cats = await getCategories();
+          if (cats.length)
+            boxes.push({
+              kind: "links",
+              title: w.title || "View categories",
+              links: [
+                ...cats.map((c) => ({ label: c.name, href: `/blog?category=${c.slug}`, note: showCount && c.count != null ? `(${c.count})` : undefined })),
+                { label: "View all posts", href: "/blog" },
+              ],
+            });
+          break;
+        }
+        case "core:tags": {
+          const showCount = props.showCount === true;
+          const tags = (await getTags()).slice(0, Number(props.limit ?? 20));
+          if (tags.length)
+            boxes.push({ kind: "links", title: w.title || "Tags", links: tags.map((t) => ({ label: t.name, href: `/blog?tag=${t.slug}`, note: showCount && t.count != null ? `(${t.count})` : undefined })) });
+          break;
+        }
+        case "core:recent-posts": {
+          const count = Number(props.count ?? 3);
+          const posts = (await getPosts(count + 1)).filter((p) => p.slug !== currentSlug).slice(0, count);
+          if (posts.length)
+            boxes.push({ kind: "posts", title: w.title || "View recent posts", thumbs: props.showThumbnails !== false, showDate: props.showDate === true, posts });
+          break;
+        }
+        case "core:archives": {
+          const list = await getArchives(props.type === "yearly" ? "yearly" : "monthly", Number(props.limit ?? 12));
+          if (list.length) boxes.push({ kind: "links", title: w.title || "Archives", links: list.map((a) => ({ label: a.label, href: `/blog?date=${a.key}`, note: `(${a.count})` })) });
+          break;
+        }
+      }
+    }
+  } catch (e) {
+    console.error("[sidebar] widget", w.id, e);
+  }
+}
+const fmt = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric" });
 ---
 
-<aside class="blog-sidebar space-y-8" aria-label="Sidebar">
-  <form action="/blog" method="get" role="search" class="relative">
-    <label for="sb-search" class="sr-only">Search the blog</label>
-    <input id="sb-search" type="search" name="q" placeholder="SEARCH" class="w-full bg-[#f4f8fc] py-4 pr-12 pl-5 text-xs font-bold tracking-[1px] placeholder:text-ink focus:outline-2 focus:outline-secondary" />
-    <button type="submit" class="absolute top-1/2 right-4 -translate-y-1/2 text-ink hover:text-secondary" aria-label="Search">
-      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" stroke-linecap="round" /></svg>
-    </button>
-  </form>
-
-  {areaName && <WidgetArea name={areaName} class="space-y-8" />}
-
-  {
-    categories.length > 0 && (
-      <section class="sb-box">
-        <h2 class="sb-title">View categories</h2>
-        <ul class="sb-body sb-list">
-          {categories.map((c) => <li><a href={`/blog?category=${c.slug}`}>{c.name}</a></li>)}
-          <li><a href="/blog">View all posts</a></li>
-        </ul>
-      </section>
-    )
-  }
-
-  {
-    fb.show && (
-      <section class="sb-box">
-        <h2 class="sb-title">{fb.title}</h2>
-        <div class="aspect-[2/1]"><Media {...fb.image} /></div>
-        <div class="sb-body">
-          <p class="text-sm">{fb.body}</p>
-          <a href={fb.link.href} class="mt-4 inline-block text-sm font-medium text-primary underline underline-offset-4 hover:text-secondary">{fb.link.label}</a>
-        </div>
-      </section>
-    )
-  }
-
-  {
-    recentPosts.length > 0 && (
-      <section>
-        <h2 class="sb-title">View recent posts</h2>
-        <ul class="mt-4 space-y-6">
-          {recentPosts.map((p) => (
-            <li>
-              <a href={`/blog/${p.slug}`} class="group block no-underline">
-                <div class="aspect-[3/2] overflow-hidden"><PostImage image={p.image} /></div>
-                <p class="mt-3 text-center text-sm group-hover:text-secondary">{p.title}</p>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )
-  }
-</aside>
+{
+  boxes.length > 0 && (
+    <aside class="blog-sidebar space-y-8" aria-label="Sidebar">
+      {boxes.map((b, i) =>
+        b.kind === "search" ? (
+          <form action="/blog" method="get" role="search" class="relative">
+            <label for={`sb-search-${i}`} class="sr-only">Search the blog</label>
+            <input id={`sb-search-${i}`} type="search" name="q" placeholder={b.placeholder} class="w-full bg-[#f4f8fc] py-4 pr-12 pl-5 text-xs font-bold tracking-[1px] placeholder:text-ink focus:outline-2 focus:outline-secondary" />
+            <button type="submit" class="absolute top-1/2 right-4 -translate-y-1/2 text-ink hover:text-secondary" aria-label="Search">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" stroke-linecap="round" /></svg>
+            </button>
+          </form>
+        ) : b.kind === "content" ? (
+          <section class="sb-box">
+            {b.title && <h2 class="sb-title">{b.title}</h2>}
+            <div class="sb-body sb-rich"><PortableText value={b.content} /></div>
+          </section>
+        ) : b.kind === "links" ? (
+          <section class="sb-box">
+            {b.title && <h2 class="sb-title">{b.title}</h2>}
+            <ul class="sb-body sb-list">
+              {b.links.map((l) => <li><a href={l.href}>{l.label}</a>{l.note && <span class="ml-1 opacity-60">{l.note}</span>}</li>)}
+            </ul>
+          </section>
+        ) : b.thumbs ? (
+          <section>
+            {b.title && <h2 class="sb-title">{b.title}</h2>}
+            <ul class="mt-4 space-y-6">
+              {b.posts.map((p) => (
+                <li>
+                  <a href={`/blog/${p.slug}`} class="group block no-underline">
+                    <div class="aspect-[3/2] overflow-hidden"><PostImage image={p.image} /></div>
+                    <p class="mt-3 text-center text-sm group-hover:text-secondary">{p.title}</p>
+                    {b.showDate && p.date && <p class="text-center text-xs opacity-65">{fmt.format(p.date)}</p>}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : (
+          <section class="sb-box">
+            {b.title && <h2 class="sb-title">{b.title}</h2>}
+            <ul class="sb-body sb-list">
+              {b.posts.map((p) => (
+                <li>
+                  <a href={`/blog/${p.slug}`}>{p.title}</a>
+                  {b.showDate && p.date && <span class="block text-xs opacity-65">{fmt.format(p.date)}</span>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ),
+      )}
+    </aside>
+  )
+}
 
 <style is:global>
-  /* Shared box style: teal title bar on a white card (also applied to EmDash admin widgets) */
-  .blog-sidebar .sb-box,
-  .blog-sidebar .widget { background: var(--color-paper); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); }
-  .blog-sidebar .sb-title,
-  .blog-sidebar .widget__title {
+  /* T1 box: teal title bar on a white card */
+  .blog-sidebar .sb-box { background: var(--color-paper); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); }
+  .blog-sidebar .sb-title {
     margin: 0;
     background: var(--color-primary);
     color: var(--color-paper);
@@ -102,19 +173,20 @@ const recentPosts = recent.filter((p) => p.slug !== currentSlug).slice(0, 3);
     line-height: 1.4;
     text-transform: uppercase;
   }
-  .blog-sidebar .sb-body,
-  .blog-sidebar .widget__content { padding: 1.25rem 1.5rem 1.5rem; font-size: 0.875rem; }
-  .blog-sidebar .widget__content p { margin-bottom: 0.75rem; }
-  .blog-sidebar .widget__content img { width: calc(100% + 3rem); max-width: none; margin: -1.25rem -1.5rem 1rem; height: auto; }
-  .blog-sidebar .widget__content a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 4px; }
-  .blog-sidebar .sb-list li,
-  .blog-sidebar .widget__content li { padding: 0.6rem 0; border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent); }
-  .blog-sidebar .sb-list li:last-child,
-  .blog-sidebar .widget__content li:last-child { border-bottom: 0; }
-  .blog-sidebar .sb-list a,
-  .blog-sidebar .widget__content li a { color: var(--color-ink); text-decoration: none; }
-  .blog-sidebar .sb-list a:hover,
-  .blog-sidebar .widget__content li a:hover { color: var(--color-secondary); }
-  .blog-sidebar .widget__content ul { list-style: none; padding: 0; }
-  .blog-sidebar .widget__content time { display: block; font-size: 0.75rem; opacity: 0.65; }
+  .blog-sidebar .sb-body { padding: 1.25rem 1.5rem 1.5rem; font-size: 0.875rem; }
+  .blog-sidebar .sb-rich p { margin-bottom: 0.75rem; }
+  .blog-sidebar .sb-rich p:last-child { margin-bottom: 0; }
+  /* An image at the top of a Content widget (e.g. a freebie mockup) runs edge to edge under the title bar */
+  .blog-sidebar .sb-rich > :first-child:is(figure, img, .emdash-image) { margin: -1.25rem -1.5rem 1rem; }
+  /* Widget images (author photo, freebie mockup): 1160 x 596 px */
+  .blog-sidebar .sb-rich img { width: 100%; height: auto; aspect-ratio: 1160 / 596; object-fit: cover; display: block; }
+  .blog-sidebar .sb-rich figure { margin-bottom: 1rem; }
+  .blog-sidebar .sb-rich a { color: var(--color-primary); font-weight: 500; text-decoration: underline; text-underline-offset: 4px; }
+  .blog-sidebar .sb-rich a:hover { color: var(--color-secondary); }
+  .blog-sidebar .sb-list { list-style: none; }
+  .blog-sidebar .sb-list li { padding: 0.6rem 0; border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent); }
+  .blog-sidebar .sb-list li:first-child { padding-top: 0; }
+  .blog-sidebar .sb-list li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .blog-sidebar .sb-list a { color: var(--color-ink); text-decoration: none; }
+  .blog-sidebar .sb-list a:hover { color: var(--color-secondary); }
 </style>
