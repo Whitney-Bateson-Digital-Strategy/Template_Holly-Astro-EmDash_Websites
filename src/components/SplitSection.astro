@@ -4,10 +4,14 @@
  * Used for Problem, Solution, About teaser, Process rows, About-page blocks.
  */
 import Media from "./Media.astro";
-import type { Img } from "../data/types";
+import type { EditAttrs, Img } from "../data/types";
 
 interface Props {
   image: Img;
+  /** Photo picked in EmDash (replaces image.src) */
+  media?: unknown;
+  /** On-page editing attributes for the photo */
+  imageEdit?: EditAttrs;
   imageSide?: "left" | "right";
   class?: string;       // section classes (background, padding)
   textClass?: string;   // extra classes for the text column (e.g. a colored panel)
@@ -17,7 +21,7 @@ interface Props {
   /** Fixed image shape from the design, e.g. "1565/1282" (width/height). Default: image stretches to the text height */
   ratio?: string;
 }
-const { image, imageSide = "right", class: className = "section", textClass = "", id, fullBleed = false, ratio } = Astro.props;
+const { image, media, imageEdit, imageSide = "right", class: className = "section", textClass = "", id, fullBleed = false, ratio } = Astro.props;
 ---
 
 <section id={id} class={className}>
@@ -47,8 +51,9 @@ const { image, imageSide = "right", class: className = "section", textClass = ""
       <div
         class:list={["order-first", !ratio && "min-h-[320px] md:min-h-[460px]", imageSide === "right" ? "md:order-2" : "md:order-1"]}
         style={ratio ? `aspect-ratio: ${ratio}` : undefined}
+        {...imageEdit}
       >
-        <Media {...image} />
+        <Media {...image} media={media} />
       </div>
     </div>
   </div>

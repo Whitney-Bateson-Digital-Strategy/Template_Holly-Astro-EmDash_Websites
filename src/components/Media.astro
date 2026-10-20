@@ -3,8 +3,11 @@
  * Image with a built-in placeholder.
  * Pass `src` once real photos exist; until then a labeled placeholder renders
  * so layouts can be reviewed without stock images.
+ * `media` = an image picked in EmDash; it replaces `src` (same cropping, responsive sizes, alt text set in EmDash).
  */
+import { Image } from "emdash/ui";
 interface Props {
+  media?: unknown;
   src?: string;
   alt?: string;
   label?: string;
@@ -14,11 +17,13 @@ interface Props {
   hideLabel?: boolean;
   position?: string;
 }
-const { src, alt = "", label = "Image", class: className = "", eager = false, hideLabel = false, position } = Astro.props;
+const { media, src, alt = "", label = "Image", class: className = "", eager = false, hideLabel = false, position } = Astro.props;
 ---
 
 {
-  src ? (
+  media ? (
+    <Image image={media as any} priority={eager} class:list={["h-full w-full object-cover", className]} />
+  ) : src ? (
     <img src={src} alt={alt} class:list={["h-full w-full object-cover", className]} loading={eager ? "eager" : "lazy"} decoding="async" style={position ? `object-position: ${position}` : undefined} />
   ) : (
     <div

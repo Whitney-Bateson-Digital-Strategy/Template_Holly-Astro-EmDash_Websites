@@ -1,7 +1,8 @@
 # WBDS T1 Website Template (Astro + EmDash)
 
-The T1 website template, rebuilt in Astro with the EmDash CMS. Clients edit blog posts, testimonials and the blog
-sidebar at `/_emdash/admin`. Everything else (page layouts and copy) lives in this repo and is changed via pull request.
+The T1 website template, rebuilt in Astro with the EmDash CMS. Clients edit the home page (text, photos, buttons),
+blog posts, testimonials and the blog sidebar themselves, right on the page or at `/_emdash/admin`.
+Everything else (layouts, design, other pages' copy) lives in this repo and is changed via pull request.
 
 Pages: Home, About, Services, Program, Blog, Blog post, Contact, Booking, Free guide, Terms, Disclaimer, Privacy Policy, 404.
 
@@ -18,7 +19,7 @@ npm run dev                                 # http://localhost:4321
 ```
 
 Then open **http://localhost:4321/_emdash/admin**. The setup wizard asks for the site title, an admin account and a passkey.
-Choose **Sample content** to load 3 sample posts + 3 testimonials from `.emdash/seed.json`.
+Choose **Sample content** to load the home page copy, 3 sample posts + 3 testimonials from `.emdash/seed.json`.
 
 `data.db` (content) and `uploads/` (media) are created locally and are git-ignored.
 
@@ -29,12 +30,12 @@ Choose **Sample content** to load 3 sample posts + 3 testimonials from `.emdash/
 | Brand name, nav, CTA, socials, form endpoints, booking embed | `src/site.config.ts` |
 | Colors and fonts | `@theme` block at the top of `src/styles/global.css` |
 | Google Fonts link (if fonts change) | `src/layouts/BaseLayout.astro` |
-| Home page copy | `src/data/home.ts` |
+| Home page copy, photos, button text + links | EmDash: click **Edit** on the home page, or admin → **Homepage** (starting copy + fallback: `src/data/home.ts`) |
 | Footer columns + newsletter copy, free-guide band, "ready?" band, in-post CTA | `src/data/shared.ts` |
 | Free guide page (`/free-guide`) + legal pages | `src/data/pages.ts` |
 | About page copy | `src/data/about.ts` |
 | Services page intro + FAQ | `src/data/services.ts` |
-| Offers (shared by home rows, services page, contact dropdown) | `src/data/offers.ts` |
+| Offers (services page, contact dropdown; home rows start from these) | `src/data/offers.ts` |
 | Testimonials (shared) | EmDash admin → Testimonials (falls back to `src/data/testimonials.ts` if empty) |
 | Contact + booking copy, contact form fields | `src/data/contact.ts` |
 | Program sales page (`/program`) | `src/data/program.ts` (duplicate it + `src/pages/program.astro` for more programs) |
@@ -85,6 +86,31 @@ keeping the same file names, or point the data files at new ones.
 | `src/worker.ts` + `wrangler.jsonc` | Cloudflare Worker entry + database/media bindings |
 | `src/components/BlogSidebar.astro` | Blog post sidebar: renders the EmDash **Blog Sidebar** widgets in the T1 style |
 | `.emdash/seed.json` | Content model (Posts, Testimonials) + sample content applied by the setup wizard |
+
+## Editing the home page (clients)
+
+1. Log in at `<site>/_emdash/admin`, then open the website. A bar with an **Edit mode** switch sits at the bottom.
+2. Turn on **Edit mode**. Click any text to change it; press Enter (or click away) to save. Esc cancels.
+3. Click a photo (or an empty part of the top banner) to **Upload** a new one, pick one from the library (**Replace**),
+   or change its alt text.
+4. Under each button, a dark **Button goes to:** label shows its link (edit mode only). Click it to change it.
+5. Click **Publish**. Until then, changes are a draft that only logged-in editors see.
+
+The same fields are in admin → **Homepage** (one entry, grouped by section), along with revision history.
+Testimonials edited on the page go live as soon as they're saved (that collection has no draft step).
+
+How it's built: `src/pages/index.astro` reads the single "home" entry through `getHomepage()` in `src/lib/cms.ts`
+and spreads `edit(field)` onto each element (EmDash's visual editing). Any field missing from EmDash falls back to
+`src/data/home.ts`, so the page never breaks. Text fields are edited in place; image fields open the photo picker.
+
+**Existing site, set up before the Homepage existed?** Seeds only apply to a fresh database, so add it once with
+`EMDASH_TOKEN=... node scripts/add-homepage-content.mjs https://the-site` (token: admin → Settings → API Tokens,
+scopes `schema:write` + `content:write`). It only adds what's missing and never changes existing content.
+Until it's run, the home page shows the `src/data/home.ts` copy.
+
+**Deploys never touch content.** Content and uploads live in the D1 database and R2 bucket, not in the repo, so
+pushing code (or redeploying) can't overwrite what clients edited. Changing `home.ts` after launch only changes the
+fallback; edit the live copy in EmDash instead.
 
 **Making more sections editable** (offers, FAQ, page copy): add a collection in the admin, snapshot it with
 `npx emdash export-seed > .emdash/seed.json`, add a getter in `src/lib/cms.ts` with a data-file fallback,
