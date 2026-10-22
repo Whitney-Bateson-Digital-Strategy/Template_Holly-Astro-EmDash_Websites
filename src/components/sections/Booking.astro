@@ -1,5 +1,6 @@
 ---
 /** Booking calendar: intro and the booking embed (Calendly, Acuity, TidyCal…). */
+import Accent from "../Accent.astro";
 import RichText from "../RichText.astro";
 import EditLink from "../EditLink.astro";
 import { site } from "../../site.config";
@@ -10,8 +11,8 @@ const embed = String(b.embed_url || site.bookingEmbedUrl || "");
 
 <section class:list={["pb-16 md:pb-20", !flush && "pt-16 md:pt-20"]}>
   <div class="container-site max-w-3xl text-center">
-    {b.eyebrow && <p class="eyebrow-script text-accent" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
-    {b.title && <h2 class="mt-2" {...e.attrs("title")}>{b.title}</h2>}
+    {b.eyebrow && <p class="eyebrow-script text-accent-text" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
+    {b.title && <h2 class="mt-2" {...e.attrs("title")}><Accent text={b.title} on={e.on} /></h2>}
     <RichText value={b.text} edit={e} field="text" relaxed class="mt-4" />
   </div>
   <div class="container-site mt-10 max-w-4xl">
@@ -20,7 +21,7 @@ const embed = String(b.embed_url || site.bookingEmbedUrl || "");
       embed ? (
         <iframe src={embed} title="Book a call" class="h-[760px] w-full border-0" loading="lazy" />
       ) : (
-        <div class="flex h-[420px] items-center justify-center border-2 border-dashed border-ink/20 bg-mist text-center text-ink/60">
+        <div class="flex h-[420px] items-center justify-center border-2 border-dashed border-ink/20 bg-mist text-center text-ink/80">
           <p>Booking calendar embed goes here.<br />Add the calendar link to this section in the admin (Pages → Book a Call).</p>
         </div>
       )

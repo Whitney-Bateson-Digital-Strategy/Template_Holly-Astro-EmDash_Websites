@@ -1,5 +1,6 @@
 ---
 /** Newsletter sign-up box. The form posts to site.newsletter in src/site.config.ts. */
+import Accent from "../Accent.astro";
 import RichText from "../RichText.astro";
 import { site } from "../../site.config";
 import type { SectionProps } from "./types";
@@ -11,7 +12,7 @@ const nl = site.newsletter;
   <div class="container-site">
     <div class="bg-primary px-6 py-14 text-center text-paper md:p-20">
       {b.eyebrow && <p class="eyebrow-script text-accent" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
-      <h2 class="mt-2 text-paper" {...e.attrs("title")}>{b.title}</h2>
+      <h2 class="mt-2 text-paper" {...e.attrs("title")}><Accent text={b.title} on={e.on} tone="dark" /></h2>
       <RichText value={b.text} edit={e} field="text" class="mx-auto mt-4 max-w-xl text-[15px]" />
       {b.fineprint && <p class="mt-1 text-[13px] text-paper/80" {...e.attrs("fineprint")}>{b.fineprint}</p>}
       <form action={nl.action || "#"} method={nl.method} class="mx-auto mt-8 grid max-w-2xl gap-3 md:grid-cols-[1fr_1fr_auto]">

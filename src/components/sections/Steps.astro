@@ -1,5 +1,6 @@
 ---
 /** Steps on a teal band ("3 steps to success"). Add or remove steps in the admin. */
+import Accent from "../Accent.astro";
 import Button from "../Button.astro";
 import type { SectionProps } from "./types";
 const { b, e } = Astro.props as SectionProps;
@@ -9,7 +10,7 @@ const steps: Record<string, string>[] = Array.isArray(b.steps) ? b.steps : [];
 <section class="bg-primary py-16 text-center text-paper md:py-20">
   <div class="container-site">
     {b.eyebrow && <p class="text-sm font-bold uppercase tracking-[1px]" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
-    <h2 class="mt-2 text-paper uppercase" {...e.attrs("title")}>{b.title}</h2>
+    <h2 class="mt-2 text-paper uppercase" {...e.attrs("title")}><Accent text={b.title} on={e.on} tone="dark" /></h2>
     <div class="mt-10 grid gap-10 md:grid-cols-3">
       {
         steps.map((s, i) => {

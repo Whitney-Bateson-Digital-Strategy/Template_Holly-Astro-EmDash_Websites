@@ -19,14 +19,14 @@ const linkClass = "text-[15px] font-bold uppercase tracking-[0.7px] no-underline
 
 {
   s.announcement_text && (
-    <div class="bg-primary px-5 py-2.5 text-center text-[15px] font-semibold text-paper">
+    <aside aria-label="Announcement" class="bg-primary px-5 py-2.5 text-center text-[15px] font-semibold text-paper">
       {s.announcement_link ? (
         <a href={s.announcement_link} class="no-underline hover:text-accent"><span {...e.attrs("announcement_text")}>{s.announcement_text}</span></a>
       ) : (
         <span {...e.attrs("announcement_text")}>{s.announcement_text}</span>
       )}
       <EditLink attrs={e.attrs("announcement_link")} href={s.announcement_link || "(no link)"} label="Links to:" class="mx-auto" />
-    </div>
+    </aside>
   )
 }
 <header class="sticky top-0 z-40 bg-paper shadow-[0_3px_40px_rgba(0,0,0,0.15)]">

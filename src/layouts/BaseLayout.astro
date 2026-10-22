@@ -24,6 +24,21 @@ const fullTitle = title ? `${title} | ${s.brand_name}` : `${s.brand_name} | ${s.
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = image ? new URL(image, Astro.site).href : undefined;
 
+// Structured data (JSON-LD) so search engines know who the business is. Business name, description and
+// social links come from EmDash → Site-wide content. Logo is included when it has a public address.
+const sd = siteContent.data as Record<string, any>;
+const logoSrc = typeof sd.logo?.src === "string" && sd.logo.src ? new URL(sd.logo.src, Astro.site).href : undefined;
+const sameAs = (Array.isArray(sd.socials) ? sd.socials : []).map((x: Record<string, string>) => x?.url).filter((u: unknown) => typeof u === "string" && /^https?:/.test(u));
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: s.brand_name,
+  url: new URL("/", Astro.site).href,
+  ...(s.description ? { description: s.description } : {}),
+  ...(logoSrc ? { logo: logoSrc, image: logoSrc } : {}),
+  ...(sameAs.length ? { sameAs } : {}),
+};
+
 // Edit mode (a logged-in editor turned it on): the toolbar reads Publish status from the first annotated element
 const primary = edit?.on ? edit : siteContent.edit;
 const editing = primary.on;
@@ -55,6 +70,7 @@ const editing = primary.on;
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Oooh+Baby&family=Questrial&display=swap"
     />
+    <script type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, "\\u003c")} />
     {editing && <script is:inline set:html={editAdapter} />}
   </head>
   <body class="flex min-h-screen flex-col">

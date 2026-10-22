@@ -757,8 +757,8 @@
                 "src": "/images/t1/hero.webp",
                 "alt": "Laptop surrounded by fresh vegetables"
               },
-              "headline": "Add a headline that",
-              "highlight": "speaks to your audience",
+              "headline": "Add a headline that *speaks to your audience*",
+              "highlight": "",
               "text": [
                 {
                   "_type": "block",
@@ -782,9 +782,9 @@
               "_type": "intro",
               "_key": "int6",
               "title": "Tired of struggling with the same problem?",
-              "subtitle_start": "Need a solution that actually",
-              "subtitle_highlight": "gets to the root",
-              "subtitle_end": "instead of just masking it?",
+              "subtitle_start": "Need a solution that actually *gets to the root* instead of just masking it?",
+              "subtitle_highlight": "",
+              "subtitle_end": "",
               "text": [
                 {
                   "_type": "block",
@@ -3171,13 +3171,13 @@
             },
             {
               "slug": "headline",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string",
               "required": true
             },
             {
               "slug": "highlight",
-              "label": "Headline second line (accent color)",
+              "label": "Old: headline second line (leave empty; use *asterisks* in Headline)",
               "type": "string"
             },
             {
@@ -3258,7 +3258,7 @@
             },
             {
               "slug": "title",
-              "label": "Page title",
+              "label": "Page title (*asterisks* around words = accent color)",
               "type": "string",
               "required": true
             },
@@ -3293,23 +3293,23 @@
           "fields": [
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string",
               "required": true
             },
             {
               "slug": "subtitle_start",
-              "label": "Subheading, first part",
+              "label": "Subheading (*asterisks* around words = accent color)",
               "type": "string"
             },
             {
               "slug": "subtitle_highlight",
-              "label": "Subheading, colored part",
+              "label": "Old: subheading colored part (leave empty; use *asterisks* in Subheading)",
               "type": "string"
             },
             {
               "slug": "subtitle_end",
-              "label": "Subheading, last part",
+              "label": "Old: subheading last part (leave empty; use *asterisks* in Subheading)",
               "type": "string"
             },
             {
@@ -3333,7 +3333,7 @@
           "fields": [
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string",
               "required": true
             },
@@ -3418,7 +3418,7 @@
             },
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string"
             },
             {
@@ -3556,7 +3556,7 @@
             },
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string"
             },
             {
@@ -3628,7 +3628,7 @@
             },
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string",
               "required": true
             },
@@ -3668,7 +3668,7 @@
             },
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string",
               "required": true
             },
@@ -3713,7 +3713,7 @@
             },
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string",
               "required": true
             },
@@ -3753,7 +3753,7 @@
             },
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string",
               "required": true
             },
@@ -3812,7 +3812,7 @@
             },
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string"
             },
             {
@@ -3855,7 +3855,7 @@
           "fields": [
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string"
             },
             {
@@ -3968,7 +3968,7 @@
             },
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string",
               "required": true
             },
@@ -4008,7 +4008,7 @@
           "fields": [
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string"
             },
             {
@@ -4086,7 +4086,7 @@
             },
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string",
               "required": true
             },
@@ -4145,7 +4145,7 @@
           "fields": [
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string"
             },
             {
@@ -4187,7 +4187,7 @@
             },
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string"
             },
             {
@@ -4246,7 +4246,7 @@
             },
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string"
             },
             {
@@ -4285,7 +4285,7 @@
             },
             {
               "slug": "title",
-              "label": "Headline",
+              "label": "Headline (*asterisks* around words = accent color)",
               "type": "string",
               "required": true
             },

@@ -1,0 +1,24 @@
+---
+/**
+ * Headline text where words wrapped in *asterisks* show in the accent color, all in ONE field:
+ *   "Nutrition that *fits your life*"  →  Nutrition that <span class="hl">fits your life</span>
+ * In edit mode the asterisks stay visible, so editors see (and keep) them while typing in place.
+ * `tone` picks a color that passes WCAG AA contrast on the background behind the headline.
+ */
+import { splitAccent } from "../lib/accent";
+interface Props {
+  text?: unknown;
+  /** True in edit mode (pass `e.on`): show the raw text with its asterisks */
+  on?: boolean;
+  /** Background behind the headline: light (default), dark (teal/photo) or accent (an accent-colored box) */
+  tone?: "light" | "dark" | "accent";
+  /** Override the highlight color class, e.g. "text-secondary" */
+  class?: string;
+}
+const { text, on = false, tone = "light", class: cls } = Astro.props;
+const raw = String(text ?? "");
+const parts = splitAccent(raw);
+const color = cls ?? { light: "text-accent-text", dark: "text-accent", accent: "text-primary" }[tone];
+---
+
+{on ? raw : parts.map((p) => (p.hl ? <span class={color}>{p.text}</span> : p.text))}

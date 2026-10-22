@@ -1,5 +1,6 @@
 ---
 /** Free guide sign-up: photo (1155 x 595 or taller) beside the sign-up form. The form posts to site.optin in src/site.config.ts. */
+import Accent from "../Accent.astro";
 import Media from "../Media.astro";
 import RichText from "../RichText.astro";
 import { site } from "../../site.config";
@@ -17,7 +18,7 @@ const list = Array.isArray(b.list) && b.list.length > 0;
     <div class="flex items-center px-5 py-14 md:px-[8%] md:py-20">
       <div class="w-full max-w-[520px]">
         {b.eyebrow && <p class="eyebrow-script text-primary" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
-        <h1 class="mt-2 uppercase" {...e.attrs("title")}>{b.title}</h1>
+        <h1 class="mt-2 uppercase" {...e.attrs("title")}><Accent text={b.title} on={e.on} /></h1>
         <RichText value={b.text} edit={e} field="text" class="mt-4 text-lg" />
         {
           (list || e.on) && (

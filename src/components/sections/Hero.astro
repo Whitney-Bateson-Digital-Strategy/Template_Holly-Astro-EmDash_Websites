@@ -1,5 +1,9 @@
 ---
-/** Big photo banner (home): photo 2250 x 944 with a dark overlay, centered headline, text and button */
+/**
+ * Big photo banner (home): photo 2250 x 944 with a dark overlay, centered headline, text and button.
+ * Words in *asterisks* in the headline show in the accent color.
+ */
+import Accent from "../Accent.astro";
 import Media from "../Media.astro";
 import RichText from "../RichText.astro";
 import Button from "../Button.astro";
@@ -12,8 +16,9 @@ const { b, e } = Astro.props as SectionProps;
   <div class="absolute inset-0 -z-10 bg-primary/55"></div>
   <div class="container-site py-20 text-center text-paper">
     <h1 class="mx-auto max-w-3xl text-paper">
-      <span {...e.attrs("headline")}>{b.headline}</span>
-      {b.highlight && <span class="block text-accent" {...e.attrs("highlight")}>{b.highlight}</span>}
+      <span {...e.attrs("headline")}><Accent text={b.headline} on={e.on} tone="dark" /></span>
+      {/* Older sites: a separate "second line" field. New sites put *asterisks* in the headline instead. */}
+      {b.highlight && <>{" "}<span class="block text-accent" {...e.attrs("highlight")}>{b.highlight}</span></>}
     </h1>
     <RichText value={b.text} edit={e} field="text" class="mx-auto mt-5 max-w-xl text-lg md:text-xl" />
     <Button label={b.button_label} href={b.button_link} edit={e} class="btn mt-8" linkClass="mx-auto" />

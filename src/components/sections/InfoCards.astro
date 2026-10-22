@@ -1,5 +1,6 @@
 ---
 /** Photo cards: photo, colored title strip and short text (Program "How it works") */
+import Accent from "../Accent.astro";
 import Media from "../Media.astro";
 import type { SectionProps } from "./types";
 const { b, e, flush } = Astro.props as SectionProps;
@@ -9,8 +10,8 @@ const cards: Record<string, any>[] = Array.isArray(b.cards) ? b.cards : [];
 <section class:list={["pb-16 md:pb-20", !flush && "pt-16 md:pt-20"]}>
   <div class="container-site">
     <div class="mb-10 text-center">
-      {b.eyebrow && <p class="eyebrow-script text-accent" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
-      {b.title && <h2 class="mt-2 text-ink" {...e.attrs("title")}>{b.title}</h2>}
+      {b.eyebrow && <p class="eyebrow-script text-accent-text" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
+      {b.title && <h2 class="mt-2 text-ink" {...e.attrs("title")}><Accent text={b.title} on={e.on} /></h2>}
     </div>
     <div class="grid gap-8 md:grid-cols-3">
       {
@@ -19,7 +20,7 @@ const cards: Record<string, any>[] = Array.isArray(b.cards) ? b.cards : [];
           return (
             <article class="flex flex-col bg-paper shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
               <div class="aspect-[820/462]" {...ce.image("image")}><Media media={c.image} label={c.title || "Card photo"} /></div>
-              <h3 class="bg-accent px-6 py-4 text-center !font-body !text-base !not-italic font-bold text-paper" {...ce.attrs("title")}>{c.title}</h3>
+              <h3 class="bg-accent px-6 py-4 text-center !font-body !text-base !not-italic font-bold text-on-accent" {...ce.attrs("title")}>{c.title}</h3>
               <p class="px-6 pt-6 pb-8 text-center" {...ce.attrs("text", "text")}>{c.text}</p>
             </article>
           );

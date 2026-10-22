@@ -37,6 +37,7 @@ Choose **Sample content** to load the pages, services, menus, 3 sample posts + 3
 | Starting content for new sites (and the fallback before a site has it) | `.emdash/seed.json` |
 | Form endpoints, default booking embed, footer credit | `src/site.config.ts` |
 | Colors and fonts | `@theme` block at the top of `src/styles/global.css` |
+| Text colors that must pass contrast (accent text, text on accent, text on gold) | `--color-accent-text`, `--color-on-accent`, `--color-on-gold` in the same `@theme` block |
 | Google Fonts link (if fonts change) | `src/layouts/BaseLayout.astro` |
 | Production URL | `site.url` in `site.config.ts` **and** `SITE` in `astro.config.mjs` |
 | Worker, database and media bucket names | `wrangler.jsonc` (lowercase + dashes, e.g. `livable-nutrition`) |
@@ -81,6 +82,11 @@ Each block type is defined in `.emdash/seed.json` → `blockTypes` and rendered 
 | Latest blog posts | `LatestPosts` | Home |
 | Contact form / Booking calendar / Free guide sign-up | `Contact`, `Booking`, `GuideSignup` | Contact, Booking, Free guide |
 
+**Colored words in headlines:** in any block headline (and the hero headline and centered intro subheading), put
+`*asterisks*` around the words to color: `Nutrition that *fits your life*`. One field, no splitting. In edit mode the
+asterisks stay visible so editors keep them. The color is picked to pass contrast on that block's background
+(`src/components/Accent.astro`). Older sites' separate "second line" / "colored part" fields still render.
+
 Spacing is automatic: a white block right after another white block skips its top padding (as in the T1 designs).
 Text that can be long (paragraphs, lists, quotes) is rich text (`src/components/RichText.astro`), so clients get bold,
 italics, links and lists; headlines and button text are plain so they always match the design.
@@ -89,6 +95,18 @@ italics, links and lists; headlines and button text are plain so they always mat
 `.emdash/seed.json`, write its component in `src/components/sections/`, map it in `Sections.astro`, and add it to
 existing sites with the script below (it adds missing block types). Changing an existing type's fields: see
 "Change a block schema" in the EmDash docs (breaking changes need a new version).
+
+## Accessibility (WCAG 2.2 AA)
+
+The template passes axe (WCAG 2.2 AA + best practices) on every page at desktop and mobile widths with the T1 colors.
+Built in: one H1 per page, no skipped heading levels, alt text from EmDash, skip-to-content link, labeled forms,
+keyboard-friendly menus and FAQ, visible focus outlines, named landmarks, 24px+ tap targets, reduced motion for
+visitors who ask for it, and JSON-LD structured data (business name, description, socials).
+
+**When you rebrand:** contrast depends on the client's colors. After changing `@theme`, run axe DevTools on Home,
+About, Services and Program. If text fails, adjust `--color-accent-text` (darker), or `--color-on-accent` /
+`--color-on-gold` (switch between ink and paper). Don't put accent-colored text on light backgrounds directly:
+use `text-accent-text`.
 
 ## Editing on the page (clients)
 

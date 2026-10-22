@@ -4,6 +4,7 @@
  * then one row per service (photo 1565 x 1282), alternating sides. Every second row is teal.
  * Services come from the Services collection; each one's text and photo are edited right here.
  */
+import Accent from "../Accent.astro";
 import Media from "../Media.astro";
 import RichText from "../RichText.astro";
 import { getServices } from "../../lib/cms";
@@ -15,7 +16,7 @@ const services = await getServices();
 <section id="services">
   <div class="bg-mist pt-14 text-center md:pt-16">
     <p class="eyebrow-script text-primary" {...e.attrs("eyebrow")}>{b.eyebrow}</p>
-    <h2 class="mt-1 uppercase" {...e.attrs("title")}>{b.title}</h2>
+    <h2 class="mt-1 uppercase" {...e.attrs("title")}><Accent text={b.title} on={e.on} /></h2>
     <nav aria-label="Services" class="mt-10 grid bg-primary sm:grid-cols-3">
       {
         services.map((s, i) => (

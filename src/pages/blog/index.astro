@@ -51,7 +51,7 @@ const href = (n: number) => {
       }
       {
         shown.length ? (
-          <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2 md:grid-cols-3">{shown.map((post) => <PostCard post={post} />)}</div>
+          <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2 md:grid-cols-3">{shown.map((post) => <PostCard post={post} level={2} />)}</div>
         ) : (
           <p class="text-center">No posts found. Add one at <a href="/_emdash/admin" class="underline">/_emdash/admin</a>.</p>
         )

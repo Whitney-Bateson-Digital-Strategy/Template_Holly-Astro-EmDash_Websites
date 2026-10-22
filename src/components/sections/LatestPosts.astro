@@ -1,5 +1,6 @@
 ---
 /** Latest blog posts: your newest posts (edit the posts themselves under Posts) */
+import Accent from "../Accent.astro";
 import PostCard from "../PostCard.astro";
 import { getPosts } from "../../lib/cms";
 import type { SectionProps } from "./types";
@@ -13,7 +14,7 @@ const posts = await getPosts(Number(b.count) || 3);
       <section class="pb-16 md:pb-20">
         <div class="container-site">
           <div class="mb-8 flex items-end justify-between border-b-2 border-ink pb-2">
-            <h2 class="uppercase" {...e.attrs("title")}>{b.title}</h2>
+            <h2 class="uppercase" {...e.attrs("title")}><Accent text={b.title} on={e.on} /></h2>
             <a href="/blog" class="eyebrow-italic !text-xl no-underline hover:text-secondary"><span {...e.attrs("link_label")}>{b.link_label}</span></a>
           </div>
           <div class="grid gap-8 md:grid-cols-3">{posts.map((post) => <PostCard post={post} />)}</div>
