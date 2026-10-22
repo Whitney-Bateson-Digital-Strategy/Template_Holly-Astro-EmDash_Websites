@@ -2,8 +2,13 @@
 /** T1 blog card: featured image (3:2) with the title centered underneath. */
 import PostImage from "./PostImage.astro";
 import type { Post } from "../lib/cms";
-interface Props { post: Post }
-const { post } = Astro.props;
+interface Props {
+  post: Post;
+  /** Heading level for the title: 2 on the blog page (right under the page title), 3 under a section headline */
+  level?: 2 | 3;
+}
+const { post, level = 3 } = Astro.props;
+const H = level === 2 ? "h2" : "h3";
 ---
 
 <article class="group">
@@ -11,6 +16,6 @@ const { post } = Astro.props;
     <div class="aspect-[1143/754] overflow-hidden">
       <div class="h-full transition-transform duration-500 group-hover:scale-105"><PostImage image={post.image} /></div>
     </div>
-    <h3 class="mx-auto mt-4 max-w-[90%] text-center !font-body !text-base !not-italic !leading-snug font-medium text-ink group-hover:text-secondary">{post.title}</h3>
+    <H class="mx-auto mt-4 max-w-[90%] text-center tracking-normal !font-body !text-base !not-italic !leading-snug font-medium text-ink group-hover:text-secondary">{post.title}</H>
   </a>
 </article>

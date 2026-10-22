@@ -3,6 +3,7 @@
  * Text and photo side by side. Lists in the text use dots or check marks (list_style).
  * Spacing follows the T1 designs: a white section right after another white one skips its top padding.
  */
+import Accent from "../Accent.astro";
 import SplitSection from "../SplitSection.astro";
 import RichText from "../RichText.astro";
 import Button from "../Button.astro";
@@ -22,7 +23,7 @@ const sectionClass = sand
 
 <SplitSection media={b.image} imageEdit={e.image("image")} imageSide={b.photo_side === "Left" ? "left" : "right"} ratio={ratio} class={sectionClass}>
   {b.eyebrow && <p class={b.eyebrow_style === "Italic" ? "eyebrow-italic" : "eyebrow-script text-primary"} {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
-  {b.title && <h2 class:list={["uppercase", b.eyebrow && "mt-2"]} {...e.attrs("title")}>{b.title}</h2>}
+  {b.title && <h2 class:list={["uppercase", b.eyebrow && "mt-2"]} {...e.attrs("title")}><Accent text={b.title} on={e.on} /></h2>}
   {b.subtitle && <p class:list={[listFirst ? "mt-2" : "mt-3", "text-lg font-medium"]} {...e.attrs("subtitle")}>{b.subtitle}</p>}
   <RichText
     value={b.text}

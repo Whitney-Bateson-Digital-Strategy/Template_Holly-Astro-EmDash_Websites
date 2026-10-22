@@ -16,6 +16,17 @@
   --color-mist: #f4f4f4;      /* light gray */
   --color-paper: #ffffff;
 
+  /*
+    ACCESSIBLE TEXT COLORS (WCAG AA). The accent is usually a light brand color: great as a fill, too pale as
+    text on white. These three are what text actually uses, so any new palette still passes contrast.
+    After changing the colors above, check these with a contrast checker (4.5:1 for normal text) or axe:
+      accent-text on white   |  on-accent text on the accent  |  on-gold text on the gold
+    Darken accent-text (lower the % below) or switch on-accent / on-gold to paper (white) as the palette needs.
+  */
+  --color-accent-text: color-mix(in srgb, var(--color-accent) 45%, var(--color-ink)); /* accent-colored text on light backgrounds */
+  --color-on-accent: var(--color-ink); /* text sitting on an accent fill */
+  --color-on-gold: var(--color-ink);   /* text on the gold button */
+
   --font-display: "Old Standard TT", Georgia, serif;
   --font-body: "Questrial", system-ui, sans-serif;
   --font-script: "Oooh Baby", cursive;
@@ -25,6 +36,11 @@
 
 @layer base {
   html { scroll-behavior: smooth; }
+  /* Visitors who ask their device for less motion get no smooth scrolling, zooms or transitions */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
   body {
     @apply bg-paper text-ink font-body antialiased;
     font-size: 16px;
@@ -59,10 +75,10 @@
     font-family: var(--font-body);
     font-size: 15px; font-weight: 700; letter-spacing: 0.7px; line-height: 21px;
     padding: 18px 30px;
-    background-color: var(--color-accent); color: var(--color-ink);
+    background-color: var(--color-accent); color: var(--color-on-accent);
   }
   .btn:hover, .btn:focus-visible { background-color: color-mix(in srgb, var(--color-accent) 62%, transparent); }
-  .btn-gold { background-color: var(--color-gold); color: var(--color-paper); }
+  .btn-gold { background-color: var(--color-gold); color: var(--color-on-gold); }
   .btn-gold:hover, .btn-gold:focus-visible { background-color: color-mix(in srgb, var(--color-gold) 48%, transparent); }
 
   /* Rich text from EmDash (RichText.astro): paragraph spacing, list markers, pull quotes, links */

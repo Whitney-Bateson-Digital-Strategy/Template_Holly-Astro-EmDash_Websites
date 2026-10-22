@@ -3,6 +3,7 @@
  * Questions (accordion), in two columns. Questions can carry a highlighted prefix like "Module 01:".
  * In edit mode every answer is open so it can be edited.
  */
+import Accent from "../Accent.astro";
 import Button from "../Button.astro";
 import EditLink from "../EditLink.astro";
 import type { SectionProps } from "./types";
@@ -14,7 +15,7 @@ const cols = [items.slice(0, half), items.slice(half)].map((col, c) => col.map((
 
 <section id={n === 0 ? "faq" : `faq-${n + 1}`} class:list={["scroll-mt-24 pb-16 md:pb-20", !flush && "pt-16 md:pt-20"]}>
   <div class="container-site">
-    {b.title && <h2 class="mb-10 text-center uppercase" {...e.attrs("title")}>{b.title}</h2>}
+    {b.title && <h2 class="mb-10 text-center uppercase" {...e.attrs("title")}><Accent text={b.title} on={e.on} /></h2>}
     <div class="grid gap-4 md:grid-cols-2 md:gap-6">
       {
         cols.map((col) => (

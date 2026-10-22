@@ -3,6 +3,7 @@
  * Page intro with photo (About / Program): photo to the screen edge on the left, page title and text beside it.
  * The sand version matches the Program design (slightly smaller text), the white one the About design.
  */
+import Accent from "../Accent.astro";
 import SplitSection from "../SplitSection.astro";
 import RichText from "../RichText.astro";
 import Button from "../Button.astro";
@@ -13,7 +14,7 @@ const sand = b.background === "Sand";
 
 <SplitSection media={b.image} imageEdit={e.image("image")} imageSide="left" class={sand ? "bg-sand" : ""} fullBleed ratio="1943/1284" textClass="md:max-w-[680px]">
   {b.eyebrow && <p class="eyebrow-italic" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
-  <h1 class={sand ? "mt-3" : "mt-4"} {...e.attrs("title")}>{b.title}</h1>
+  <h1 class={sand ? "mt-3" : "mt-4"} {...e.attrs("title")}><Accent text={b.title} on={e.on} /></h1>
   <RichText value={b.text} edit={e} field="text" relaxed class={sand ? "mt-4 text-lg" : "mt-5 text-[1.1875rem]"} />
   <Button label={b.button_label} href={b.button_link} edit={e} class="btn mt-8 self-start" />
 </SplitSection>

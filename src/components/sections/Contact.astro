@@ -4,6 +4,7 @@
  * The form posts to site.contactForm in src/site.config.ts; the "services" choices come from the Services list
  * and the social links from Site-wide content.
  */
+import Accent from "../Accent.astro";
 import Media from "../Media.astro";
 import RichText from "../RichText.astro";
 import EditLink from "../EditLink.astro";
@@ -30,7 +31,7 @@ const fields = [
     <!-- Intro -->
     <div class="self-center">
       {b.eyebrow && <p class="eyebrow-italic" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
-      {b.title && <h2 class="mt-2 uppercase" {...e.attrs("title")}>{b.title}</h2>}
+      {b.title && <h2 class="mt-2 uppercase" {...e.attrs("title")}><Accent text={b.title} on={e.on} /></h2>}
       <RichText value={b.text} edit={e} field="text" relaxed class="mt-4" />
       {
         b.note_text && (

@@ -1,5 +1,6 @@
 ---
 /** Teal band: full-width teal band with centered copy and a button */
+import Accent from "../Accent.astro";
 import RichText from "../RichText.astro";
 import Button from "../Button.astro";
 import type { SectionProps } from "./types";
@@ -9,7 +10,7 @@ const { b, e } = Astro.props as SectionProps;
 <section class="bg-primary py-16 text-center text-paper md:py-20">
   <div class="container-site max-w-3xl">
     {b.eyebrow && <p class="eyebrow-script text-accent" {...e.attrs("eyebrow")}>{b.eyebrow}</p>}
-    <h2 class="mt-2 text-paper uppercase" {...e.attrs("title")}>{b.title}</h2>
+    <h2 class="mt-2 text-paper uppercase" {...e.attrs("title")}><Accent text={b.title} on={e.on} tone="dark" /></h2>
     {b.subtitle && <p class="mt-3 text-xl font-medium" {...e.attrs("subtitle")}>{b.subtitle}</p>}
     <RichText value={b.text} edit={e} field="text" class="mt-4 text-paper/85" />
     <Button label={b.button_label} href={b.button_link} edit={e} class="btn mt-8" linkClass="mx-auto" />

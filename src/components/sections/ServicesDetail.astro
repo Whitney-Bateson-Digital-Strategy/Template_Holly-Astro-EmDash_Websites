@@ -18,7 +18,7 @@ const services = await getServices();
 {
   services.map(({ data: d, edit: se, slug }, i) => (
     <SplitSection id={slug} media={d.image} image={{ label: String(d.title) }} imageEdit={se.image("image")} imageSide={i % 2 === 0 ? "right" : "left"} fullBleed ratio="1/1" class="scroll-mt-24 py-8 md:py-12" textClass="md:!py-6">
-      <p class="eyebrow-label text-accent" {...se.attrs("eyebrow")}>{d.eyebrow}</p>
+      <p class="eyebrow-label text-accent-text" {...se.attrs("eyebrow")}>{d.eyebrow}</p>
       <div class="my-3 h-px w-12 bg-primary"></div>
       <h2 class="uppercase" {...se.attrs("title")}>{d.title}</h2>
       <RichText value={d.description} edit={se} field="description" class="mt-4" />

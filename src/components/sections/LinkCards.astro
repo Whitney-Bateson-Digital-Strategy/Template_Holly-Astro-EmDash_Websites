@@ -1,5 +1,6 @@
 ---
 /** Link cards: photo cards that link to other pages ("Keep exploring") */
+import Accent from "../Accent.astro";
 import Media from "../Media.astro";
 import EditLink from "../EditLink.astro";
 import type { SectionProps } from "./types";
@@ -9,7 +10,7 @@ const cards: Record<string, any>[] = Array.isArray(b.cards) ? b.cards : [];
 
 <section class:list={["pb-16 md:pb-20", !flush && "pt-16 md:pt-20"]}>
   <div class="container-site">
-    {b.title && <h2 class="mb-10 text-center uppercase" {...e.attrs("title")}>{b.title}</h2>}
+    {b.title && <h2 class="mb-10 text-center uppercase" {...e.attrs("title")}><Accent text={b.title} on={e.on} /></h2>}
     <div class="grid gap-8 md:grid-cols-3">
       {
         cards.map((c, i) => {

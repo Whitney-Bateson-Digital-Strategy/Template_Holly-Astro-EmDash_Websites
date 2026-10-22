@@ -1,5 +1,9 @@
 ---
-/** Centered intro: headline, a subheading with a colored middle part, and text */
+/**
+ * Centered intro: headline, subheading and text. Words in *asterisks* in the headline or subheading show in color.
+ * Older sites split the subheading into three fields (first part, colored part, last part); those still render.
+ */
+import Accent from "../Accent.astro";
 import RichText from "../RichText.astro";
 import type { SectionProps } from "./types";
 const { b, e, flush } = Astro.props as SectionProps;
@@ -10,11 +14,11 @@ const hasSubtitle = b.subtitle_start || b.subtitle_highlight || b.subtitle_end;
 
 <section class:list={["text-center pb-16 md:pb-20", !flush && "pt-16 md:pt-20"]}>
   <div class="container-site max-w-[900px]">
-    <h2 class="uppercase" {...e.attrs("title")}>{b.title}</h2>
+    <h2 class="uppercase" {...e.attrs("title")}><Accent text={b.title} on={e.on} /></h2>
     {
       hasSubtitle && (
         <p class="mt-4 text-lg font-medium md:text-xl">
-          <span {...e.attrs("subtitle_start")}>{b.subtitle_start}</span>{gap(b.subtitle_highlight)}<span class="text-secondary" {...e.attrs("subtitle_highlight")}>{b.subtitle_highlight}</span>{gap(b.subtitle_end)}<span {...e.attrs("subtitle_end")}>{b.subtitle_end}</span>
+          <span {...e.attrs("subtitle_start")}><Accent text={b.subtitle_start} on={e.on} class="text-secondary" /></span>{b.subtitle_highlight && <>{gap(b.subtitle_highlight)}<span class="text-secondary" {...e.attrs("subtitle_highlight")}>{b.subtitle_highlight}</span></>}{b.subtitle_end && <>{gap(b.subtitle_end)}<span {...e.attrs("subtitle_end")}>{b.subtitle_end}</span></>}
         </p>
       )
     }
